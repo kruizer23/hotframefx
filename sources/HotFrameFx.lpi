@@ -33,7 +33,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="HotFrameFx.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -42,8 +42,14 @@
         <Filename Value="mainunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="corneredge.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CornerEdge"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

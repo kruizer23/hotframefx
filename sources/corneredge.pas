@@ -1,7 +1,7 @@
-unit mainunit;
+unit CornerEdge;
 //***************************************************************************************
-//  Description: Program's main window.
-//    File Name: mainunit.pas
+//  Description: Hot corner and edge detection unit.
+//    File Name: corneredge.pas
 //
 //---------------------------------------------------------------------------------------
 //                          C O P Y R I G H T
@@ -36,62 +36,70 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, CornerEdge;
+  Classes, SysUtils;
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
+  // Set that lists all supported screen corners.
+  TCorner = set of (coTopLeft, coTopRight, coBottomLeft, coBottomRight);
 
-  { TMainForm }
+  // Set that lists all supported screen edges.
+  TEdge = set of (edLeft, edRight, edTop, edBottom);
 
-  TMainForm = class(TForm)
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
+  // Enumeration will all supported sensitivity levels.
+  TSensitivity = ( seHigh = 0, seMedium, seLow );
+
+  // Event handler for a hot corner.
+  THotCornerEvent = procedure(Sender: TObject; Corner: TCorner);
+
+  // Event handler for a hot edge.
+  THotEdgeEvent = procedure(Sender: TObject; Edge: TEdge);
+
+  // Hot corner and edge detection class.
+  TCornerEdge = class(TObject)
   private
-    FCornerEdge: TCornerEdge;
+    FSensitivity: TSensitivity;
+    FOnHotCorner: THotCornerEvent;
+    FOnHotEdge: THotEdgeEvent;
   public
-
+    constructor Create;
+    destructor Destroy; override;
+    property Sensitivity: TSensitivity read FSensitivity write FSensitivity;
+    property OnHotCorner: THotCornerEvent read FOnHotCorner write FOnHotCorner;
+    property OnHotEdge: THotEdgeEvent read FOnHotEdge write FOnHotEdge;
   end;
 
-//***************************************************************************************
-// Global data declarations
-//***************************************************************************************
-var
-  MainForm: TMainForm;
-
 implementation
-
-{$R *.lfm}
-
-{ TMainForm }
-
 //***************************************************************************************
-// NAME:           FormCreate
-// PARAMETER:      Sender Signal source.
-// RETURN VALUE:   None.
-// DESCRIPTION:    Called when the form is created
+// NAME:           Create
+// DESCRIPTION:    Object constructor. Calls TObjects's constructor and initializes
+//                 the fields to their default values.
 //
 //***************************************************************************************
-procedure TMainForm.FormCreate(Sender: TObject);
+constructor TCornerEdge.Create;
 begin
-  // Construct the hot corner and edge detection object.
-  FCornerEdge := TCornerEdge.Create;
-end;
+  // Call inherited constructor.
+  inherited Create;
+  // Initialize fields.
+  FSensitivity := seHigh;
+  FOnHotCorner := nil;
+  FOnHotEdge := nil;
+end; //*** end of Create ***
 
 //***************************************************************************************
-// NAME:           FormDestroy
-// PARAMETER:      Sender Signal source.
-// RETURN VALUE:   None.
-// DESCRIPTION:    Called when the form is destroyed
+// NAME:           Destroy
+// DESCRIPTION:    Object destructor. Calls TObjects's destructor
 //
 //***************************************************************************************
-procedure TMainForm.FormDestroy(Sender: TObject);
+destructor TCornerEdge.Destroy;
 begin
-  // Release the hot corner and edge detection object.
-  FCornerEdge.Free;
-end;
+  // TODO ##Vg
+  // Call inherited destructor.
+  inherited Destroy;
+end; //*** end of Destroy ***
 
 end.
-//********************************** end of mainunit.pas ********************************
+//********************************** end of corneredge.pas ******************************
 

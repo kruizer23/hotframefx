@@ -2121,6 +2121,8 @@ object MainForm: TMainForm
     FFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFFF800001FFFFFFFFF
     FFFF
   }
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '2.0.12.0'
 end

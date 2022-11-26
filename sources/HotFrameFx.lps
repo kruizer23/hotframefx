@@ -35,30 +35,57 @@
         </CompilerOptions>
       </Item1>
     </BuildModes>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="HotFrameFx.lpr"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="18"/>
-        <CursorPos X="63" Y="61"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="9"/>
+        <CursorPos X="32" Y="26"/>
+        <UsageCount Value="22"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="20"/>
-        <CursorPos Y="64"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="43"/>
+        <CursorPos X="7" Y="78"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="corneredge.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CornerEdge"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="52"/>
+        <CursorPos Y="73"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit2>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="4" HistoryIndex="3">
+      <Position1>
+        <Filename Value="corneredge.pas"/>
+        <Caret Line="77" TopLine="30"/>
+      </Position1>
+      <Position2>
+        <Filename Value="mainunit.pas"/>
+        <Caret Line="51" Column="30" TopLine="11"/>
+      </Position2>
+      <Position3>
+        <Filename Value="mainunit.pas"/>
+        <Caret Line="71" Column="3" TopLine="22"/>
+      </Position3>
+      <Position4>
+        <Filename Value="corneredge.pas"/>
+        <Caret Line="67" Column="72" TopLine="34"/>
+      </Position4>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes Count="0" ActiveMode=""/>
