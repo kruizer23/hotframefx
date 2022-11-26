@@ -4,6 +4,8 @@ object MainForm: TMainForm
   Top = 314
   Width = 434
   Caption = 'HotFrameFx'
+  ClientHeight = 198
+  ClientWidth = 434
   Icon.Data = {
     3E08010000000100010080800000010020002808010016000000280000008000
     0000000100000100200000000000000001006400000064000000000000000000
@@ -2125,4 +2127,11 @@ object MainForm: TMainForm
   OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '2.0.12.0'
+  object MmoEvents: TMemo
+    Left = 8
+    Height = 114
+    Top = 40
+    Width = 416
+    TabOrder = 0
+  end
 end

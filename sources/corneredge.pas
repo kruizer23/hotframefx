@@ -36,33 +36,39 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, ExtCtrls;
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
   // Set that lists all supported screen corners.
-  TCorner = set of (coTopLeft, coTopRight, coBottomLeft, coBottomRight);
+  TCorner = (coTopLeft = 0, coTopRight, coBottomLeft, coBottomRight);
 
   // Set that lists all supported screen edges.
-  TEdge = set of (edLeft, edRight, edTop, edBottom);
+  TEdge = (edLeft = 0, edRight, edTop, edBottom);
 
   // Enumeration will all supported sensitivity levels.
   TSensitivity = ( seHigh = 0, seMedium, seLow );
 
   // Event handler for a hot corner.
-  THotCornerEvent = procedure(Sender: TObject; Corner: TCorner);
+  THotCornerEvent = procedure(Sender: TObject; Corner: TCorner) of object;
 
   // Event handler for a hot edge.
-  THotEdgeEvent = procedure(Sender: TObject; Edge: TEdge);
+  THotEdgeEvent = procedure(Sender: TObject; Edge: TEdge) of object;
 
   // Hot corner and edge detection class.
   TCornerEdge = class(TObject)
+  const
+    UPDATE_INTERVAL_MS = 50;
   private
     FSensitivity: TSensitivity;
     FOnHotCorner: THotCornerEvent;
     FOnHotEdge: THotEdgeEvent;
+    FUpdateTimer: TTimer;
+    FCornerTickCount: Integer;
+    FEdgeTickCount: Integer;
+    procedure OnUpdateTimer(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -86,7 +92,14 @@ begin
   FSensitivity := seHigh;
   FOnHotCorner := nil;
   FOnHotEdge := nil;
-end; //*** end of Create ***
+  FCornerTickCount := 0;
+  FEdgeTickCount := 0;
+  // Construct, configure and start the update timer.
+  FUpdateTimer := TTimer.Create(nil);
+  FUpdateTimer.Interval := UPDATE_INTERVAL_MS;
+  FUpdateTimer.OnTimer := @OnUpdateTimer;
+  FUpdateTimer.Enabled := True;
+end;
 
 //***************************************************************************************
 // NAME:           Destroy
@@ -95,10 +108,43 @@ end; //*** end of Create ***
 //***************************************************************************************
 destructor TCornerEdge.Destroy;
 begin
-  // TODO ##Vg
+  // Stop and release the update timer.
+  FUpdateTimer.Enabled := False;
+  FUpdateTimer.Free;
   // Call inherited destructor.
   inherited Destroy;
-end; //*** end of Destroy ***
+end;
+
+//***************************************************************************************
+// NAME:           OnUpdateTimer
+// PARAMETER:      Sender Source of the event.
+// DESCRIPTION:    Event handler that gets called each time the update timer elapsed.
+//
+//***************************************************************************************
+procedure TCornerEdge.OnUpdateTimer(Sender: TObject);
+begin
+  // TODO ##Vg Implement OnUpdateTimer().
+  Inc(FCornerTickCount);
+  Inc(FEdgeTickCount);
+
+  if FCornerTickCount = 20 then
+  begin
+    FCornerTickCount := 0;
+    if Assigned(FOnHotCorner) then
+    begin
+      FOnHotCorner(Self, coTopLeft);
+    end;
+  end;
+
+  if FEdgeTickCount = 40 then
+  begin
+    FEdgeTickCount := 0;
+    if Assigned(FOnHotEdge) then
+    begin
+      FOnHotEdge(Self, edBottom);
+    end;
+  end;
+end;
 
 end.
 //********************************** end of corneredge.pas ******************************

@@ -36,7 +36,7 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, CornerEdge;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, CornerEdge;
 
 //***************************************************************************************
 // Type Definitions
@@ -46,10 +46,13 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    MmoEvents: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
     FCornerEdge: TCornerEdge;
+    procedure OnHotCorner(Sender: TObject; Corner: TCorner);
+    procedure OnHotEdge(Sender: TObject; Edge: TEdge);
   public
 
   end;
@@ -75,8 +78,10 @@ implementation
 //***************************************************************************************
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  // Construct the hot corner and edge detection object.
+  // Construct and configure the hot corner and edge detection object.
   FCornerEdge := TCornerEdge.Create;
+  FCornerEdge.OnHotCorner := @OnHotCorner;
+  FCornerEdge.OnHotEdge := @OnHotEdge;
 end;
 
 //***************************************************************************************
@@ -90,6 +95,36 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   // Release the hot corner and edge detection object.
   FCornerEdge.Free;
+end;
+
+//***************************************************************************************
+// NAME:           OnHotCorner
+// PARAMETER:      Sender Source of the event.
+//                 Corner The hot corner that triggered the event.
+// DESCRIPTION:    Event handler that gets called upon hot corner detection.
+//
+//***************************************************************************************
+procedure TMainForm.OnHotCorner(Sender: TObject; Corner: TCorner);
+begin
+  if Corner = coTopLeft then
+  begin
+    MmoEvents.Lines.Add('Top left corner is hot');
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           OnHotEdge
+// PARAMETER:      Sender Source of the event.
+//                 Edge The hot edge that triggered the event.
+// DESCRIPTION:    Event handler that gets called upon hot edge detection.
+//
+//***************************************************************************************
+procedure TMainForm.OnHotEdge(Sender: TObject; Edge: TEdge);
+begin
+  if Edge = edBottom then
+  begin
+    MmoEvents.Lines.Add('Bottom edge is hot');
+  end;
 end;
 
 end.
