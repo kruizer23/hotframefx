@@ -63,6 +63,8 @@ type
     UPDATE_INTERVAL_MS = 80;
     HOT_BORDER_HALF_LEN = 1;
     WARM_BORDER_HALF_LEN = 5;
+    HOT_EDGE_IGNORE_HALF_LEN = 200;
+    WARM_EDGE_IGNORE_HALF_LEN = 204;
   type
     TDetectState = (dsIdle, dsWaiting, dsTriggered);
   private
@@ -78,8 +80,11 @@ type
     FEdgeWaitCount: Integer;
     FHotCorners: array[Ord(coTopLeft)..Ord(coBottomRight)] of TRect;
     FWarmCorners: array[Ord(coTopLeft)..Ord(coBottomRight)] of TRect;
+    FHotEdges: array[Ord(edLeft)..Ord(edBottom)] of TRect;
+    FWarmEdges: array[Ord(edLeft)..Ord(edBottom)] of TRect;
     procedure OnUpdateTimer(Sender: TObject);
     procedure UpdateCorners;
+    procedure UpdateEdges;
   public
     constructor Create;
     destructor Destroy; override;
@@ -117,17 +122,60 @@ begin
   end;
   // Set the locations of all hot corner rects.
   FHotCorners[Ord(coTopLeft)].SetLocation(0, 0);
-  FHotCorners[Ord(coTopRight)].SetLocation(Screen.PrimaryMonitor.BoundsRect.Width, 0);
-  FHotCorners[Ord(coBottomLeft)].SetLocation(0, Screen.PrimaryMonitor.BoundsRect.Height);
-  FHotCorners[Ord(coBottomRight)].SetLocation(Screen.PrimaryMonitor.BoundsRect.Width,
-                                              Screen.PrimaryMonitor.BoundsRect.Height);
-  // Move all warm corner rects to the hot corner rects and inflat all rects.
+  FHotCorners[Ord(coTopRight)].SetLocation(Screen.PrimaryMonitor.BoundsRect.Width-1, 0);
+  FHotCorners[Ord(coBottomLeft)].SetLocation(0, Screen.PrimaryMonitor.BoundsRect.Height-1);
+  FHotCorners[Ord(coBottomRight)].SetLocation(Screen.PrimaryMonitor.BoundsRect.Width-1,
+                                              Screen.PrimaryMonitor.BoundsRect.Height-1);
+  // Move all warm corner rects to the hot corner rects and inflate all rects.
   for idx := Ord(coTopLeft) to Ord(coBottomRight) do
   begin
     FWarmCorners[idx].Location := FHotCorners[idx].Location;
     FHotCorners[idx].Inflate(HOT_BORDER_HALF_LEN, HOT_BORDER_HALF_LEN);
     FWarmCorners[idx].Inflate(WARM_BORDER_HALF_LEN, WARM_BORDER_HALF_LEN);
   end;
+  // Initialize all edge rects to be of zero size.
+  for idx := Ord(edLeft) to Ord(edBottom) do
+  begin
+    FHotEdges[idx] := Rect(0, 0, 0, 0);
+    FWarmEdges[idx] := Rect(0, 0, 0, 0);
+  end;
+  // Set the locations of all hot edge rects.
+  FHotEdges[Ord(edLeft)].SetLocation(0, Screen.PrimaryMonitor.BoundsRect.Height div 2);
+  FHotEdges[Ord(edRight)].SetLocation(Screen.PrimaryMonitor.BoundsRect.Width - 1,
+                                      Screen.PrimaryMonitor.BoundsRect.Height div 2);
+  FHotEdges[Ord(edTop)].SetLocation(Screen.PrimaryMonitor.BoundsRect.Width div 2, 0);
+  FHotEdges[Ord(edBottom)].SetLocation(Screen.PrimaryMonitor.BoundsRect.Width div 2,
+                                       Screen.PrimaryMonitor.BoundsRect.Height - 1);
+  // Move all warm edge rects to the hot edge rects.
+  for idx := Ord(edLeft) to Ord(edBottom) do
+  begin
+    FWarmEdges[idx].Location := FHotEdges[idx].Location;
+  end;
+  // Inflate all rects to the right size.
+  FHotEdges[Ord(edLeft)].Inflate(HOT_BORDER_HALF_LEN,
+                                 (Screen.PrimaryMonitor.BoundsRect.Height div 2) -
+                                 HOT_EDGE_IGNORE_HALF_LEN);
+  FWarmEdges[Ord(edLeft)].Inflate(WARM_BORDER_HALF_LEN,
+                                 (Screen.PrimaryMonitor.BoundsRect.Height div 2) -
+                                 WARM_EDGE_IGNORE_HALF_LEN);
+  FHotEdges[Ord(edRight)].Inflate(HOT_BORDER_HALF_LEN,
+                                 (Screen.PrimaryMonitor.BoundsRect.Height div 2) -
+                                 HOT_EDGE_IGNORE_HALF_LEN);
+  FWarmEdges[Ord(edRight)].Inflate(WARM_BORDER_HALF_LEN,
+                                 (Screen.PrimaryMonitor.BoundsRect.Height div 2) -
+                                 WARM_EDGE_IGNORE_HALF_LEN);
+  FHotEdges[Ord(edTop)].Inflate((Screen.PrimaryMonitor.BoundsRect.Width div 2) -
+                                 HOT_EDGE_IGNORE_HALF_LEN,
+                                 HOT_BORDER_HALF_LEN);
+  FWarmEdges[Ord(edTop)].Inflate((Screen.PrimaryMonitor.BoundsRect.Width div 2) -
+                                 WARM_EDGE_IGNORE_HALF_LEN,
+                                 WARM_BORDER_HALF_LEN);
+  FHotEdges[Ord(edBottom)].Inflate((Screen.PrimaryMonitor.BoundsRect.Width div 2) -
+                                 HOT_EDGE_IGNORE_HALF_LEN,
+                                 HOT_BORDER_HALF_LEN);
+  FWarmEdges[Ord(edBottom)].Inflate((Screen.PrimaryMonitor.BoundsRect.Width div 2) -
+                                 WARM_EDGE_IGNORE_HALF_LEN,
+                                 WARM_BORDER_HALF_LEN);
   // Construct, configure and start the update timer.
   FUpdateTimer := TTimer.Create(nil);
   FUpdateTimer.Interval := UPDATE_INTERVAL_MS;
@@ -235,6 +283,91 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           UpdateEdges
+// DESCRIPTION:    Updates the edges state machine to detect hot edges. Should be
+//                 called at fixed timer intervals.
+//
+//***************************************************************************************
+procedure TCornerEdge.UpdateEdges;
+var
+  idx: integer;
+begin
+  // ----------------------------- IDLE -------------------------------------------------
+  if FEdgeDetectState = dsIdle then
+  begin
+    // Is the cursor in one of the hot edge rectangles?
+    for idx := Ord(edLeft) to Ord(edBottom) do
+    begin
+      if FHotEdges[idx].Contains(Mouse.CursorPos) then
+      begin
+        // Store the edge that is now warm.
+        FEdge := TEdge(idx);
+        // Transition to the waiting state.
+        FEdgeDetectState := dsWaiting;
+        // Stop the loop.
+        Break;
+      end;
+    end;
+
+    // Are we transitioning to the waiting state?
+    if FEdgeDetectState = dsWaiting then
+    begin
+      // Initialize the wait counter, based on the selected sensitivity.
+      FEdgeWaitCount := Ord(FSensitivity);
+      // No need to wait (typically on high sensitivity)?
+      if FEdgeWaitCount = 0 then
+      begin
+        // Edge is now hot. Call the event handler.
+        if Assigned(FOnHotEdge) then
+        begin
+          FOnHotEdge(Self, FEdge);
+        end;
+        // Transition to the triggered state instead.
+        FEdgeDetectState := dsTriggered;
+      end;
+    end;
+  end
+  // ----------------------------- WAITING ----------------------------------------------
+  else if FEdgeDetectState = dsWaiting then
+  begin
+    // Check if the cursor moved out of the warm edge.
+    if not FWarmEdges[Ord(FEdge)].Contains(Mouse.CursorPos) then
+    begin
+      // Transition back to the idle state.
+      FEdgeDetectState := dsIdle;
+    end;
+
+    // Still in the waiting state?
+    if FEdgeDetectState = dsWaiting then
+    begin
+      // Decrement the wait counter.
+      Dec(FEdgeWaitCount);
+      // Done waiting?
+      if FEdgeWaitCount = 0 then
+      begin
+        // Edge is now hot. Call the event handler.
+        if Assigned(FOnHotEdge) then
+        begin
+          FOnHotEdge(Self, FEdge);
+        end;
+        // Transition to the triggered state.
+        FEdgeDetectState := dsTriggered;
+      end;
+    end;
+  end
+  // ----------------------------- TRIGGERED --------------------------------------------
+  else if FEdgeDetectState = dsTriggered then
+  begin
+    // Check if the cursor moved out of the edge.
+    if not FWarmEdges[Ord(FEdge)].Contains(Mouse.CursorPos) then
+    begin
+      // Transition back to the idle state.
+      FEdgeDetectState := dsIdle;
+    end;
+  end;
+end;
+
+//***************************************************************************************
 // NAME:           OnUpdateTimer
 // PARAMETER:      Sender Source of the event.
 // DESCRIPTION:    Event handler that gets called each time the update timer elapsed.
@@ -244,6 +377,8 @@ procedure TCornerEdge.OnUpdateTimer(Sender: TObject);
 begin
   // Update the state machine to detect hot corners.
   UpdateCorners;
+  // Update the state machine to detect hot edges.
+  UpdateEdges;
 end;
 
 end.

@@ -110,7 +110,11 @@ end;
 procedure TMainForm.OnHotCorner(Sender: TObject; Corner: TCorner);
 begin
   case Corner of
-    coTopLeft:     MmoEventInfo.Lines.Add('Top left hot corner');
+    coTopLeft:
+    begin
+      MmoEventInfo.Lines.Add('Top left hot corner');
+      ShowTaskView;
+    end;
     coTopRight:    MmoEventInfo.Lines.Add('Top right hot corner');
     coBottomLeft:  MmoEventInfo.Lines.Add('Bottom left hot corner');
     coBottomRight: MmoEventInfo.Lines.Add('Bottom right hot corner');
@@ -130,7 +134,11 @@ begin
     edLeft:   MmoEventInfo.Lines.Add('Left hot edge');
     edRight:  MmoEventInfo.Lines.Add('Right hot edge');
     edTop:    MmoEventInfo.Lines.Add('Top hot edge');
-    edBottom: MmoEventInfo.Lines.Add('Bottom hot edge');
+    edBottom:
+    begin
+      MmoEventInfo.Lines.Add('Bottom hot edge');
+      ShowTaskView;
+    end;
   end;
 end;
 
