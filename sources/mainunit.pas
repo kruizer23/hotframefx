@@ -107,9 +107,11 @@ end;
 //***************************************************************************************
 procedure TMainForm.OnHotCorner(Sender: TObject; Corner: TCorner);
 begin
-  if Corner = coTopLeft then
-  begin
-    MmoEventInfo.Lines.Add('Top left hot corner');
+  case Corner of
+    coTopLeft:     MmoEventInfo.Lines.Add('Top left hot corner');
+    coTopRight:    MmoEventInfo.Lines.Add('Top right hot corner');
+    coBottomLeft:  MmoEventInfo.Lines.Add('Bottom left hot corner');
+    coBottomRight: MmoEventInfo.Lines.Add('Bottom right hot corner');
   end;
 end;
 
@@ -122,9 +124,11 @@ end;
 //***************************************************************************************
 procedure TMainForm.OnHotEdge(Sender: TObject; Edge: TEdge);
 begin
-  if Edge = edBottom then
-  begin
-    MmoEventInfo.Lines.Add('Bottom edge');
+  case Edge of
+    edLeft:   MmoEventInfo.Lines.Add('Left hot edge');
+    edRight:  MmoEventInfo.Lines.Add('Right hot edge');
+    edTop:    MmoEventInfo.Lines.Add('Top hot edge');
+    edBottom: MmoEventInfo.Lines.Add('Bottom hot edge');
   end;
 end;
 

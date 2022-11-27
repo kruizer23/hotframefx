@@ -36,7 +36,7 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, ExtCtrls, Controls;
+  Classes, SysUtils, Forms, ExtCtrls, Controls;
 
 //***************************************************************************************
 // Type Definitions
@@ -61,6 +61,8 @@ type
   TCornerEdge = class(TObject)
   const
     UPDATE_INTERVAL_MS = 80;
+    HOT_BORDER_HALF_LEN = 1;
+    WARM_BORDER_HALF_LEN = 5;
   type
     TDetectState = (dsIdle, dsWaiting, dsTriggered);
   private
@@ -74,6 +76,8 @@ type
     FEdge: TEdge;
     FCornerWaitCount: Integer;
     FEdgeWaitCount: Integer;
+    FHotCorners: array[Ord(coTopLeft)..Ord(coBottomRight)] of TRect;
+    FWarmCorners: array[Ord(coTopLeft)..Ord(coBottomRight)] of TRect;
     procedure OnUpdateTimer(Sender: TObject);
     procedure UpdateCorners;
   public
@@ -92,17 +96,38 @@ implementation
 //
 //***************************************************************************************
 constructor TCornerEdge.Create;
+var
+  idx: integer;
 begin
   // Call inherited constructor.
   inherited Create;
   // Initialize fields.
-  FSensitivity := seHigh;
+  FSensitivity := seMedium;
   FOnHotCorner := nil;
   FOnHotEdge := nil;
   FCornerDetectState := dsIdle;
   FEdgeDetectState := dsIdle;
   FCornerWaitCount := 0;
   FEdgeWaitCount := 0;
+  // Initialize all corner rects to be of zero size.
+  for idx := Ord(coTopLeft) to Ord(coBottomRight) do
+  begin
+    FHotCorners[idx] := Rect(0, 0, 0, 0);
+    FWarmCorners[idx] := Rect(0, 0, 0, 0);
+  end;
+  // Set the locations of all hot corner rects.
+  FHotCorners[Ord(coTopLeft)].SetLocation(0, 0);
+  FHotCorners[Ord(coTopRight)].SetLocation(Screen.PrimaryMonitor.BoundsRect.Width, 0);
+  FHotCorners[Ord(coBottomLeft)].SetLocation(0, Screen.PrimaryMonitor.BoundsRect.Height);
+  FHotCorners[Ord(coBottomRight)].SetLocation(Screen.PrimaryMonitor.BoundsRect.Width,
+                                              Screen.PrimaryMonitor.BoundsRect.Height);
+  // Move all warm corner rects to the hot corner rects and inflat all rects.
+  for idx := Ord(coTopLeft) to Ord(coBottomRight) do
+  begin
+    FWarmCorners[idx].Location := FHotCorners[idx].Location;
+    FHotCorners[idx].Inflate(HOT_BORDER_HALF_LEN, HOT_BORDER_HALF_LEN);
+    FWarmCorners[idx].Inflate(WARM_BORDER_HALF_LEN, WARM_BORDER_HALF_LEN);
+  end;
   // Construct, configure and start the update timer.
   FUpdateTimer := TTimer.Create(nil);
   FUpdateTimer.Interval := UPDATE_INTERVAL_MS;
@@ -131,18 +156,24 @@ end;
 //
 //***************************************************************************************
 procedure TCornerEdge.UpdateCorners;
+var
+  idx: integer;
 begin
   // ----------------------------- IDLE -------------------------------------------------
   if FCornerDetectState = dsIdle then
   begin
-    // Is the cursor all the way in the top left corner?
-    if (Mouse.CursorPos.X >= -1) and (Mouse.CursorPos.X <= 1) and
-       (Mouse.CursorPos.Y >= -1) and (Mouse.CursorPos.Y <= 1) then
+    // Is the cursor in one of the hot corner rectangles?
+    for idx := Ord(coTopLeft) to Ord(coBottomRight) do
     begin
-      // Store the corner that is now warm.
-      FCorner := coTopLeft;
-      // Transition to the waiting state.
-      FCornerDetectState := dsWaiting;
+      if FHotCorners[idx].Contains(Mouse.CursorPos) then
+      begin
+        // Store the corner that is now warm.
+        FCorner := TCorner(idx);
+        // Transition to the waiting state.
+        FCornerDetectState := dsWaiting;
+        // Stop the loop.
+        Break;
+      end;
     end;
 
     // Are we transitioning to the waiting state?
@@ -166,17 +197,11 @@ begin
   // ----------------------------- WAITING ----------------------------------------------
   else if FCornerDetectState = dsWaiting then
   begin
-    // Check if the cursor moved out of the corner.
-    case FCorner of
-      coTopLeft:
-      begin
-        if (Mouse.CursorPos.X < -4) or (Mouse.CursorPos.X > 4) or
-           (Mouse.CursorPos.Y < -4) or (Mouse.CursorPos.Y > 4) then
-        begin
-          // Transition back to the idle state.
-          FCornerDetectState := dsIdle;
-        end
-      end;
+    // Check if the cursor moved out of the warm corner.
+    if not FWarmCorners[Ord(FCorner)].Contains(Mouse.CursorPos) then
+    begin
+      // Transition back to the idle state.
+      FCornerDetectState := dsIdle;
     end;
 
     // Still in the waiting state?
@@ -201,16 +226,10 @@ begin
   else if FCornerDetectState = dsTriggered then
   begin
     // Check if the cursor moved out of the corner.
-    case FCorner of
-      coTopLeft:
-      begin
-        if (Mouse.CursorPos.X < -4) or (Mouse.CursorPos.X > 4) or
-           (Mouse.CursorPos.Y < -4) or (Mouse.CursorPos.Y > 4) then
-        begin
-          // Transition back to the idle state.
-          FCornerDetectState := dsIdle;
-        end;
-      end;
+    if not FWarmCorners[Ord(FCorner)].Contains(Mouse.CursorPos) then
+    begin
+      // Transition back to the idle state.
+      FCornerDetectState := dsIdle;
     end;
   end;
 end;
