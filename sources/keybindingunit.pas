@@ -1,7 +1,7 @@
-program HotFrameFx;
+unit KeyBindingUnit;
 //***************************************************************************************
-//  Description: Contains the main program entry.
-//    File Name: HotFrameFx.lpr
+//  Description: Key binding detection dialog.
+//    File Name: keybindingunit.pas
 //
 //---------------------------------------------------------------------------------------
 //                          C O P Y R I G H T
@@ -31,30 +31,72 @@ program HotFrameFx;
 //***************************************************************************************
 {$mode objfpc}{$H+}
 
+interface
 //***************************************************************************************
-// Includes
+// Global includes
 //***************************************************************************************
 uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
-  cthreads,
-  {$ENDIF}{$ENDIF}
-  Interfaces, // this includes the LCL widgetset
-  Forms, lazmouseandkeyinput, MainUnit, CornerEdge, KeyBindingUnit
-  { you can add units after this };
-
-{$R *.res}
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
 
 //***************************************************************************************
-// NAME:           Main
-// DESCRIPTION:    Program entry point.
+// Type Definitions
+//***************************************************************************************
+type
+
+  { TKeyBindingForm }
+
+  TKeyBindingForm = class(TForm)
+    BtnCancel: TButton;
+    BtnOk: TButton;
+    MmoDebug: TMemo;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+  private
+
+  public
+
+  end;
+
+
+implementation
+
+{$R *.lfm}
+
+{ TKeyBindingForm }
+
+//***************************************************************************************
+// NAME:           FormKeyUp
+// PARAMETER:      Sender Signal source.
+//                 Key The key code of the regular key.
+//                 Shift The key code of the special (shift, alt, ctrl, etc.) key.
+// DESCRIPTION:    Called upon key up event.
 //
 //***************************************************************************************
+procedure TKeyBindingForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  RequireDerivedFormResource := True;
-  Application.Scaled := True;
-  Application.Initialize;
-  Application.CreateForm(TMainForm, MainForm);
-  Application.Run;
+  // Do not actually process the key.
+  Key := 0;
+end;
+
+//***************************************************************************************
+// NAME:           FormKeyDown
+// PARAMETER:      Sender Signal source.
+//                 Key The key code of the regular key.
+//                 Shift The key code of the special (shift, alt, ctrl, etc.) key.
+// DESCRIPTION:    Called upon key down event.
+//
+//***************************************************************************************
+procedure TKeyBindingForm.FormKeyDown(Sender: TObject; var Key: Word;
+                                      Shift: TShiftState);
+begin
+  // TODO ##Vg Hmmm...special keys such as LWIN will make the form lose focus and do
+  // something else. How to override?
+  MmoDebug.Lines.Add(IntToStr(Key));
+  // TODO ##Vg
+  Key := 0;
+end;
+
 end.
-//********************************** end of HotFrameFx.lpr ******************************
+//********************************** end of keybindingunit.pas **************************
+
 

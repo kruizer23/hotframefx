@@ -1,0 +1,40 @@
+object KeyBindingForm: TKeyBindingForm
+  Left = 608
+  Height = 276
+  Top = 417
+  Width = 341
+  BorderStyle = bsDialog
+  Caption = 'Configure key binding'
+  ClientHeight = 276
+  ClientWidth = 341
+  KeyPreview = True
+  OnKeyDown = FormKeyDown
+  OnKeyUp = FormKeyUp
+  Position = poOwnerFormCenter
+  LCLVersion = '2.0.12.0'
+  object BtnCancel: TButton
+    Left = 256
+    Height = 25
+    Top = 240
+    Width = 75
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 0
+  end
+  object BtnOk: TButton
+    Left = 176
+    Height = 25
+    Top = 240
+    Width = 75
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object MmoDebug: TMemo
+    Left = 8
+    Height = 192
+    Top = 8
+    Width = 320
+    TabOrder = 2
+  end
+end

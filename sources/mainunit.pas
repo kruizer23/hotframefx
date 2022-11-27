@@ -1,4 +1,4 @@
-unit mainunit;
+unit MainUnit;
 //***************************************************************************************
 //  Description: Program's main window.
 //    File Name: mainunit.pas
@@ -37,7 +37,7 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, CornerEdge,
-  MouseAndKeyInput, LCLType;
+  MouseAndKeyInput, LCLType, KeyBindingUnit;
 
 //***************************************************************************************
 // Type Definitions
@@ -47,7 +47,9 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    BtnKeyBinding: TButton;
     MmoEventInfo: TMemo;
+    procedure BtnKeyBindingClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -74,7 +76,6 @@ implementation
 //***************************************************************************************
 // NAME:           FormCreate
 // PARAMETER:      Sender Signal source.
-// RETURN VALUE:   None.
 // DESCRIPTION:    Called when the form is created
 //
 //***************************************************************************************
@@ -88,9 +89,28 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           BtnKeyBindingClick
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the button is clicked.
+//
+//***************************************************************************************
+procedure TMainForm.BtnKeyBindingClick(Sender: TObject);
+var
+  KeyBindingForm: TKeyBindingForm;
+begin
+  KeyBindingForm := TKeyBindingForm.Create(Self);
+  KeyBindingForm.ModalResult := mrCancel;
+  if KeyBindingForm.ShowModal = mrOK then
+  begin
+    // TODO ##Vg Process dialog results.
+    MmoEventInfo.Lines.Add('Key binding dialog mrOK');
+  end;
+  KeyBindingForm.Free;
+end;
+
+//***************************************************************************************
 // NAME:           FormDestroy
 // PARAMETER:      Sender Signal source.
-// RETURN VALUE:   None.
 // DESCRIPTION:    Called when the form is destroyed
 //
 //***************************************************************************************
