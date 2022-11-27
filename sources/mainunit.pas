@@ -36,7 +36,8 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, CornerEdge;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, CornerEdge,
+  MouseAndKeyInput, LCLType;
 
 //***************************************************************************************
 // Type Definitions
@@ -53,6 +54,7 @@ type
     FCornerEdge: TCornerEdge;
     procedure OnHotCorner(Sender: TObject; Corner: TCorner);
     procedure OnHotEdge(Sender: TObject; Edge: TEdge);
+    procedure ShowTaskView;
   public
 
   end;
@@ -130,6 +132,22 @@ begin
     edTop:    MmoEventInfo.Lines.Add('Top hot edge');
     edBottom: MmoEventInfo.Lines.Add('Bottom hot edge');
   end;
+end;
+
+//***************************************************************************************
+// NAME:           ShowTaskView
+// DESCRIPTION:    Simulates pressing the LWIN + TAB key, which is the keyboard shortcut
+//                 in Windows for showing the task view.
+//
+//***************************************************************************************
+procedure TMainForm.ShowTaskView;
+begin
+  // Press the left Super key, followed by the TAB key.
+  KeyInput.Down(VK_LWIN);
+  KeyInput.Down(VK_TAB);
+  // Let go of the keys in reverse order.
+  KeyInput.Up(VK_TAB);
+  KeyInput.Up(VK_LWIN);
 end;
 
 end.
