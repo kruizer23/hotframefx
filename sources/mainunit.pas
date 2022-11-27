@@ -46,7 +46,7 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
-    MmoEvents: TMemo;
+    MmoEventInfo: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -82,6 +82,7 @@ begin
   FCornerEdge := TCornerEdge.Create;
   FCornerEdge.OnHotCorner := @OnHotCorner;
   FCornerEdge.OnHotEdge := @OnHotEdge;
+  FCornerEdge.Sensitivity := seHigh;
 end;
 
 //***************************************************************************************
@@ -108,7 +109,7 @@ procedure TMainForm.OnHotCorner(Sender: TObject; Corner: TCorner);
 begin
   if Corner = coTopLeft then
   begin
-    MmoEvents.Lines.Add('Top left corner is hot');
+    MmoEventInfo.Lines.Add('Top left hot corner');
   end;
 end;
 
@@ -123,7 +124,7 @@ procedure TMainForm.OnHotEdge(Sender: TObject; Edge: TEdge);
 begin
   if Edge = edBottom then
   begin
-    MmoEvents.Lines.Add('Bottom edge is hot');
+    MmoEventInfo.Lines.Add('Bottom edge');
   end;
 end;
 

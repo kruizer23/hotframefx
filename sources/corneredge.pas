@@ -36,7 +36,7 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, ExtCtrls;
+  Classes, SysUtils, ExtCtrls, Controls;
 
 //***************************************************************************************
 // Type Definitions
@@ -49,7 +49,7 @@ type
   TEdge = (edLeft = 0, edRight, edTop, edBottom);
 
   // Enumeration will all supported sensitivity levels.
-  TSensitivity = ( seHigh = 0, seMedium, seLow );
+  TSensitivity = (seHigh = 0, seMedium, seLow);
 
   // Event handler for a hot corner.
   THotCornerEvent = procedure(Sender: TObject; Corner: TCorner) of object;
@@ -60,15 +60,22 @@ type
   // Hot corner and edge detection class.
   TCornerEdge = class(TObject)
   const
-    UPDATE_INTERVAL_MS = 50;
+    UPDATE_INTERVAL_MS = 80;
+  type
+    TDetectState = (dsIdle, dsWaiting, dsTriggered);
   private
     FSensitivity: TSensitivity;
     FOnHotCorner: THotCornerEvent;
     FOnHotEdge: THotEdgeEvent;
     FUpdateTimer: TTimer;
-    FCornerTickCount: Integer;
-    FEdgeTickCount: Integer;
+    FCornerDetectState: TDetectState;
+    FEdgeDetectState: TDetectState;
+    FCorner: TCorner;
+    FEdge: TEdge;
+    FCornerWaitCount: Integer;
+    FEdgeWaitCount: Integer;
     procedure OnUpdateTimer(Sender: TObject);
+    procedure UpdateCorners;
   public
     constructor Create;
     destructor Destroy; override;
@@ -92,8 +99,10 @@ begin
   FSensitivity := seHigh;
   FOnHotCorner := nil;
   FOnHotEdge := nil;
-  FCornerTickCount := 0;
-  FEdgeTickCount := 0;
+  FCornerDetectState := dsIdle;
+  FEdgeDetectState := dsIdle;
+  FCornerWaitCount := 0;
+  FEdgeWaitCount := 0;
   // Construct, configure and start the update timer.
   FUpdateTimer := TTimer.Create(nil);
   FUpdateTimer.Interval := UPDATE_INTERVAL_MS;
@@ -116,6 +125,97 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           UpdateCorners
+// DESCRIPTION:    Updates the corner state machine to detect hot corners. Should be
+//                 called at fixed timer intervals.
+//
+//***************************************************************************************
+procedure TCornerEdge.UpdateCorners;
+begin
+  // ----------------------------- IDLE -------------------------------------------------
+  if FCornerDetectState = dsIdle then
+  begin
+    // Is the cursor all the way in the top left corner?
+    if (Mouse.CursorPos.X >= -1) and (Mouse.CursorPos.X <= 1) and
+       (Mouse.CursorPos.Y >= -1) and (Mouse.CursorPos.Y <= 1) then
+    begin
+      // Store the corner that is now warm.
+      FCorner := coTopLeft;
+      // Transition to the waiting state.
+      FCornerDetectState := dsWaiting;
+    end;
+
+    // Are we transitioning to the waiting state?
+    if FCornerDetectState = dsWaiting then
+    begin
+      // Initialize the wait counter, based on the selected sensitivity.
+      FCornerWaitCount := Ord(FSensitivity);
+      // No need to wait (typically on high sensitivity)?
+      if FCornerWaitCount = 0 then
+      begin
+        // Corner is now hot. Call the event handler.
+        if Assigned(FOnHotCorner) then
+        begin
+          FOnHotCorner(Self, FCorner);
+        end;
+        // Transition to the triggered state instead.
+        FCornerDetectState := dsTriggered;
+      end;
+    end;
+  end
+  // ----------------------------- WAITING ----------------------------------------------
+  else if FCornerDetectState = dsWaiting then
+  begin
+    // Check if the cursor moved out of the corner.
+    case FCorner of
+      coTopLeft:
+      begin
+        if (Mouse.CursorPos.X < -4) or (Mouse.CursorPos.X > 4) or
+           (Mouse.CursorPos.Y < -4) or (Mouse.CursorPos.Y > 4) then
+        begin
+          // Transition back to the idle state.
+          FCornerDetectState := dsIdle;
+        end
+      end;
+    end;
+
+    // Still in the waiting state?
+    if FCornerDetectState = dsWaiting then
+    begin
+      // Decrement the wait counter.
+      Dec(FCornerWaitCount);
+      // Done waiting?
+      if FCornerWaitCount = 0 then
+      begin
+        // Corner is now hot. Call the event handler.
+        if Assigned(FOnHotCorner) then
+        begin
+          FOnHotCorner(Self, FCorner);
+        end;
+        // Transition to the triggered state.
+        FCornerDetectState := dsTriggered;
+      end;
+    end;
+  end
+  // ----------------------------- TRIGGERED --------------------------------------------
+  else if FCornerDetectState = dsTriggered then
+  begin
+    // Check if the cursor moved out of the corner.
+    case FCorner of
+      coTopLeft:
+      begin
+        if (Mouse.CursorPos.X < -4) or (Mouse.CursorPos.X > 4) or
+           (Mouse.CursorPos.Y < -4) or (Mouse.CursorPos.Y > 4) then
+        begin
+          // Transition back to the idle state.
+          FCornerDetectState := dsIdle;
+        end;
+      end;
+    end;
+  end;
+end;
+
+//***************************************************************************************
 // NAME:           OnUpdateTimer
 // PARAMETER:      Sender Source of the event.
 // DESCRIPTION:    Event handler that gets called each time the update timer elapsed.
@@ -123,27 +223,8 @@ end;
 //***************************************************************************************
 procedure TCornerEdge.OnUpdateTimer(Sender: TObject);
 begin
-  // TODO ##Vg Implement OnUpdateTimer().
-  Inc(FCornerTickCount);
-  Inc(FEdgeTickCount);
-
-  if FCornerTickCount = 20 then
-  begin
-    FCornerTickCount := 0;
-    if Assigned(FOnHotCorner) then
-    begin
-      FOnHotCorner(Self, coTopLeft);
-    end;
-  end;
-
-  if FEdgeTickCount = 40 then
-  begin
-    FEdgeTickCount := 0;
-    if Assigned(FOnHotEdge) then
-    begin
-      FOnHotEdge(Self, edBottom);
-    end;
-  end;
+  // Update the state machine to detect hot corners.
+  UpdateCorners;
 end;
 
 end.
