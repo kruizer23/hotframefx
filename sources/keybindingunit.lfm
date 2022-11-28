@@ -1,27 +1,28 @@
 object KeyBindingForm: TKeyBindingForm
-  Left = 574
+  Left = 1181
   Height = 100
-  Top = 358
-  Width = 449
+  Top = 309
+  Width = 412
   BorderStyle = bsDialog
   Caption = 'Configure key binding'
   ClientHeight = 100
-  ClientWidth = 449
+  ClientWidth = 412
   KeyPreview = True
+  OnCreate = FormCreate
   Position = poOwnerFormCenter
   LCLVersion = '2.0.12.0'
   object PnlButtons: TPanel
     Left = 0
     Height = 34
     Top = 66
-    Width = 449
+    Width = 412
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 34
-    ClientWidth = 449
+    ClientWidth = 412
     TabOrder = 0
     object BtnOk: TButton
-      Left = 287
+      Left = 250
       Height = 25
       Top = 3
       Width = 75
@@ -34,7 +35,7 @@ object KeyBindingForm: TKeyBindingForm
       TabOrder = 0
     end
     object BtnCancel: TButton
-      Left = 368
+      Left = 331
       Height = 25
       Top = 3
       Width = 75
@@ -52,14 +53,14 @@ object KeyBindingForm: TKeyBindingForm
     Left = 6
     Height = 60
     Top = 3
-    Width = 437
+    Width = 400
     Align = alClient
     BorderSpacing.Left = 3
     BorderSpacing.Right = 3
     BorderSpacing.Around = 3
     Caption = 'Key'
     ClientHeight = 40
-    ClientWidth = 433
+    ClientWidth = 396
     TabOrder = 1
     object ChbShift: TCheckBox
       Left = 6
@@ -105,16 +106,17 @@ object KeyBindingForm: TKeyBindingForm
       Left = 198
       Height = 23
       Top = 9
-      Width = 148
+      Width = 111
       Align = alClient
       BorderSpacing.Top = 3
       BorderSpacing.Around = 6
+      DropDownCount = 10
       ItemHeight = 15
+      Style = csDropDownList
       TabOrder = 4
-      Text = 'CmbKey'
     end
     object BtnGrab: TButton
-      Left = 352
+      Left = 315
       Height = 24
       Top = 8
       Width = 75
