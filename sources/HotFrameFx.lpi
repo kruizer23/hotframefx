@@ -58,6 +58,7 @@
         <Filename Value="keybindingunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="KeyBindingForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="KeyBindingUnit"/>
       </Unit3>

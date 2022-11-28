@@ -1,40 +1,129 @@
 object KeyBindingForm: TKeyBindingForm
-  Left = 608
-  Height = 276
-  Top = 417
-  Width = 341
+  Left = 574
+  Height = 100
+  Top = 358
+  Width = 449
   BorderStyle = bsDialog
   Caption = 'Configure key binding'
-  ClientHeight = 276
-  ClientWidth = 341
+  ClientHeight = 100
+  ClientWidth = 449
   KeyPreview = True
-  OnKeyDown = FormKeyDown
-  OnKeyUp = FormKeyUp
   Position = poOwnerFormCenter
   LCLVersion = '2.0.12.0'
-  object BtnCancel: TButton
-    Left = 256
-    Height = 25
-    Top = 240
-    Width = 75
-    Caption = 'Cancel'
-    ModalResult = 2
+  object PnlButtons: TPanel
+    Left = 0
+    Height = 34
+    Top = 66
+    Width = 449
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 34
+    ClientWidth = 449
     TabOrder = 0
+    object BtnOk: TButton
+      Left = 287
+      Height = 25
+      Top = 3
+      Width = 75
+      Align = alRight
+      BorderSpacing.Left = 3
+      BorderSpacing.Bottom = 3
+      BorderSpacing.Around = 3
+      Caption = 'OK'
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object BtnCancel: TButton
+      Left = 368
+      Height = 25
+      Top = 3
+      Width = 75
+      Align = alRight
+      BorderSpacing.Left = 3
+      BorderSpacing.Right = 3
+      BorderSpacing.Bottom = 3
+      BorderSpacing.Around = 3
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
   end
-  object BtnOk: TButton
-    Left = 176
-    Height = 25
-    Top = 240
-    Width = 75
-    Caption = 'OK'
-    ModalResult = 1
+  object GrbKey: TGroupBox
+    Left = 6
+    Height = 60
+    Top = 3
+    Width = 437
+    Align = alClient
+    BorderSpacing.Left = 3
+    BorderSpacing.Right = 3
+    BorderSpacing.Around = 3
+    Caption = 'Key'
+    ClientHeight = 40
+    ClientWidth = 433
     TabOrder = 1
-  end
-  object MmoDebug: TMemo
-    Left = 8
-    Height = 192
-    Top = 8
-    Width = 320
-    TabOrder = 2
+    object ChbShift: TCheckBox
+      Left = 6
+      Height = 28
+      Top = 6
+      Width = 44
+      Align = alLeft
+      BorderSpacing.Around = 6
+      Caption = 'Shift'
+      TabOrder = 0
+    end
+    object ChbAlt: TCheckBox
+      Left = 56
+      Height = 28
+      Top = 6
+      Width = 35
+      Align = alLeft
+      BorderSpacing.Around = 6
+      Caption = 'Alt'
+      TabOrder = 1
+    end
+    object ChbCtrl: TCheckBox
+      Left = 97
+      Height = 28
+      Top = 6
+      Width = 39
+      Align = alLeft
+      BorderSpacing.Around = 6
+      Caption = 'Ctrl'
+      TabOrder = 2
+    end
+    object ChbSuper: TCheckBox
+      Left = 142
+      Height = 28
+      Top = 6
+      Width = 50
+      Align = alLeft
+      BorderSpacing.Around = 6
+      Caption = 'Super'
+      TabOrder = 3
+    end
+    object CmbKey: TComboBox
+      Left = 198
+      Height = 23
+      Top = 9
+      Width = 148
+      Align = alClient
+      BorderSpacing.Top = 3
+      BorderSpacing.Around = 6
+      ItemHeight = 15
+      TabOrder = 4
+      Text = 'CmbKey'
+    end
+    object BtnGrab: TButton
+      Left = 352
+      Height = 24
+      Top = 8
+      Width = 75
+      Align = alRight
+      BorderSpacing.Top = 2
+      BorderSpacing.Bottom = 2
+      BorderSpacing.Around = 6
+      Caption = 'Grab'
+      TabOrder = 5
+    end
   end
 end

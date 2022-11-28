@@ -36,7 +36,7 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls;
 
 //***************************************************************************************
 // Type Definitions
@@ -48,9 +48,14 @@ type
   TKeyBindingForm = class(TForm)
     BtnCancel: TButton;
     BtnOk: TButton;
-    MmoDebug: TMemo;
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    BtnGrab: TButton;
+    ChbShift: TCheckBox;
+    ChbAlt: TCheckBox;
+    ChbCtrl: TCheckBox;
+    ChbSuper: TCheckBox;
+    CmbKey: TComboBox;
+    GrbKey: TGroupBox;
+    PnlButtons: TPanel;
   private
 
   public
@@ -64,37 +69,18 @@ implementation
 
 { TKeyBindingForm }
 
-//***************************************************************************************
-// NAME:           FormKeyUp
-// PARAMETER:      Sender Signal source.
-//                 Key The key code of the regular key.
-//                 Shift The key code of the special (shift, alt, ctrl, etc.) key.
-// DESCRIPTION:    Called upon key up event.
-//
-//***************************************************************************************
-procedure TKeyBindingForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  // Do not actually process the key.
-  Key := 0;
-end;
+// TODO ##Vg Hmmm...special keys such as LWIN will make the form loose focus and do
+// something else. How to override?
+// IDEA ##Vg Look at how the Lazarus IDE itself does it. You can find stuff in:
+//   C:\lazarus\components\ideintf\propedits.pp
+// Look at class TCustomShortCutGrabBox. Just not that I want a checkbox for the
+// Super key. It can also be less complex. I just want support for:
+//   - Keys: a..z, 0..9, F1..F12, Tab
+//   - Shifts: Shift, Ctrl, Alt, Super.
+//MmoDebug.Lines.Add(IntToStr(Key));
+// TODO ##Vg
+//Key := 0;
 
-//***************************************************************************************
-// NAME:           FormKeyDown
-// PARAMETER:      Sender Signal source.
-//                 Key The key code of the regular key.
-//                 Shift The key code of the special (shift, alt, ctrl, etc.) key.
-// DESCRIPTION:    Called upon key down event.
-//
-//***************************************************************************************
-procedure TKeyBindingForm.FormKeyDown(Sender: TObject; var Key: Word;
-                                      Shift: TShiftState);
-begin
-  // TODO ##Vg Hmmm...special keys such as LWIN will make the form lose focus and do
-  // something else. How to override?
-  MmoDebug.Lines.Add(IntToStr(Key));
-  // TODO ##Vg
-  Key := 0;
-end;
 
 end.
 //********************************** end of keybindingunit.pas **************************
