@@ -99,14 +99,12 @@ var
   KeyBindingForm: TKeyBindingForm;
 begin
   KeyBindingForm := TKeyBindingForm.Create(Self);
-
-  KeyBindingForm.KeyBinding.KeyBindingStr := 'Alt+Ctrl+T';
-
-  KeyBindingForm.ModalResult := mrCancel;
+  KeyBindingForm.KeyBinding.KeyBindingStr := 'super+s';
   if KeyBindingForm.ShowModal = mrOK then
   begin
     // TODO ##Vg Process dialog results.
-    MmoEventInfo.Lines.Add('Key binding dialog mrOK');
+    MmoEventInfo.Lines.Add('Key binding dialog mrOK: ' +
+                           KeyBindingForm.KeyBinding.KeyBindingStr);
   end;
   KeyBindingForm.Free;
 end;

@@ -76,10 +76,14 @@ type
     CmbKey: TComboBox;
     GrbKey: TGroupBox;
     PnlButtons: TPanel;
+    procedure BtnOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FKeyBinding: TKeyBinding;
+    procedure UpdateUI;
+    procedure UpdateFromUI;
   public
     property KeyBinding: TKeyBinding read FKeyBinding write FKeyBinding;
   end;
@@ -91,6 +95,10 @@ type
 // Super key. It can also be less complex. I just want support for:
 //   - Keys: a..z, 0..9, F1..F12, Tab
 //   - Shifts: Shift, Ctrl, Alt, Super.
+// TODO ##Vg Current status is that this form is implemented, with the exception of the
+// 'Grab'-button. This one should spawn a little dynamically created TForm similar to
+// what TCustomShortCutGrabBox does on the same button click. KeyPreview should be
+// set to true. Then somehow detect the pressed key combo and store it in FKeyBinding.
 
 
 implementation
@@ -428,7 +436,7 @@ end;
 //***************************************************************************************
 // NAME:           FormCreate
 // PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the form is created
+// DESCRIPTION:    Called when the form is created.
 //
 //***************************************************************************************
 procedure TKeyBindingForm.FormCreate(Sender: TObject);
@@ -437,6 +445,8 @@ var
 begin
   // Create the key binding object.
   FKeyBinding := TKeyBinding.Create;
+  // Initialize the modal result.
+  ModalResult := mrCancel;
   // Populate the combo box with all keys, but excluding the special keys.
   for Idx := 0 to (Length(KeyMap) - NUM_SPECIAL_KEYS - 1) do
   begin
@@ -446,15 +456,148 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           BtnOkClick
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the button is clicked.
+//
+//***************************************************************************************
+procedure TKeyBindingForm.BtnOkClick(Sender: TObject);
+begin
+  // Update key binding field based on what is currently selected on the user interface.
+  UpdateFromUI;
+end;
+
+//***************************************************************************************
 // NAME:           FormDestroy
 // PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the form is destroyed
+// DESCRIPTION:    Called when the form is destroyed.
 //
 //***************************************************************************************
 procedure TKeyBindingForm.FormDestroy(Sender: TObject);
 begin
   // Release the key binding object.
   FKeyBinding.Free;
+end;
+
+//***************************************************************************************
+// NAME:           FormShow
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the form is shown.
+//
+//***************************************************************************************
+procedure TKeyBindingForm.FormShow(Sender: TObject);
+begin
+  // Update the user interface to make sure that its element represent the currently
+  // configured key binding.
+  UpdateUI;
+end;
+
+//***************************************************************************************
+// NAME:           UpdateUI
+// DESCRIPTION:    Updates the user interface for the currently configured key binding
+//                 string.
+//
+//***************************************************************************************
+procedure TKeyBindingForm.UpdateUI;
+var
+  Idx: Integer;
+  KeyCodeToMatch: Word;
+begin
+  // First reset the user interface.
+  ChbShift.Checked := False;
+  ChbAlt.Checked := False;
+  ChbCtrl.Checked := False;
+  ChbSuper.Checked := False;
+  CmbKey.ItemIndex := 0;
+  // Only need to continue if an actual key binding is currently configured.
+  if FKeyBinding.KeyBindingCodeCount > 0 then
+  begin
+    // First loop through the key codes to determine which special keys it contains.
+    for Idx := 0 to FKeyBinding.KeyBindingCodeCount - 1 do
+    begin
+      // Is this the shift key?
+      if FKeyBinding.KeyBindingCode[Idx] = VK_SHIFT then
+      begin
+        ChbShift.Checked := True;
+      end;
+      // Is this the alt key?
+      if FKeyBinding.KeyBindingCode[Idx] = VK_MENU then
+      begin
+        ChbAlt.Checked := True;
+      end;
+      // Is this the control key?
+      if FKeyBinding.KeyBindingCode[Idx] = VK_CONTROL then
+      begin
+        ChbCtrl.Checked := True;
+      end;
+      // Is this the super key?
+      if FKeyBinding.KeyBindingCode[Idx] = VK_LWIN then
+      begin
+        ChbSuper.Checked := True;
+      end;
+    end;
+    // The last key code should be the one to show in the combo box. Loop through all
+    // supported keys to try match the combo box item index.
+    KeyCodeToMatch := FKeyBinding.KeyBindingCode[FKeyBinding.KeyBindingCodeCount - 1];
+    for Idx := 0 to (Length(KeyMap) - NUM_SPECIAL_KEYS - 1) do
+    begin
+      // Is this the one to show?
+      if KeyMap[Idx].KeyCode = KeyCodeToMatch then
+      begin
+        // Select this item in the combo box.
+        CmbKey.ItemIndex := Idx;
+        // Stop the loop.
+        Break;
+      end;
+    end;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           UpdateFromUI
+// DESCRIPTION:    Updates the key binding based on what is currently selected on the
+//                 user interface.
+//
+//***************************************************************************************
+procedure TKeyBindingForm.UpdateFromUI;
+var
+  Idx: Integer;
+  KeyCodeIdx: Integer;
+begin
+  // Clear the key codes of the bound keys because we are about to overwrite them.
+  for Idx := 0 to (FKeyBinding.KeyBindingCodeCount - 1) do
+  begin
+    FKeyBinding.KeyBindingCode[Idx] := VK_UNKNOWN;
+  end;
+  // Initialize the key code indexer.
+  KeyCodeIdx := 0;
+  // First process the special keys.
+  if ChbShift.Checked then
+  begin
+    FKeyBinding.KeyBindingCode[KeyCodeIdx] := VK_SHIFT;
+    // Increment the key code indexer.
+    Inc(KeyCodeIdx);
+  end;
+  if ChbAlt.Checked then
+  begin
+    FKeyBinding.KeyBindingCode[KeyCodeIdx] := VK_MENU;
+    // Increment the key code indexer.
+    Inc(KeyCodeIdx);
+  end;
+  if ChbCtrl.Checked then
+  begin
+    FKeyBinding.KeyBindingCode[KeyCodeIdx] := VK_CONTROL;
+    // Increment the key code indexer.
+    Inc(KeyCodeIdx);
+  end;
+  if ChbSuper.Checked then
+  begin
+    FKeyBinding.KeyBindingCode[KeyCodeIdx] := VK_LWIN;
+    // Increment the key code indexer.
+    Inc(KeyCodeIdx);
+  end;
+  // Finally add the key from the combo box.
+  FKeyBinding.KeyBindingCode[KeyCodeIdx] := KeyMap[CmbKey.ItemIndex].KeyCode;
 end;
 
 end.

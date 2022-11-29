@@ -1,7 +1,7 @@
 object KeyBindingForm: TKeyBindingForm
-  Left = 1181
+  Left = 1217
   Height = 100
-  Top = 309
+  Top = 311
   Width = 412
   BorderStyle = bsDialog
   Caption = 'Configure key binding'
@@ -10,6 +10,7 @@ object KeyBindingForm: TKeyBindingForm
   KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   Position = poOwnerFormCenter
   LCLVersion = '2.0.12.0'
   object PnlButtons: TPanel
@@ -33,6 +34,7 @@ object KeyBindingForm: TKeyBindingForm
       BorderSpacing.Around = 3
       Caption = 'OK'
       ModalResult = 1
+      OnClick = BtnOkClick
       TabOrder = 0
     end
     object BtnCancel: TButton
