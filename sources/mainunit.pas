@@ -99,6 +99,9 @@ var
   KeyBindingForm: TKeyBindingForm;
 begin
   KeyBindingForm := TKeyBindingForm.Create(Self);
+
+  KeyBindingForm.KeyBinding.KeyBindingStr := 'Alt+Ctrl+T';
+
   KeyBindingForm.ModalResult := mrCancel;
   if KeyBindingForm.ShowModal = mrOK then
   begin

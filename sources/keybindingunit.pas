@@ -42,9 +42,25 @@ uses
 // Type Definitions
 //***************************************************************************************
 type
-  TKeyMap = record
-    KeyStr: string;
-    KeyCode: Word;
+  { TKeyBinding }
+
+  TKeyBinding = class(TObject)
+  private
+    FKeyBindingStr: string;
+    FKeyBindingCode: array[0..4] of Word;
+    function KeyCodeToKeyStr(AValue: Word): string;
+    function KeyStrToKeyCode(AValue: string): Word;
+    function GetKeyBindingCode(Index: Integer): Word;
+    function GetKeyBindingCodeCount: Integer;
+    function GetKeyBindingStr: string;
+    procedure SetKeyBindingCode(Index: Integer; AValue: Word);
+    procedure SetKeyBindingStr(AValue: string);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property KeyBindingStr: string read GetKeyBindingStr write SetKeyBindingStr;
+    property KeyBindingCode[Index: Integer]: Word read GetKeyBindingCode write SetKeyBindingCode;
+    property KeyBindingCodeCount: Integer read GetKeyBindingCodeCount;
   end;
 
   { TKeyBindingForm }
@@ -61,14 +77,11 @@ type
     GrbKey: TGroupBox;
     PnlButtons: TPanel;
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
-    FKeyCodesBound: array[0..3] of Word;
-    function GetKeyCode(Index: Integer): Word;
-    procedure SetKeyCode(Index: Integer; AValue: Word);
-    function GetKeyCodeCount: Integer;
+    FKeyBinding: TKeyBinding;
   public
-    property KeyCodes[Index: Integer]: Word read GetKeyCode write SetKeyCode;
-    property KeyCodeCount: Integer read GetKeyCodeCount;
+    property KeyBinding: TKeyBinding read FKeyBinding write FKeyBinding;
   end;
 
 
@@ -78,16 +91,20 @@ type
 // Super key. It can also be less complex. I just want support for:
 //   - Keys: a..z, 0..9, F1..F12, Tab
 //   - Shifts: Shift, Ctrl, Alt, Super.
-//
-// TODO ##Vg I think I nee to refactor the KeyCodes / KeyCodesCounts property. Would be
-// better is this is a separate object that then also have ToSt / FromStr methods.
-// That way the key binding can be stored, constructed and passed around as a string.
-// TKeyBinding sounds like an applicable name.
 
 
 implementation
 
 {$R *.lfm}
+
+//***************************************************************************************
+// Type Definitions
+//***************************************************************************************
+type
+  TKeyMap = record
+    KeyStr: string;
+    KeyCode: Word;
+  end;
 
 //***************************************************************************************
 // Constant data declarations
@@ -101,11 +118,11 @@ const
     (KeyStr: 'Tab'; KeyCode: VK_TAB),
     (KeyStr: 'Delete'; KeyCode: VK_DELETE),
     (KeyStr: 'Insert'; KeyCode: VK_INSERT),
-    (KeyStr: 'Backspace'; KeyCode: VK_BACK),
+    (KeyStr: 'Back'; KeyCode: VK_BACK),
     (KeyStr: 'End'; KeyCode: VK_END),
     (KeyStr: 'Home'; KeyCode: VK_HOME),
-    (KeyStr: 'Page Up'; KeyCode: VK_PRIOR),
-    (KeyStr: 'Page Down'; KeyCode: VK_NEXT),
+    (KeyStr: 'PgUp'; KeyCode: VK_PRIOR),
+    (KeyStr: 'PgDown'; KeyCode: VK_NEXT),
     (KeyStr: 'Left'; KeyCode: VK_LEFT),
     (KeyStr: 'Right'; KeyCode: VK_RIGHT),
     (KeyStr: 'Up'; KeyCode: VK_UP),
@@ -165,6 +182,247 @@ const
     (KeyStr: 'Super'; KeyCode: VK_LWIN)
   );
 
+//***************************************************************************************
+// NAME:           Create
+// DESCRIPTION:    Object constructor. Calls TObjects's constructor and initializes
+//                 the fields to their default values.
+//
+//***************************************************************************************
+constructor TKeyBinding.Create;
+var
+  Idx: Integer;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Initialize key codes of the bound keys.
+  for Idx := 0 to (Length(FKeyBindingCode) - 1) do
+  begin
+    FKeyBindingCode[Idx] := VK_UNKNOWN;
+  end;
+  // Initialize the key binding string to an empty one.
+  FKeyBindingStr := '';
+end;
+
+//***************************************************************************************
+// NAME:           Destroy
+// DESCRIPTION:    Object destructor. Calls TObjects's destructor
+//
+//***************************************************************************************
+destructor TKeyBinding.Destroy;
+begin
+  // Call inherited destructor.
+  inherited Destroy;
+end;
+
+//***************************************************************************************
+// NAME:           KeyStrToKeyCode
+// PARAMETER:      AValue Key string
+// RETURN VALUE:   The key code of the key's string representation.
+// DESCRIPTION:    Helper function to convert a key string representation to its key
+//                 code.
+//
+//***************************************************************************************
+function TKeyBinding.KeyStrToKeyCode(AValue: string): Word;
+var
+  Idx: Integer;
+begin
+  // Initialize the result to an invalid code.
+  Result := VK_UNKNOWN;
+  // Loop over all supported key codes.
+  for Idx := 0 to (Length(KeyMap) - 1) do
+  begin
+    // Is this the key string to convert? Note that the comparising is case insensitive.
+    if CompareText(KeyMap[Idx].KeyStr, AValue) = 0 then
+    begin
+      // Convert it to a key code
+      Result := KeyMap[Idx].KeyCode;
+      // All done so no need to continue the loop.
+      Break;
+    end;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           KeyCodeToKeyStr
+// PARAMETER:      AValue Key code.
+// RETURN VALUE:   The string representation of the key code.
+// DESCRIPTION:    Helper function to convert a key code to its string representation.
+//
+//***************************************************************************************
+function TKeyBinding.KeyCodeToKeyStr(AValue: Word): string;
+var
+  Idx: Integer;
+begin
+  // Initialize the result.
+  Result := '';
+  // Loop over all supported key codes.
+  for Idx := 0 to (Length(KeyMap) - 1) do
+  begin
+    // Is this the key code to convert?
+    if KeyMap[Idx].KeyCode = AValue then
+    begin
+      // Convert it to a string.
+      Result := KeyMap[Idx].KeyStr;
+      // All done so no need to continue the loop.
+      Break;
+    end;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           GetKeyBindingCode
+// PARAMETER:      Index Index into the key binding code array.
+// RETURN VALUE:   Key code.
+// DESCRIPTION:    Getter for the key binding code stored at the specified index in the
+//                 key binding code array.
+//
+//***************************************************************************************
+function TKeyBinding.GetKeyBindingCode(Index: Integer): Word;
+begin
+  // Initialize the result.
+  Result := 0;
+  // Only read array element if the index is within its bounds.
+  if Index < Length(FKeyBindingCode) then
+  begin
+    // Update the result.
+    Result := FKeyBindingCode[Index];
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           SetKeyBindingCode
+// PARAMETER:      Index Index into the key binding code array.
+//                 AValue: Key code to store.
+// DESCRIPTION:    Setter for the key code at the specified index in the key binding
+//                 code array.
+//
+//***************************************************************************************
+procedure TKeyBinding.SetKeyBindingCode(Index: Integer; AValue: Word);
+begin
+  // Only write array element if the index is within its bounds.
+  if Index < Length(FKeyBindingCode) then
+  begin
+    // Store the key code.
+    FKeyBindingCode[Index] := AValue;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           GetKeyBindingCodeCount
+// RETURN VALUE:   Number of key binding codes stored in the key binding code array.
+// DESCRIPTION:    Getter for the number of key codes stored in the key binding code
+//                 array. For example, if the key binding is for Alt+Ctrl+P, then this
+//                 function would return 0.
+//
+//***************************************************************************************
+function TKeyBinding.GetKeyBindingCodeCount: Integer;
+var
+  Idx: Integer;
+begin
+  // Initialize the index.
+  Idx := 0;
+  // Loop over the array as long as the key code is not VK_UNKNOWN.
+  while FKeyBindingCode[Idx] <> VK_UNKNOWN do
+  begin
+    // Increment the indexer, which also serves as the count.
+    Inc(Idx);
+    // Stop the loop when the end of the array is reached.
+    if Idx >= Length(FKeyBindingCode) then
+    begin
+      Break;
+    end;
+  end;
+  // Set the result.
+  Result := Idx;
+end;
+
+//***************************************************************************************
+// NAME:           GetKeyBindingStr
+// RETURN VALUE:   String representation of the key binding.
+// DESCRIPTION:    Getter for the string representation of the key binding. For example,
+//                 if the key binding is set to Alt+Ctrl+P, then the resulting string
+//                 would be 'Alt+Ctrl+P'.
+//
+//***************************************************************************************
+function TKeyBinding.GetKeyBindingStr: string;
+var
+  Idx: Integer;
+  KeyStr: string;
+begin
+  // Initialize the result.
+  Result := '';
+  // Loop over all key codes currently stored in the key binding code array.
+  for Idx := 0 to (Length(FKeyBindingCode) - 1) do
+  begin
+    // Is this still a valid key code?
+    if FKeyBindingCode[Idx] <> VK_UNKNOWN then
+    begin
+      // Attempt to convert it to a string.
+      KeyStr := KeyCodeToKeyStr(FKeyBindingCode[Idx]);
+      // Conversion successful?
+      if KeyStr <> '' then
+      begin
+        // Add a '+' character if the result sting is not empty.
+        if Result <> '' then
+        begin
+          Result := Result + '+';
+        end;
+        // Add the string representation of the key code to the result string.
+        Result := Result + KeyStr;
+      end;
+    end
+    // No more valid key codes in the array so stop looping.
+    else
+    begin
+      Break;
+    end;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           SetKeyBindingStr
+// PARAMETER:      AValue String representation of the key binding.
+// DESCRIPTION:    Setter for the string representation of the key binding. For example,
+//                 if the key binding is set to Alt+Ctrl+P, then following will be
+//                 stored in the key binding code array:
+//                   FKeyBindingCode[0] :=  VK_MENU
+//                   FKeyBindingCode[1] :=  VK_CONTROL
+//                   FKeyBindingCode[2] :=  VK_P
+//                   FKeyBindingCode[3] :=  VK_UNKNOWN
+//
+//***************************************************************************************
+procedure TKeyBinding.SetKeyBindingStr(AValue: string);
+var
+  Idx: Integer;
+  KeyStrArray: TStringArray;
+  KeyCodeIdx: Integer;
+  KeyCode: Word;
+begin
+  // Clear the key codes of the bound keys because we are about to overwrite them.
+  for Idx := 0 to (Length(FKeyBindingCode) - 1) do
+  begin
+    FKeyBindingCode[Idx] := VK_UNKNOWN;
+  end;
+  // Split the string using the '+' character as the delimited.
+  KeyStrArray := AValue.Split('+');
+  // Reset the key code indexer.
+  KeyCodeIdx := 0;
+  // Loop over all splits. Each split represents a key string representation.
+  for Idx := 0 to (Length(KeyStrArray) - 1) do
+  begin
+    // Attempt to convert the key string representation to its key code.
+    KeyCode := KeyStrToKeyCode(KeyStrArray[Idx]);
+    // Check if a valid key code was found as only those can be added.
+    if KeyCode <> VK_UNKNOWN then
+    begin
+      // Add the key code.
+      FKeyBindingCode[KeyCodeIdx] := KeyCode;
+      // Point to the next array entry.
+      Inc(KeyCodeIdx);
+    end
+  end;
+end;
+
 { TKeyBindingForm }
 
 //***************************************************************************************
@@ -177,11 +435,8 @@ procedure TKeyBindingForm.FormCreate(Sender: TObject);
 var
   Idx: Integer;
 begin
-  // Initialize key codes of the bound keys.
-  for Idx := 0 to (Length(FKeyCodesBound) - 1) do
-  begin
-    FKeyCodesBound[Idx] := VK_UNKNOWN;
-  end;
+  // Create the key binding object.
+  FKeyBinding := TKeyBinding.Create;
   // Populate the combo box with all keys, but excluding the special keys.
   for Idx := 0 to (Length(KeyMap) - NUM_SPECIAL_KEYS - 1) do
   begin
@@ -191,69 +446,15 @@ begin
 end;
 
 //***************************************************************************************
-// NAME:           GetKeyCode
-// PARAMETER:      Index Index into the KeyCodes array.
-// RETURN VALUE:   Key code.
-// DESCRIPTION:    Getter for the key code stored at the specified index in the KeyCodes
-//                 array.
+// NAME:           FormDestroy
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the form is destroyed
 //
 //***************************************************************************************
-function TKeyBindingForm.GetKeyCode(Index: Integer): Word;
+procedure TKeyBindingForm.FormDestroy(Sender: TObject);
 begin
-  // Initialize the result.
-  Result := 0;
-  // Only read array element if the index is within its bounds.
-  if Index < Length(FKeyCodesBound) then
-  begin
-    // Update the result.
-    Result := FKeyCodesBound[Index];
-  end;
-end;
-
-//***************************************************************************************
-// NAME:           SetKeyCode
-// PARAMETER:      Index Index into the KeyCodes array.
-//                 AValue: Key code to store.
-// DESCRIPTION:    Setter for the key code at the specified index in the KeyCodes array.
-//
-//***************************************************************************************
-procedure TKeyBindingForm.SetKeyCode(Index: Integer; AValue: Word);
-begin
-  // Only write array element if the index is within its bounds.
-  if Index < Length(FKeyCodesBound) then
-  begin
-    // Store the key code.
-    FKeyCodesBound[Index] := AValue;
-  end;
-end;
-
-//***************************************************************************************
-// NAME:           GetKeyCodeCount
-// RETURN VALUE:   Number of key codes stored in the KeyCodes array.
-// DESCRIPTION:    Getter for the number of key codes stored in the KeyCodes array. For
-//                 example, if the key binding is for ALT+CTRL+P, then this function
-//                 would return 0.
-//
-//***************************************************************************************
-function TKeyBindingForm.GetKeyCodeCount: Integer;
-var
-  Idx: Integer;
-begin
-  // Initialize the index.
-  Idx := 0;
-  // Loop over the array as long as the key code is not VK_UNKNOWN.
-  while FKeyCodesBound[Idx] <> VK_UNKNOWN do
-  begin
-    // Increment the indexer, which also serves as the count.
-    Inc(Idx);
-    // Stop the loop when the end of the array is reached.
-    if Idx >= Length(FKeyCodesBound) then
-    begin
-      Break;
-    end;
-  end;
-  // Set the result.
-  Result := Idx;
+  // Release the key binding object.
+  FKeyBinding.Free;
 end;
 
 end.
