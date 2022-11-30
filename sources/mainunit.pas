@@ -99,10 +99,9 @@ var
   KeyBindingForm: TKeyBindingForm;
 begin
   KeyBindingForm := TKeyBindingForm.Create(Self);
-  KeyBindingForm.KeyBinding.KeyBindingStr := 'super+s';
+  KeyBindingForm.KeyBinding.KeyBindingStr := 'alt+ctrl+tab';
   if KeyBindingForm.ShowModal = mrOK then
   begin
-    // TODO ##Vg Process dialog results.
     MmoEventInfo.Lines.Add('Key binding dialog mrOK: ' +
                            KeyBindingForm.KeyBinding.KeyBindingStr);
   end;
@@ -131,11 +130,7 @@ end;
 procedure TMainForm.OnHotCorner(Sender: TObject; Corner: TCorner);
 begin
   case Corner of
-    coTopLeft:
-    begin
-      MmoEventInfo.Lines.Add('Top left hot corner');
-      ShowTaskView;
-    end;
+    coTopLeft:     MmoEventInfo.Lines.Add('Top left hot corner');
     coTopRight:    MmoEventInfo.Lines.Add('Top right hot corner');
     coBottomLeft:  MmoEventInfo.Lines.Add('Bottom left hot corner');
     coBottomRight: MmoEventInfo.Lines.Add('Bottom right hot corner');
@@ -155,11 +150,7 @@ begin
     edLeft:   MmoEventInfo.Lines.Add('Left hot edge');
     edRight:  MmoEventInfo.Lines.Add('Right hot edge');
     edTop:    MmoEventInfo.Lines.Add('Top hot edge');
-    edBottom:
-    begin
-      MmoEventInfo.Lines.Add('Bottom hot edge');
-      ShowTaskView;
-    end;
+    edBottom: MmoEventInfo.Lines.Add('Bottom hot edge');
   end;
 end;
 

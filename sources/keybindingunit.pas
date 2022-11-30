@@ -63,6 +63,19 @@ type
     property KeyBindingCodeCount: Integer read GetKeyBindingCodeCount;
   end;
 
+  { TKeyBindingGrabForm }
+
+  TKeyBindingGrabForm = class(TForm)
+  private
+    FLblInfo: TLabel;
+    FKeyBinding: TKeyBinding;
+    procedure FormKeyDown(Sender: TObject; var AKey: Word; AShift: TShiftState);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property KeyBinding: TKeyBinding read FKeyBinding;
+  end;
+
   { TKeyBindingForm }
 
   TKeyBindingForm = class(TForm)
@@ -76,6 +89,7 @@ type
     CmbKey: TComboBox;
     GrbKey: TGroupBox;
     PnlButtons: TPanel;
+    procedure BtnGrabClick(Sender: TObject);
     procedure BtnOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -189,6 +203,8 @@ const
     (KeyStr: 'Ctrl'; KeyCode: VK_CONTROL),
     (KeyStr: 'Super'; KeyCode: VK_LWIN)
   );
+
+{ TKeyBinding }
 
 //***************************************************************************************
 // NAME:           Create
@@ -431,6 +447,114 @@ begin
   end;
 end;
 
+{ TKeyBindingGrabForm }
+
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      TheOwner Owenr of the form.
+// DESCRIPTION:    Form constructor. Calls TForm's constructor and dynamically creates
+//                 the form.
+//
+//***************************************************************************************
+constructor TKeyBindingGrabForm.Create(TheOwner: TComponent);
+begin
+  // Call CreateNew insteaf of te inherited constructor, because this form does not have
+  // a resource.
+  CreateNew(TheOwner);
+  // Initialize the form.
+  Caption := 'Press a key...';
+  Position := poOwnerFormCenter;
+  KeyPreview := True;
+  BorderStyle := bsDialog;
+  ModalResult := mrCancel;
+  Height := 70;
+  Width := 240;
+  // Create and add the info label.
+  FLblInfo := TLabel.Create(Self);
+  FLblInfo.Parent := Self;
+  FLblInfo.Caption := 'You can press a key, e.g. Ctrl+P...';
+  FLblInfo.Align := alClient;
+  FLblInfo.Alignment := taCenter;
+  FLblInfo.Layout :=tlCenter;
+  // Construct the key binding object.
+  FKeyBinding := TKeyBinding.Create;
+  // Configure the key down event handler.
+  OnKeyDown := @FormKeyDown;
+end;
+
+//***************************************************************************************
+// NAME:           Destroy
+// DESCRIPTION:    Form destructor. Calls TObjects's destructor
+//
+//***************************************************************************************
+destructor TKeyBindingGrabForm.Destroy;
+begin
+  // Release the key binding object.
+  FreeAndNil(FKeyBinding);
+  // Call inherited destructor.
+  inherited Destroy;
+end;
+
+//***************************************************************************************
+// NAME:           FormKeyDown
+// PARAMETER:      Sender Signal source.
+//                 AKey Key code of the key that was pressed.
+//                 AShift Set of possibly pressed special keys.
+// DESCRIPTION:    Called when a key down event was detected on the form.
+//
+//***************************************************************************************
+procedure TKeyBindingGrabForm.FormKeyDown(Sender: TObject; var AKey: Word;
+  AShift: TShiftState);
+var
+  Idx: Integer;
+  KeyCodeIdx: Integer;
+begin
+  // Check if the pressed key is one of the supported keys.
+  for Idx := 0 to (Length(KeyMap) - NUM_SPECIAL_KEYS - 1) do
+  begin
+    // Is the key supported?
+    if AKey = KeyMap[Idx].KeyCode then
+    begin
+      // Initialize the key code indexer.
+      KeyCodeIdx := 0;
+      // Process the special shift key.
+      if ssShift in AShift then
+      begin
+        // Add the Shift key code.
+        FKeyBinding.KeyBindingCode[KeyCodeIdx] := VK_SHIFT;
+        Inc(KeyCodeIdx);
+      end;
+      // Process the special alt key.
+      if ssAlt in AShift then
+      begin
+        // Add the Alt key code.
+        FKeyBinding.KeyBindingCode[KeyCodeIdx] := VK_MENU;
+        Inc(KeyCodeIdx);
+      end;
+      // Process the special control key.
+      if ssCtrl in AShift then
+      begin
+        // Add the Ctrl key code.
+        FKeyBinding.KeyBindingCode[KeyCodeIdx] := VK_CONTROL;
+        Inc(KeyCodeIdx);
+      end;
+      // Process the special super key.
+      if ssSuper in AShift then
+      begin
+        // Add the Supoer key code.
+        FKeyBinding.KeyBindingCode[KeyCodeIdx] := VK_LWIN;
+        Inc(KeyCodeIdx);
+      end;
+      // Finally add the key code of the actual key that got pressed.
+      FKeyBinding.KeyBindingCode[KeyCodeIdx] := KeyMap[Idx].KeyCode;
+      // Key grabbing completed successfully. Update the modal result for this.
+      ModalResult := mrOK;
+      // Stop the loop.
+      Break;
+    end;
+  end;
+end;
+
 { TKeyBindingForm }
 
 //***************************************************************************************
@@ -465,6 +589,27 @@ procedure TKeyBindingForm.BtnOkClick(Sender: TObject);
 begin
   // Update key binding field based on what is currently selected on the user interface.
   UpdateFromUI;
+end;
+
+//***************************************************************************************
+// NAME:           BtnGrabClick
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the button is clicked.
+//
+//***************************************************************************************
+procedure TKeyBindingForm.BtnGrabClick(Sender: TObject);
+var
+  GrabForm: TKeyBindingGrabForm;
+begin
+  GrabForm := TKeyBindingGrabForm.Create(Self);
+  if GrabForm.ShowModal = mrOK then
+  begin
+    // Store the key binding that was grabbed.
+    KeyBinding.KeyBindingStr := GrabForm.KeyBinding.KeyBindingStr;
+    // Update the user interface to show this one.
+    UpdateUI;
+  end;
+  FreeAndNil(GrabForm);
 end;
 
 //***************************************************************************************
