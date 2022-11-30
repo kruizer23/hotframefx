@@ -37,7 +37,7 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, CornerEdge,
-  MouseAndKeyInput, LCLType, KeyBindingUnit;
+  MouseAndKeyInput, LCLType, ExtCtrls, Menus, ActnList, Buttons, KeyBindingUnit;
 
 //***************************************************************************************
 // Type Definitions
@@ -47,8 +47,26 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    ActAbout: TAction;
+    ActManual: TAction;
+    ActPreferences: TAction;
+    ActQuit: TAction;
+    ActionList: TActionList;
     BtnKeyBinding: TButton;
+    ImageList: TImageList;
+    ImgScreen: TImage;
+    MainMenu: TMainMenu;
+    MnuAbout: TMenuItem;
+    MnuSep2: TMenuItem;
+    MnuManual: TMenuItem;
+    MnuHelp: TMenuItem;
+    MnuQuit: TMenuItem;
+    MnuSep1: TMenuItem;
+    MnuPreferences: TMenuItem;
+    MnuFile: TMenuItem;
     MmoEventInfo: TMemo;
+    PnlScreen: TPanel;
+    BtnTopLeft: TSpeedButton;
     procedure BtnKeyBindingClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1122.5197"
+   height="793.70081"
+   viewBox="0 0 297 210"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="screen.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="1.5001964"
+     inkscape:cx="492.93546"
+     inkscape:cy="275.63058"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="-8"
+     inkscape:window-y="22"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer3"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:snap-bbox="false"
+     inkscape:snap-global="true">
+    <sodipodi:guide
+       position="38.447745,47.39074"
+       orientation="1,0"
+       id="guide4977" />
+    <sodipodi:guide
+       position="165.43112,94.21586"
+       orientation="1,0"
+       id="guide4979" />
+    <sodipodi:guide
+       position="166.51136,168.70836"
+       orientation="0,-1"
+       id="guide4981" />
+    <sodipodi:guide
+       position="37.301366,97.302261"
+       orientation="0,-1"
+       id="guide4983" />
+    <sodipodi:guide
+       position="101.93943,78.078388"
+       orientation="1,0"
+       id="guide5450" />
+    <sodipodi:guide
+       position="29.453089,133.10451"
+       orientation="0,-1"
+       id="guide5452" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1241-3">
+      <stop
+         style="stop-color:#3686e9;stop-opacity:1"
+         offset="0"
+         id="stop1441" />
+      <stop
+         style="stop-color:#56c3e9;stop-opacity:1"
+         offset="1"
+         id="stop1771" />
+      <stop
+         style="stop-color:#0000ff;stop-opacity:0"
+         offset="1"
+         id="stop1443" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1241-3"
+       id="linearGradient1243"
+       x1="104.76128"
+       y1="112.16865"
+       x2="104.76128"
+       y2="41.269592"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="pad"
+       gradientTransform="matrix(1.0041841,0,0,1.0074627,-0.16086937,-0.30798236)" />
+  </defs>
+  <g
+     inkscape:label="Background"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <rect
+       style="mix-blend-mode:normal;fill:url(#linearGradient1243);fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect846"
+       width="127"
+       height="71.4375"
+       x="38.447742"
+       y="41.269596"
+       inkscape:export-filename="C:\Users\Frank Voorburg\Desktop\screen.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="EdgeChunks"
+     style="display:inline">
+    <path
+       id="rect4040"
+       style="display:inline;mix-blend-mode:normal;fill:#285da3;fill-opacity:0.690196;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 38.447781,41.269832 V 53.086163 A 11.90625,11.90625 0 0 0 50.264115,41.269832 Z"
+       inkscape:export-filename="C:\Users\Frank Voorburg\Desktop\screen.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="rect846-1"
+       style="display:inline;mix-blend-mode:normal;fill:#285da3;fill-opacity:0.690196;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 38.447781,100.7153 v 11.99203 h 11.816334 a 11.90625,11.90625 0 0 0 0.0031,-0.0868 11.90625,11.90625 0 0 0 -11.819435,-11.90521 z"
+       inkscape:export-filename="C:\Users\Frank Voorburg\Desktop\screen.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="rect4040-7"
+       style="display:inline;mix-blend-mode:normal;fill:#285da3;fill-opacity:0.690196;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 165.44954,41.269832 V 53.086163 A 11.90625,11.90625 0 0 1 153.63314,41.269832 Z"
+       inkscape:export-filename="C:\Users\Frank Voorburg\Desktop\screen.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="rect846-1-2"
+       style="display:inline;mix-blend-mode:normal;fill:#285da3;fill-opacity:0.690196;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 165.44954,100.7153 v 11.99203 h -11.8164 a 11.90625,11.90625 0 0 1 -0.003,-0.0868 11.90625,11.90625 0 0 1 11.8195,-11.90521 z"
+       inkscape:export-filename="C:\Users\Frank Voorburg\Desktop\screen.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#285da3;fill-opacity:0.690196;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect5368"
+       width="62.609856"
+       height="8.9958334"
+       x="70.546349"
+       y="41.291645"
+       inkscape:export-filename="C:\Users\Frank Voorburg\Desktop\screen.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="display:inline;fill:#285da3;fill-opacity:0.690196;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect5368-6-0"
+       width="31.56946"
+       height="8.9958334"
+       x="61.374744"
+       y="-47.443581"
+       transform="rotate(90)"
+       inkscape:export-filename="C:\Users\Frank Voorburg\Desktop\screen.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="display:inline;fill:#285da3;fill-opacity:0.690196;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect5368-7"
+       width="62.609856"
+       height="8.9958334"
+       x="70.546349"
+       y="103.73336"
+       inkscape:export-filename="C:\Users\Frank Voorburg\Desktop\screen.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="display:inline;fill:#285da3;fill-opacity:0.690196;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect5368-6-0-8"
+       width="31.56946"
+       height="8.9958334"
+       x="61.374744"
+       y="-165.4473"
+       transform="rotate(90)"
+       inkscape:export-filename="C:\Users\Frank Voorburg\Desktop\screen.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+  </g>
+</svg>
