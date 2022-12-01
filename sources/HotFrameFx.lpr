@@ -16,12 +16,12 @@ program HotFrameFx;
 //---------------------------------------------------------------------------------------
 //                            L I C E N S E
 //---------------------------------------------------------------------------------------
-// This file is part of TheWhiteSheet. TheWhiteSheet is free software: you can
-// redistribute it and/or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// This file is part of HotFrameFx. HotFrameFx is free software: you can redistribute it
+// and/or modify it under the terms of the GNU General Public License as published by the
+// Free Software Foundation, either version 3 of the License, or (at your option) any
+// later version.
 //
-// TheWhiteSheet is distributed in the hope that it will be useful, but WITHOUT ANY
+// HotFrameFx is distributed in the hope that it will be useful, but WITHOUT ANY
 // WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 // PARTICULAR PURPOSE. See the GNU General Public License for more details.
 //
@@ -39,7 +39,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, lazmouseandkeyinput, MainUnit, CornerEdge, KeyBindingUnit, AppVersion
+  Forms, lazmouseandkeyinput, MainUnit, CornerEdge, KeyBindingUnit, AboutUnit, AppVersion
   { you can add units after this };
 
 {$R *.res}

@@ -2311,6 +2311,7 @@ object MainForm: TMainForm
       Caption = '&About...'
       Hint = 'Show the about dialog'
       ImageIndex = 2
+      OnExecute = ActAboutExecute
     end
     object ActManual: TAction
       Caption = '&User Manual...'

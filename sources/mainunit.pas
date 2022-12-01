@@ -16,12 +16,12 @@ unit MainUnit;
 //---------------------------------------------------------------------------------------
 //                            L I C E N S E
 //---------------------------------------------------------------------------------------
-// This file is part of TheWhiteSheet. TheWhiteSheet is free software: you can
-// redistribute it and/or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// This file is part of HotFrameFx. HotFrameFx is free software: you can redistribute it
+// and/or modify it under the terms of the GNU General Public License as published by the
+// Free Software Foundation, either version 3 of the License, or (at your option) any
+// later version.
 //
-// TheWhiteSheet is distributed in the hope that it will be useful, but WITHOUT ANY
+// HotFrameFx is distributed in the hope that it will be useful, but WITHOUT ANY
 // WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 // PARTICULAR PURPOSE. See the GNU General Public License for more details.
 //
@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, CornerEdge,
   MouseAndKeyInput, LCLType, ExtCtrls, Menus, ActnList, Buttons, KeyBindingUnit,
-  AppVersion;
+  AboutUnit;
 
 //***************************************************************************************
 // Type Definitions
@@ -67,6 +67,7 @@ type
     MnuFile: TMenuItem;
     PnlScreen: TPanel;
     BtnTopLeft: TSpeedButton;
+    procedure ActAboutExecute(Sender: TObject);
     procedure ActQuitExecute(Sender: TObject);
     procedure BtnKeyBindingClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -100,19 +101,12 @@ implementation
 //
 //***************************************************************************************
 procedure TMainForm.FormCreate(Sender: TObject);
-var
-  AppVersion: TAppVersion;
 begin
   // Construct and configure the hot corner and edge detection object.
   FCornerEdge := TCornerEdge.Create;
   FCornerEdge.OnHotCorner := @OnHotCorner;
   FCornerEdge.OnHotEdge := @OnHotEdge;
   FCornerEdge.Sensitivity := seHigh;
-  // Create the application version information object and add the version info to the
-  // form's caption.
-  AppVersion := TAppVersion.Create;
-  Caption := Caption + ' v' + AppVersion.Caption;
-  FreeAndNil(AppVersion);
 end;
 
 //***************************************************************************************
@@ -144,6 +138,27 @@ procedure TMainForm.ActQuitExecute(Sender: TObject);
 begin
   // Quit the application.
   Close;
+end;
+
+//***************************************************************************************
+// NAME:           ActAboutExecute
+// PARAMETER:      Sender Signal source.
+// RETURN VALUE:   None.
+// DESCRIPTION:    Display program's about dialog.
+//
+//***************************************************************************************
+procedure TMainForm.ActAboutExecute(Sender: TObject);
+var
+  AboutDialog: TAboutDialog;
+begin
+  // create the dialog
+  AboutDialog := TAboutDialog.Create(Self);
+  // make sure it is centered
+  AboutDialog.Position := poScreenCenter;
+  // show it in the modal state. we are not interested in the result at this point
+  AboutDialog.ShowModal;
+  // release the dialog
+  AboutDialog.Free;
 end;
 
 //***************************************************************************************
