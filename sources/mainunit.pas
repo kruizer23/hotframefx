@@ -75,6 +75,7 @@ type
     procedure OnHotCorner(Sender: TObject; Corner: TCorner);
     procedure OnHotEdge(Sender: TObject; Edge: TEdge);
     procedure ShowTaskView;
+    procedure ShowAppsView;
   public
 
   end;
@@ -148,7 +149,11 @@ end;
 procedure TMainForm.OnHotCorner(Sender: TObject; Corner: TCorner);
 begin
   case Corner of
-    coTopLeft:     MmoEventInfo.Lines.Add('Top left hot corner');
+    coTopLeft:
+    begin
+      //MmoEventInfo.Lines.Add('Top left hot corner');
+      ShowAppsView;
+    end;
     coTopRight:    MmoEventInfo.Lines.Add('Top right hot corner');
     coBottomLeft:  MmoEventInfo.Lines.Add('Bottom left hot corner');
     coBottomRight: MmoEventInfo.Lines.Add('Bottom right hot corner');
@@ -168,7 +173,11 @@ begin
     edLeft:   MmoEventInfo.Lines.Add('Left hot edge');
     edRight:  MmoEventInfo.Lines.Add('Right hot edge');
     edTop:    MmoEventInfo.Lines.Add('Top hot edge');
-    edBottom: MmoEventInfo.Lines.Add('Bottom hot edge');
+    edBottom:
+    begin
+      //MmoEventInfo.Lines.Add('Bottom hot edge');
+      ShowAppsView;
+    end;
   end;
 end;
 
@@ -186,6 +195,24 @@ begin
   // Let go of the keys in reverse order.
   KeyInput.Up(VK_TAB);
   KeyInput.Up(VK_LWIN);
+end;
+
+//***************************************************************************************
+// NAME:           ShowAppsView
+// DESCRIPTION:    Simulates pressing the ALT + CTRL + TAB key, which is the keyboard
+//                 shortcut in Windows for showing the open applications.
+//
+//***************************************************************************************
+procedure TMainForm.ShowAppsView;
+begin
+  // Press the ALT and CTRL keys, followed by the TAB key.
+  KeyInput.Down(VK_MENU);
+  KeyInput.Down(VK_CONTROL);
+  KeyInput.Down(VK_TAB);
+  // Let go of the keys in reverse order.
+  KeyInput.Up(VK_TAB);
+  KeyInput.Up(VK_CONTROL);
+  KeyInput.Up(VK_MENU);
 end;
 
 end.
