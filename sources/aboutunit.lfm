@@ -1,47 +1,54 @@
 object AboutDialog: TAboutDialog
-  Left = 1007
+  Left = 1283
   Height = 217
-  Top = 362
-  Width = 320
-  ActiveControl = btnClose
+  Top = 405
+  Width = 427
+  ActiveControl = BtnClose
   BorderStyle = bsDialog
   Caption = 'About'
   ClientHeight = 217
-  ClientWidth = 320
-  KeyPreview = True
+  ClientWidth = 427
   OnCreate = FormCreate
-  OnKeyPress = FormKeyPress
   Position = poOwnerFormCenter
   LCLVersion = '2.0.12.0'
-  object btnClose: TButton
-    Left = 232
-    Height = 25
-    Top = 184
+  object BtnClose: TButton
+    Left = 346
+    Height = 29
+    Top = 182
     Width = 75
+    Align = alRight
+    BorderSpacing.Left = 3
+    BorderSpacing.Right = 3
+    BorderSpacing.Bottom = 3
+    BorderSpacing.Around = 3
     Caption = 'Close'
     ModalResult = 1
     TabOrder = 0
   end
-  object grpBackground: TGroupBox
-    Left = 8
+  object GrpBackground: TGroupBox
+    Left = 6
     Height = 176
-    Top = 0
-    Width = 302
+    Top = 3
+    Width = 415
+    Align = alTop
+    BorderSpacing.Left = 3
+    BorderSpacing.Right = 3
+    BorderSpacing.Around = 3
     ClientHeight = 156
-    ClientWidth = 298
+    ClientWidth = 411
     TabOrder = 1
-    object lblVersion: TLabel
+    object LblVersion: TLabel
       Left = 56
       Height = 25
       Top = 10
-      Width = 89
-      Caption = 'lblVersion'
+      Width = 94
+      Caption = 'LblVersion'
       Font.Height = -19
       Font.Style = [fsBold]
       ParentColor = False
       ParentFont = False
     end
-    object imgLogo: TImage
+    object ImgLogo: TImage
       Left = 12
       Height = 32
       Top = 8
@@ -2165,42 +2172,56 @@ object AboutDialog: TAboutDialog
       }
       Proportional = True
     end
-    object lblBuildInfo1: TLabel
+    object LblBuildInfo1: TLabel
       Left = 56
       Height = 15
       Top = 48
-      Width = 199
-      Caption = 'HotFrameFx is a system tray utility for'
+      Width = 322
+      Caption = 'HotFrameFx is a system tray utility for configuring hot corner'
       ParentColor = False
     end
-    object lblBuildInfo2: TLabel
+    object LblBuildInfo2: TLabel
       Left = 56
       Height = 15
       Top = 64
-      Width = 216
-      Caption = 'configuring hot corner and edge actions.'
+      Width = 93
+      Caption = 'and edge actions.'
       ParentColor = False
     end
-    object lblCopyright: TLabel
+    object LblCopyright: TLabel
       Left = 56
       Height = 15
       Top = 96
-      Width = 66
-      Caption = 'lblCopyright'
+      Width = 69
+      Caption = 'LblCopyright'
       ParentColor = False
     end
-    object lblWebsite: TLabel
+    object LblWebsite: TLabel
       Left = 56
       Height = 15
       Top = 128
-      Width = 55
-      Caption = 'lblWebsite'
+      Width = 58
+      Caption = 'LblWebsite'
       Font.Color = clHighlight
       ParentColor = False
       ParentFont = False
-      OnClick = lblWebsiteClick
-      OnMouseEnter = lblWebsiteMouseEnter
-      OnMouseLeave = lblWebsiteMouseLeave
+      OnClick = LblWebsiteClick
+      OnMouseEnter = LblWebsiteMouseEnter
+      OnMouseLeave = LblWebsiteMouseLeave
     end
+  end
+  object TgbLicense: TToggleBox
+    Left = 6
+    Height = 29
+    Top = 182
+    Width = 75
+    Align = alLeft
+    BorderSpacing.Left = 3
+    BorderSpacing.Right = 3
+    BorderSpacing.Bottom = 3
+    BorderSpacing.Around = 3
+    Caption = 'License'
+    OnChange = TgbLicenseChange
+    TabOrder = 2
   end
 end

@@ -2509,7 +2509,7 @@ object MainForm: TMainForm
       end
     end
     object MnuHelp: TMenuItem
-      Caption = '?'
+      Caption = '&Help'
       object MnuManual: TMenuItem
         Action = ActManual
       end
