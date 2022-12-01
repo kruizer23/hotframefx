@@ -63,7 +63,6 @@ type
     procedure TgbLicenseChange(Sender: TObject);
   private
     { private declarations }
-    FMmoLicense: TMemo;
     procedure InitializeGui;
   public
     { public declarations }
@@ -93,7 +92,7 @@ begin
   // Create the application version information object and add the version info to the
   // form's caption.
   AppVersion := TAppVersion.Create;
-  AppVersionStr := 'version ' + AppVersion.Caption;
+  AppVersionStr := 'version ' + AppVersion.Text;
   FreeAndNil(AppVersion);
   // Set the version label
   LblVersion.Caption := 'HotFrameFx' + ' ' + AppVersionStr;

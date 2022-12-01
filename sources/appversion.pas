@@ -50,14 +50,14 @@ type
     FMajor: Word;
     FMinor: Word;
     FPatch: Word;
-    function GetCaption: string;
+    function GetText: string;
   public
     constructor Create;
     destructor Destroy; override;
     property Major: Word read FMajor;
     property Minor: Word read FMinor;
     property Patch: Word read FPatch;
-    property Caption: string read GetCaption;
+    property Text: string read GetText;
   end;
 
 implementation
@@ -125,7 +125,7 @@ end;
 //                 representation.
 //
 //***************************************************************************************
-function TAppVersion.GetCaption: string;
+function TAppVersion.GetText: string;
 begin
   // Construct version information string as 'x.y.z'.
   Result := IntToStr(FMajor) + '.' + IntToStr(FMinor) + '.' + IntToStr(FPatch);
