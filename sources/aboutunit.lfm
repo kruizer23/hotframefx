@@ -10,7 +10,7 @@ object AboutDialog: TAboutDialog
   ClientWidth = 427
   OnCreate = FormCreate
   Position = poOwnerFormCenter
-  LCLVersion = '2.0.12.0'
+  LCLVersion = '2.0.10.0'
   object BtnClose: TButton
     Left = 346
     Height = 29
@@ -34,14 +34,14 @@ object AboutDialog: TAboutDialog
     BorderSpacing.Left = 3
     BorderSpacing.Right = 3
     BorderSpacing.Around = 3
-    ClientHeight = 156
-    ClientWidth = 411
+    ClientHeight = 174
+    ClientWidth = 413
     TabOrder = 1
     object LblVersion: TLabel
       Left = 56
-      Height = 25
+      Height = 20
       Top = 10
-      Width = 94
+      Width = 97
       Caption = 'LblVersion'
       Font.Height = -19
       Font.Style = [fsBold]
@@ -2201,9 +2201,9 @@ object AboutDialog: TAboutDialog
     end
     object LblWebsite: TLabel
       Left = 56
-      Height = 15
+      Height = 14
       Top = 128
-      Width = 58
+      Width = 67
       Caption = 'LblWebsite'
       Font.Color = clHighlight
       ParentColor = False
@@ -2211,6 +2211,37 @@ object AboutDialog: TAboutDialog
       OnClick = LblWebsiteClick
       OnMouseEnter = LblWebsiteMouseEnter
       OnMouseLeave = LblWebsiteMouseLeave
+    end
+    object MmoLicense: TMemo
+      Left = 6
+      Height = 121
+      Top = 47
+      Width = 401
+      Align = alBottom
+      BorderSpacing.Left = 3
+      BorderSpacing.Right = 3
+      BorderSpacing.Bottom = 3
+      BorderSpacing.Around = 3
+      Lines.Strings = (
+        'This program is free software: you can redistribute it and/or'
+        'modify it under the terms of the GNU General Public License as'
+        'published by the Free Software Foundation, either version 3 of'
+        'the License, or (at your option) any later version.'
+        ''
+        'This program is distributed in the hope that it will be useful,'
+        'but WITHOUT ANY WARRANTY; without even the implied'
+        'warranty of MERCHANTABILITY or FITNESS FOR A'
+        'PARTICULAR PURPOSE. See the GNU General Public License'
+        'for more details.'
+        ''
+        'You should have received a copy of the GNU General Public'
+        'License along with this program. If not, see'
+        '<https://www.gnu.org/licenses/>.'
+      )
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      Visible = False
     end
   end
   object TgbLicense: TToggleBox

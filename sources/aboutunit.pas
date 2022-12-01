@@ -54,6 +54,7 @@ type
     LblBuildInfo1: TLabel;
     LblBuildInfo2: TLabel;
     LblVersion: TLabel;
+    MmoLicense: TMemo;
     TgbLicense: TToggleBox;
     procedure FormCreate(Sender: TObject);
     procedure LblWebsiteClick(Sender: TObject);
@@ -87,8 +88,6 @@ var
   AppVersion: TAppVersion;
   AppVersionStr: string;
 begin
-  // Adjust the height of the form, such that the memo with license info is not visible.
-  Height := 217;
   // Create the application version information object and add the version info to the
   // form's caption.
   AppVersion := TAppVersion.Create;
@@ -100,32 +99,6 @@ begin
   LblCopyright.Caption := 'Copyright ' + '©' + ' 2022 by Frank Voorburg';
   // set the website
   LblWebsite.Caption := 'View on GitHub';
-  // Dynamically create the memo for the license text, which is initially invisible.
-  FMmoLicense := TMemo.Create(Self);
-  FMmoLicense.Parent := Self;
-  FMmoLicense.Visible := False;
-  FMmoLicense.Left := GrpBackground.Left + 5;
-  FMmoLicense.Width := GrpBackground.Width - 10;
-  FMmoLicense.Height := GrpBackground.Height - LblBuildInfo1.Top - 23;
-  FMmoLicense.Top := GrpBackground.Top + GrpBackground.Height - FMmoLicense.Height - 5;
-  FMmoLicense.Lines.Clear;
-  with FMmoLicense.Lines do
-  begin
-    Add('This program is free software: you can redistribute it and/or modify');
-    Add('it under the terms of the GNU General Public License as published by');
-    Add('the Free Software Foundation, either version 3 of the License, or');
-    Add('(at your option) any later version.');
-    Add('');
-    Add('This program is distributed in the hope that it will be useful,');
-    Add('but WITHOUT ANY WARRANTY; without even the implied warranty of');
-    Add('MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the');
-    Add('GNU General Public License for more details.');
-    Add('');
-    Add('You should have received a copy of the GNU General Public License');
-    Add('along with this program.  If not, see <https://www.gnu.org/licenses/>.');
-  end;
-  FMmoLicense.ReadOnly := True;
-  FMmoLicense.ScrollBars := ssAutoBoth;
 end;
 
 //***************************************************************************************
@@ -182,12 +155,12 @@ begin
   if TgbLicense.Checked then
   begin
     // Move the license memo into view.
-    FMmoLicense.Visible := True;
+    MmoLicense.Visible := True;
   end
   else
   begin
     // Move the license memo out of view.
-    FMmoLicense.Visible := False;
+    MmoLicense.Visible := False;
   end;
 end;
 
