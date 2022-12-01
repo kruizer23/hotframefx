@@ -126,8 +126,8 @@
         <UnitName Value="AboutUnit"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="156"/>
-        <CursorPos X="29" Y="166"/>
+        <TopLine Value="72"/>
+        <CursorPos X="31" Y="92"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>

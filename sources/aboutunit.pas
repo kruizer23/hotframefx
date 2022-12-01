@@ -88,16 +88,18 @@ var
   AppVersion: TAppVersion;
   AppVersionStr: string;
 begin
+  // Change license memo alignment such that is spans the whole parent.
+  MmoLicense.Align := alClient;
   // Create the application version information object and add the version info to the
   // form's caption.
   AppVersion := TAppVersion.Create;
   AppVersionStr := 'version ' + AppVersion.Caption;
   FreeAndNil(AppVersion);
-  // set the version label
+  // Set the version label
   LblVersion.Caption := 'HotFrameFx' + ' ' + AppVersionStr;
-  // set the copyright info
+  // Set the copyright info
   LblCopyright.Caption := 'Copyright ' + '©' + ' 2022 by Frank Voorburg';
-  // set the website
+  // Set the website
   LblWebsite.Caption := 'View on GitHub';
 end;
 
