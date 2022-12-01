@@ -2174,25 +2174,28 @@ object AboutDialog: TAboutDialog
     end
     object LblBuildInfo1: TLabel
       Left = 56
-      Height = 15
+      Height = 24
       Top = 48
-      Width = 322
-      Caption = 'HotFrameFx is a system tray utility for configuring hot corner'
+      Width = 352
+      AutoSize = False
+      Caption = 'HotFrameFx is a system tray utility for configuring hot'
       ParentColor = False
     end
     object LblBuildInfo2: TLabel
       Left = 56
-      Height = 15
+      Height = 16
       Top = 64
-      Width = 93
-      Caption = 'and edge actions.'
+      Width = 354
+      AutoSize = False
+      Caption = 'corner and edge actions.'
       ParentColor = False
     end
     object LblCopyright: TLabel
       Left = 56
-      Height = 15
+      Height = 24
       Top = 96
-      Width = 69
+      Width = 352
+      AutoSize = False
       Caption = 'LblCopyright'
       ParentColor = False
     end

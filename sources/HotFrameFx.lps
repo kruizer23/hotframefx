@@ -42,7 +42,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="7"/>
         <CursorPos Y="57"/>
-        <UsageCount Value="46"/>
+        <UsageCount Value="47"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainunit.pas"/>
@@ -58,7 +58,7 @@
           <EditorIndex Value="-1"/>
           <CursorPos Y="2"/>
         </ExtraEditor1>
-        <UsageCount Value="46"/>
+        <UsageCount Value="47"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -77,7 +77,7 @@
           <TopLine Value="178"/>
           <CursorPos X="24" Y="209"/>
         </ExtraEditor1>
-        <UsageCount Value="46"/>
+        <UsageCount Value="47"/>
       </Unit2>
       <Unit3>
         <Filename Value="keybindingunit.pas"/>
@@ -100,7 +100,7 @@
           <TopLine Value="62"/>
           <CursorPos X="54" Y="76"/>
         </ExtraEditor2>
-        <UsageCount Value="36"/>
+        <UsageCount Value="37"/>
       </Unit3>
       <Unit4>
         <Filename Value="appversion.pas"/>
@@ -115,7 +115,7 @@
           <EditorIndex Value="-1"/>
           <CursorPos X="56" Y="17"/>
         </ExtraEditor1>
-        <UsageCount Value="24"/>
+        <UsageCount Value="25"/>
       </Unit4>
       <Unit5>
         <Filename Value="aboutunit.pas"/>
@@ -127,9 +127,10 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="156"/>
-        <CursorPos X="44" Y="165"/>
-        <UsageCount Value="21"/>
+        <CursorPos X="29" Y="166"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\inc\typshrdh.inc"/>
