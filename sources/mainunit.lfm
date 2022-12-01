@@ -1,12 +1,12 @@
 object MainForm: TMainForm
-  Left = 530
-  Height = 507
-  Top = 314
+  Left = 983
+  Height = 386
+  Top = 232
   Width = 495
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'HotFrameFx'
-  ClientHeight = 487
+  ClientHeight = 366
   ClientWidth = 495
   Icon.Data = {
     3E08010000000100010080800000010020002808010016000000280000008000
@@ -2130,21 +2130,14 @@ object MainForm: TMainForm
   OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '2.0.12.0'
-  object MmoEventInfo: TMemo
-    Left = 40
-    Height = 82
-    Top = 360
-    Width = 416
-    TabOrder = 0
-  end
   object BtnKeyBinding: TButton
-    Left = 200
+    Left = 312
     Height = 25
-    Top = 448
+    Top = 296
     Width = 115
     Caption = 'Set key binding'
     OnClick = BtnKeyBindingClick
-    TabOrder = 1
+    TabOrder = 0
   end
   object PnlScreen: TPanel
     Left = 4
@@ -2155,7 +2148,7 @@ object MainForm: TMainForm
     BevelInner = bvLowered
     ClientHeight = 276
     ClientWidth = 486
-    TabOrder = 2
+    TabOrder = 1
     object ImgScreen: TImage
       Left = 3
       Height = 270
@@ -2311,6 +2304,7 @@ object MainForm: TMainForm
       Caption = '&Quit'
       Hint = 'Quit the application'
       ImageIndex = 0
+      OnExecute = ActQuitExecute
       ShortCut = 16465
     end
     object ActAbout: TAction

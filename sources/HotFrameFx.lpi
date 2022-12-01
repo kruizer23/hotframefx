@@ -17,6 +17,10 @@
       </XPManifest>
       <Icon Value="0"/>
     </General>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <MinorVersionNr Value="9"/>
+    </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Debug" Default="True"/>
     </BuildModes>
@@ -36,7 +40,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="HotFrameFx.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -62,6 +66,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="KeyBindingUnit"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="appversion.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="AppVersion"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

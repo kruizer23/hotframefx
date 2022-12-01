@@ -37,7 +37,8 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, CornerEdge,
-  MouseAndKeyInput, LCLType, ExtCtrls, Menus, ActnList, Buttons, KeyBindingUnit;
+  MouseAndKeyInput, LCLType, ExtCtrls, Menus, ActnList, Buttons, KeyBindingUnit,
+  AppVersion;
 
 //***************************************************************************************
 // Type Definitions
@@ -64,9 +65,9 @@ type
     MnuSep1: TMenuItem;
     MnuPreferences: TMenuItem;
     MnuFile: TMenuItem;
-    MmoEventInfo: TMemo;
     PnlScreen: TPanel;
     BtnTopLeft: TSpeedButton;
+    procedure ActQuitExecute(Sender: TObject);
     procedure BtnKeyBindingClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -99,12 +100,19 @@ implementation
 //
 //***************************************************************************************
 procedure TMainForm.FormCreate(Sender: TObject);
+var
+  AppVersion: TAppVersion;
 begin
   // Construct and configure the hot corner and edge detection object.
   FCornerEdge := TCornerEdge.Create;
   FCornerEdge.OnHotCorner := @OnHotCorner;
   FCornerEdge.OnHotEdge := @OnHotEdge;
   FCornerEdge.Sensitivity := seHigh;
+  // Create the application version information object and add the version info to the
+  // form's caption.
+  AppVersion := TAppVersion.Create;
+  Caption := Caption + ' v' + AppVersion.Caption;
+  FreeAndNil(AppVersion);
 end;
 
 //***************************************************************************************
@@ -121,10 +129,21 @@ begin
   KeyBindingForm.KeyBinding.KeyBindingStr := 'alt+ctrl+tab';
   if KeyBindingForm.ShowModal = mrOK then
   begin
-    MmoEventInfo.Lines.Add('Key binding dialog mrOK: ' +
-                           KeyBindingForm.KeyBinding.KeyBindingStr);
+    // TODO Process the new key binding from KeyBindingForm.KeyBinding.KeyBindingStr.
   end;
   KeyBindingForm.Free;
+end;
+
+//***************************************************************************************
+// NAME:           ActQuitExecute
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Exits the program.
+//
+//***************************************************************************************
+procedure TMainForm.ActQuitExecute(Sender: TObject);
+begin
+  // Quit the application.
+  Close;
 end;
 
 //***************************************************************************************
@@ -148,15 +167,9 @@ end;
 //***************************************************************************************
 procedure TMainForm.OnHotCorner(Sender: TObject; Corner: TCorner);
 begin
-  case Corner of
-    coTopLeft:
-    begin
-      //MmoEventInfo.Lines.Add('Top left hot corner');
-      ShowAppsView;
-    end;
-    coTopRight:    MmoEventInfo.Lines.Add('Top right hot corner');
-    coBottomLeft:  MmoEventInfo.Lines.Add('Bottom left hot corner');
-    coBottomRight: MmoEventInfo.Lines.Add('Bottom right hot corner');
+  if Corner = coTopLeft then
+  begin
+    ShowTaskView;
   end;
 end;
 
@@ -169,15 +182,9 @@ end;
 //***************************************************************************************
 procedure TMainForm.OnHotEdge(Sender: TObject; Edge: TEdge);
 begin
-  case Edge of
-    edLeft:   MmoEventInfo.Lines.Add('Left hot edge');
-    edRight:  MmoEventInfo.Lines.Add('Right hot edge');
-    edTop:    MmoEventInfo.Lines.Add('Top hot edge');
-    edBottom:
-    begin
-      //MmoEventInfo.Lines.Add('Bottom hot edge');
-      ShowAppsView;
-    end;
+  if Edge = edBottom then
+  begin
+    ShowAppsView;
   end;
 end;
 
