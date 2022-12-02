@@ -106,7 +106,7 @@ begin
   FCornerEdge := TCornerEdge.Create;
   FCornerEdge.OnHotCorner := @OnHotCorner;
   FCornerEdge.OnHotEdge := @OnHotEdge;
-  FCornerEdge.Sensitivity := seHigh;
+  FCornerEdge.Sensitivity := seLow;
 end;
 
 //***************************************************************************************
