@@ -1,7 +1,7 @@
-unit KeyBindingUnit;
+unit GrabKey;
 //***************************************************************************************
-//  Description: Key binding detection dialog.
-//    File Name: keybindingunit.pas
+//  Description: Generic frame for selecting a keyboard key combination.
+//    File Name: grabkey.pas
 //
 //---------------------------------------------------------------------------------------
 //                          C O P Y R I G H T
@@ -36,7 +36,7 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, LCLType;
+  Classes, SysUtils, Forms, Controls, Graphics, StdCtrls, LCLType;
 
 //***************************************************************************************
 // Type Definitions
@@ -76,32 +76,27 @@ type
     property KeyBinding: TKeyBinding read FKeyBinding;
   end;
 
-  { TKeyBindingForm }
+  { TGrabKeyFrame }
 
-  TKeyBindingForm = class(TForm)
-    BtnCancel: TButton;
-    BtnOk: TButton;
+  TGrabKeyFrame = class(TFrame)
     BtnGrab: TButton;
-    ChbShift: TCheckBox;
     ChbAlt: TCheckBox;
     ChbCtrl: TCheckBox;
+    ChbShift: TCheckBox;
     ChbSuper: TCheckBox;
     CmbKey: TComboBox;
-    GrbKey: TGroupBox;
-    PnlButtons: TPanel;
     procedure BtnGrabClick(Sender: TObject);
-    procedure BtnOkClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     FKeyBinding: TKeyBinding;
+    function GetKeyBinding: string;
+    procedure SetKeyBinding(AValue: string);
     procedure UpdateUI;
     procedure UpdateFromUI;
   public
-    property KeyBinding: TKeyBinding read FKeyBinding write FKeyBinding;
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property KeyBinding: string read GetKeyBinding write SetKeyBinding;
   end;
-
 
 implementation
 
@@ -543,87 +538,7 @@ begin
   end;
 end;
 
-{ TKeyBindingForm }
-
-//***************************************************************************************
-// NAME:           FormCreate
-// PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the form is created.
-//
-//***************************************************************************************
-procedure TKeyBindingForm.FormCreate(Sender: TObject);
-var
-  Idx: Integer;
-begin
-  // Create the key binding object.
-  FKeyBinding := TKeyBinding.Create;
-  // Initialize the modal result.
-  ModalResult := mrCancel;
-  // Populate the combo box with all keys, but excluding the special keys.
-  for Idx := 0 to (Length(KeyMap) - NUM_SPECIAL_KEYS - 1) do
-  begin
-    CmbKey.Items.Add(KeyMap[Idx].KeyStr);
-  end;
-  CmbKey.ItemIndex := 0;
-end;
-
-//***************************************************************************************
-// NAME:           BtnOkClick
-// PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the button is clicked.
-//
-//***************************************************************************************
-procedure TKeyBindingForm.BtnOkClick(Sender: TObject);
-begin
-  // Update key binding field based on what is currently selected on the user interface.
-  UpdateFromUI;
-end;
-
-//***************************************************************************************
-// NAME:           BtnGrabClick
-// PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the button is clicked.
-//
-//***************************************************************************************
-procedure TKeyBindingForm.BtnGrabClick(Sender: TObject);
-var
-  GrabForm: TKeyBindingGrabForm;
-begin
-  GrabForm := TKeyBindingGrabForm.Create(Self);
-  if GrabForm.ShowModal = mrOK then
-  begin
-    // Store the key binding that was grabbed.
-    KeyBinding.KeyBindingStr := GrabForm.KeyBinding.KeyBindingStr;
-    // Update the user interface to show this one.
-    UpdateUI;
-  end;
-  FreeAndNil(GrabForm);
-end;
-
-//***************************************************************************************
-// NAME:           FormDestroy
-// PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the form is destroyed.
-//
-//***************************************************************************************
-procedure TKeyBindingForm.FormDestroy(Sender: TObject);
-begin
-  // Release the key binding object.
-  FKeyBinding.Free;
-end;
-
-//***************************************************************************************
-// NAME:           FormShow
-// PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the form is shown.
-//
-//***************************************************************************************
-procedure TKeyBindingForm.FormShow(Sender: TObject);
-begin
-  // Update the user interface to make sure that its element represent the currently
-  // configured key binding.
-  UpdateUI;
-end;
+{ TGrabKeyFrame }
 
 //***************************************************************************************
 // NAME:           UpdateUI
@@ -631,7 +546,7 @@ end;
 //                 string.
 //
 //***************************************************************************************
-procedure TKeyBindingForm.UpdateUI;
+procedure TGrabKeyFrame.UpdateUI;
 var
   Idx: Integer;
   KeyCodeToMatch: Word;
@@ -687,12 +602,60 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           BtnGrabClick
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the button is clicked.
+//
+//***************************************************************************************
+procedure TGrabKeyFrame.BtnGrabClick(Sender: TObject);
+var
+  GrabForm: TKeyBindingGrabForm;
+begin
+  GrabForm := TKeyBindingGrabForm.Create(Self);
+  if GrabForm.ShowModal = mrOK then
+  begin
+    // Store the key binding that was grabbed.
+    FKeyBinding.KeyBindingStr := GrabForm.KeyBinding.KeyBindingStr;
+    // Update the user interface to show this one.
+    UpdateUI;
+  end;
+  FreeAndNil(GrabForm);
+end;
+
+//***************************************************************************************
+// NAME:           GetKeyBinding
+// RETURN VALUE:   Key binding string.
+// DESCRIPTION:    Getter for the string representation of the key binding.
+//
+//***************************************************************************************
+function TGrabKeyFrame.GetKeyBinding: string;
+begin
+  // Obtain the current string representation of the key binding.
+  Result := FKeyBinding.KeyBindingStr;
+end;
+
+//***************************************************************************************
+// NAME:           SetKeyBinding
+// PARAMETER:      Key binding string.
+// DESCRIPTION:    Getter for the key binding from its string representation.
+//
+//***************************************************************************************
+procedure TGrabKeyFrame.SetKeyBinding(AValue: string);
+begin
+  // Update the key binding.
+  FKeyBinding.KeyBindingStr := AValue;
+  // Update the user interface to make sure that its element represent the currently
+  // configured key binding.
+  UpdateUI;
+end;
+
+//***************************************************************************************
 // NAME:           UpdateFromUI
 // DESCRIPTION:    Updates the key binding based on what is currently selected on the
 //                 user interface.
 //
 //***************************************************************************************
-procedure TKeyBindingForm.UpdateFromUI;
+procedure TGrabKeyFrame.UpdateFromUI;
 var
   Idx: Integer;
   KeyCodeIdx: Integer;
@@ -733,7 +696,40 @@ begin
   FKeyBinding.KeyBindingCode[KeyCodeIdx] := KeyMap[CmbKey.ItemIndex].KeyCode;
 end;
 
-end.
-//********************************** end of keybindingunit.pas **************************
+//***************************************************************************************
+// NAME:           Create
+// DESCRIPTION:    Frame constructor.
+//
+//***************************************************************************************
+constructor TGrabKeyFrame.Create(TheOwner: TComponent);
+var
+  Idx: Integer;
+begin
+  // Call inherited constructor.
+  inherited Create(TheOwner);
+  // Create the key binding object.
+  FKeyBinding := TKeyBinding.Create;
+  // Populate the combo box with all keys, but excluding the special keys.
+  for Idx := 0 to (Length(KeyMap) - NUM_SPECIAL_KEYS - 1) do
+  begin
+    CmbKey.Items.Add(KeyMap[Idx].KeyStr);
+  end;
+  CmbKey.ItemIndex := 0;
+end;
 
+//***************************************************************************************
+// NAME:           Destroy
+// DESCRIPTION:    Frame destructor.
+//
+//***************************************************************************************
+destructor TGrabKeyFrame.Destroy;
+begin
+  // Release the key binding object.
+  FKeyBinding.Free;
+  // Call inherited destructor.
+  inherited Destroy;
+end;
+
+end.
+//********************************** end of grabkey.pas *********************************
 

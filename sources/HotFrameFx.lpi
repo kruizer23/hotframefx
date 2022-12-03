@@ -41,7 +41,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="7">
       <Unit0>
         <Filename Value="HotFrameFx.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -80,6 +80,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="AboutUnit"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="grabkey.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GrabKeyFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="GrabKey"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
