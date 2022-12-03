@@ -49,7 +49,7 @@ type
   TEdge = (edLeft = 0, edRight, edTop, edBottom);
 
   // Enumeration will all supported sensitivity levels.
-  TSensitivity = (seHigh = 0, seMedium, seLow);
+  TSensitivity = (seHighest = 0, seHigher, seMedium, seLower, seLowest);
 
   // Event handler for a hot corner.
   THotCornerEvent = procedure(Sender: TObject; Corner: TCorner) of object;
@@ -60,7 +60,7 @@ type
   // Hot corner and edge detection class.
   TCornerEdge = class(TObject)
   const
-    UPDATE_INTERVAL_MS = 80;
+    UPDATE_INTERVAL_MS = 100;
     HOT_BORDER_HALF_LEN = 1;
     WARM_BORDER_HALF_LEN = 5;
     HOT_EDGE_IGNORE_HALF_LEN = 200;
@@ -229,7 +229,7 @@ begin
     begin
       // Initialize the wait counter, based on the selected sensitivity.
       FCornerWaitCount := Ord(FSensitivity);
-      // No need to wait (typically on high sensitivity)?
+      // No need to wait (typically on highest sensitivity)?
       if FCornerWaitCount = 0 then
       begin
         // Corner is now hot. Call the event handler.
@@ -314,7 +314,7 @@ begin
     begin
       // Initialize the wait counter, based on the selected sensitivity.
       FEdgeWaitCount := Ord(FSensitivity);
-      // No need to wait (typically on high sensitivity)?
+      // No need to wait (typically on highest sensitivity)?
       if FEdgeWaitCount = 0 then
       begin
         // Edge is now hot. Call the event handler.
