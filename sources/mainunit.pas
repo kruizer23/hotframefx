@@ -120,10 +120,10 @@ var
   KeyBindingForm: TKeyBindingForm;
 begin
   KeyBindingForm := TKeyBindingForm.Create(Self);
-  KeyBindingForm.KeyBinding.KeyBindingStr := 'alt+ctrl+tab';
+  KeyBindingForm.KeyBinding := 'alt+ctrl+tab';
   if KeyBindingForm.ShowModal = mrOK then
   begin
-    // TODO Process the new key binding from KeyBindingForm.KeyBinding.KeyBindingStr.
+    ShowMessage('Keybinding: ' + KeyBindingForm.KeyBinding);
   end;
   KeyBindingForm.Free;
 end;

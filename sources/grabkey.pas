@@ -630,6 +630,9 @@ end;
 //***************************************************************************************
 function TGrabKeyFrame.GetKeyBinding: string;
 begin
+  // Update the key binding string based on what is currently selected on the user
+  // interface.
+  UpdateFromUI;
   // Obtain the current string representation of the key binding.
   Result := FKeyBinding.KeyBindingStr;
 end;

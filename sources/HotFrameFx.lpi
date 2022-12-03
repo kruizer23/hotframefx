@@ -84,6 +84,7 @@
         <Filename Value="grabkey.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="GrabKeyFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="GrabKey"/>
       </Unit6>

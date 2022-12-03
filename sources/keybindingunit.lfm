@@ -1,16 +1,13 @@
 object KeyBindingForm: TKeyBindingForm
-  Left = 1217
+  Left = 1278
   Height = 100
-  Top = 311
+  Top = 388
   Width = 412
   BorderStyle = bsDialog
   Caption = 'Configure key binding'
   ClientHeight = 100
   ClientWidth = 412
   KeyPreview = True
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
-  OnShow = FormShow
   Position = poOwnerFormCenter
   LCLVersion = '2.0.12.0'
   object PnlButtons: TPanel
@@ -34,7 +31,6 @@ object KeyBindingForm: TKeyBindingForm
       BorderSpacing.Around = 3
       Caption = 'OK'
       ModalResult = 1
-      OnClick = BtnOkClick
       TabOrder = 0
     end
     object BtnCancel: TButton
@@ -65,71 +61,33 @@ object KeyBindingForm: TKeyBindingForm
     ClientHeight = 40
     ClientWidth = 396
     TabOrder = 1
-    object ChbShift: TCheckBox
-      Left = 6
-      Height = 28
-      Top = 6
-      Width = 44
-      Align = alLeft
-      BorderSpacing.Around = 6
-      Caption = 'Shift'
-      TabOrder = 0
-    end
-    object ChbAlt: TCheckBox
-      Left = 56
-      Height = 28
-      Top = 6
-      Width = 35
-      Align = alLeft
-      BorderSpacing.Around = 6
-      Caption = 'Alt'
-      TabOrder = 1
-    end
-    object ChbCtrl: TCheckBox
-      Left = 97
-      Height = 28
-      Top = 6
-      Width = 39
-      Align = alLeft
-      BorderSpacing.Around = 6
-      Caption = 'Ctrl'
-      TabOrder = 2
-    end
-    object ChbSuper: TCheckBox
-      Left = 142
-      Height = 28
-      Top = 6
-      Width = 50
-      Align = alLeft
-      BorderSpacing.Around = 6
-      Caption = 'Super'
-      TabOrder = 3
-    end
-    object CmbKey: TComboBox
-      Left = 198
-      Height = 23
-      Top = 9
-      Width = 111
+    inline FrmGrabKey: TGrabKeyFrame
+      Height = 40
+      Width = 396
       Align = alClient
-      BorderSpacing.Top = 3
-      BorderSpacing.Around = 6
-      DropDownCount = 10
-      ItemHeight = 15
-      Style = csDropDownList
-      TabOrder = 4
-    end
-    object BtnGrab: TButton
-      Left = 315
-      Height = 24
-      Top = 8
-      Width = 75
-      Align = alRight
-      BorderSpacing.Top = 2
-      BorderSpacing.Bottom = 2
-      BorderSpacing.Around = 6
-      Caption = 'Grab'
-      OnClick = BtnGrabClick
-      TabOrder = 5
+      ClientHeight = 40
+      ClientWidth = 396
+      DesignLeft = 1276
+      DesignTop = 521
+      inherited ChbShift: TCheckBox
+        Height = 28
+      end
+      inherited ChbAlt: TCheckBox
+        Height = 28
+      end
+      inherited ChbCtrl: TCheckBox
+        Height = 28
+      end
+      inherited ChbSuper: TCheckBox
+        Height = 28
+      end
+      inherited CmbKey: TComboBox
+        Width = 111
+      end
+      inherited BtnGrab: TButton
+        Left = 315
+        Height = 24
+      end
     end
   end
 end

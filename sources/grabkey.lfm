@@ -6,8 +6,8 @@ object GrabKeyFrame: TGrabKeyFrame
   ClientHeight = 41
   ClientWidth = 439
   TabOrder = 0
-  DesignLeft = 1276
-  DesignTop = 521
+  DesignLeft = 1289
+  DesignTop = 467
   object ChbShift: TCheckBox
     Left = 6
     Height = 29
