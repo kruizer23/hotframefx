@@ -1,6 +1,15 @@
 # Executables
 *.exe
 
+# Lazarus IDE generated files
+*.ppu
+*.o
+*.a
+*.lps
+*.or
+*.rst
+*.compiled
+
 # Lazarus build files
 lib/
 
