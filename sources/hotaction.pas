@@ -77,6 +77,8 @@ function THotAction.GetInfo: string;
 var
   AppName: string;
 begin
+  // Initialize the result.
+  Result := '';
   // Only continue with a non empty text string.
   if FText <> '' then
   begin
