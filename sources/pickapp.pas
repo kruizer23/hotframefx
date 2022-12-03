@@ -1,7 +1,7 @@
-unit KeyBindingUnit;
+unit PickApp;
 //***************************************************************************************
-//  Description: Key binding detection dialog.
-//    File Name: keybindingunit.pas
+//  Description: Generic frame for selecting the executable of an application.
+//    File Name: pickapp.pas
 //
 //---------------------------------------------------------------------------------------
 //                          C O P Y R I G H T
@@ -21,7 +21,6 @@ unit KeyBindingUnit;
 // Free Software Foundation, either version 3 of the License, or (at your option) any
 // later version.
 //
-// HotFrameFx is distributed in the hope that it will be useful, but WITHOUT ANY
 // WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 // PARTICULAR PURPOSE. See the GNU General Public License for more details.
 //
@@ -36,88 +35,110 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  GrabKey, PickApp;
+  Classes, SysUtils, Forms, Controls, EditBtn, FileUtil;
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
 
-{ TKeyBindingForm }
+  { TPickAppFrame }
 
-  TKeyBindingForm = class(TForm)
-    BtnCancel: TButton;
-    BtnOk: TButton;
-    FrmGrabKey: TGrabKeyFrame;
-    GrbKey: TGroupBox;
-    GrbApp: TGroupBox;
-    FrmPickApp: TPickAppFrame;
-    PnlButtons: TPanel;
+  TPickAppFrame = class(TFrame)
+    FileNameEdit1: TFileNameEdit;
   private
-    function GetAppName: string;
-    function GetKeyBinding: string;
-    procedure SetAppName(AValue: string);
-    procedure SetKeyBinding(AValue: string);
+    function GetFileName: string;
+    function GetInitialDir: string;
+    procedure SetFileName(AValue: string);
+    procedure SetInitialDir(AValue: string);
   public
-    property KeyBinding: string read GetKeyBinding write SetKeyBinding;
-    property AppName: string read GetAppName write SetAppName;
+    constructor Create(TheOwner: TComponent); override;
+    property FileName: string read GetFileName write SetFileName;
+    property InitialDir: string read GetInitialDir write SetInitialDir;
+  published
   end;
-
 
 implementation
 
 {$R *.lfm}
 
-{ TKeyBindingForm }
+{ TPickAppFrame }
 
 //***************************************************************************************
-// NAME:           GetAppName
-// RETURN VALUE:   Application name string.
-// DESCRIPTION:    Getter for the application.
+// NAME:           GetFileName
+// RETURN VALUE:   Filename with full path.
+// DESCRIPTION:    Getter for the filename.
 //
 //***************************************************************************************
-function TKeyBindingForm.GetAppName: string;
+function TPickAppFrame.GetFileName: string;
 begin
-  Result := FrmPickApp.FileName;
+  Result := FileNameEdit1.FileName;
 end;
 
 //***************************************************************************************
-// NAME:           GetKeyBinding
-// RETURN VALUE:   Key binding string.
-// DESCRIPTION:    Getter for the string representation of the key binding.
+// NAME:           GetInitialDir
+// RETURN VALUE:   Initial directory.
+// DESCRIPTION:    Getter for the initial directory used by the file open dialog.
 //
 //***************************************************************************************
-function TKeyBindingForm.GetKeyBinding: string;
+function TPickAppFrame.GetInitialDir: string;
 begin
-  // Obtain the key string from the frame.
-  Result := FrmGrabKey.KeyBinding;
+  Result := FileNameEdit1.InitialDir;
 end;
 
 //***************************************************************************************
-// NAME:           SetAppName
-// PARAMETER:      Application name string.
-// DESCRIPTION:    Setter for the application name.
+// NAME:           SetFileName
+// PARAMETER:      Filename with full path.
+// DESCRIPTION:    Setter for the filename.
 //
 //***************************************************************************************
-procedure TKeyBindingForm.SetAppName(AValue: string);
+procedure TPickAppFrame.SetFileName(AValue: string);
 begin
-  FrmPickApp.FileName := AValue;
+  // Only change the filename if it actually exists.
+  if FileExists(AValue) then
+  begin
+    FileNameEdit1.FileName := AValue;
+  end;
 end;
 
 //***************************************************************************************
-// NAME:           SetKeyBinding
-// PARAMETER:      Key binding string.
-// DESCRIPTION:    Setter for the key binding in its string representation.
+// NAME:           SetInitialDir
+// PARAMETER:      Initial directory.
+// DESCRIPTION:    Setter for the initial directory used by the file open dialog.
 //
 //***************************************************************************************
-procedure TKeyBindingForm.SetKeyBinding(AValue: string);
+procedure TPickAppFrame.SetInitialDir(AValue: string);
 begin
-  // Update the frame.
-  FrmGrabKey.KeyBinding := AValue;
+  // Only change the directory if it actually exists.
+  if DirectoryExists(AValue) then
+  begin
+    FileNameEdit1.InitialDir := AValue;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           Create
+// DESCRIPTION:    Frame constructor.
+//
+//***************************************************************************************
+constructor TPickAppFrame.Create(TheOwner: TComponent);
+var
+  ExeExt: string;
+begin
+  // Call inherited constructor.
+  inherited Create(TheOwner);
+  // Configure the filter based on the file extension of an executable.
+  ExeExt := GetExeExt;
+  if ExeExt <> '' then
+  begin
+    FileNameEdit1.Filter := 'Executables|*' + ExeExt + '|All files|*';
+  end
+  else
+  begin
+    FileNameEdit1.Filter := 'All files|*';
+  end;
 end;
 
 end.
-//********************************** end of keybindingunit.pas **************************
-
+//********************************** end of pickapp.pas *********************************
 

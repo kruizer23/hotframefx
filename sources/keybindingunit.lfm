@@ -1,11 +1,11 @@
 object KeyBindingForm: TKeyBindingForm
   Left = 1278
-  Height = 100
-  Top = 388
+  Height = 166
+  Top = 294
   Width = 412
   BorderStyle = bsDialog
-  Caption = 'Configure key binding'
-  ClientHeight = 100
+  Caption = 'Configure test'
+  ClientHeight = 166
   ClientWidth = 412
   KeyPreview = True
   Position = poOwnerFormCenter
@@ -13,7 +13,7 @@ object KeyBindingForm: TKeyBindingForm
   object PnlButtons: TPanel
     Left = 0
     Height = 34
-    Top = 66
+    Top = 132
     Width = 412
     Align = alBottom
     BevelOuter = bvNone
@@ -53,7 +53,7 @@ object KeyBindingForm: TKeyBindingForm
     Height = 60
     Top = 3
     Width = 400
-    Align = alClient
+    Align = alTop
     BorderSpacing.Left = 3
     BorderSpacing.Right = 3
     BorderSpacing.Around = 3
@@ -87,6 +87,31 @@ object KeyBindingForm: TKeyBindingForm
       inherited BtnGrab: TButton
         Left = 315
         Height = 24
+      end
+    end
+  end
+  object GrbApp: TGroupBox
+    Left = 6
+    Height = 63
+    Top = 66
+    Width = 400
+    Align = alClient
+    BorderSpacing.Left = 3
+    BorderSpacing.Right = 3
+    BorderSpacing.Around = 3
+    Caption = 'App'
+    ClientHeight = 43
+    ClientWidth = 396
+    TabOrder = 2
+    inline FrmPickApp: TPickAppFrame
+      Height = 43
+      Width = 396
+      Align = alClient
+      ClientHeight = 43
+      ClientWidth = 396
+      inherited FileNameEdit1: TFileNameEdit
+        Height = 27
+        Width = 384
       end
     end
   end

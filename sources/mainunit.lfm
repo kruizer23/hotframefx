@@ -1,12 +1,12 @@
 object MainForm: TMainForm
-  Left = 983
-  Height = 386
-  Top = 232
+  Left = 852
+  Height = 375
+  Top = 216
   Width = 495
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'HotFrameFx'
-  ClientHeight = 366
+  ClientHeight = 355
   ClientWidth = 495
   Icon.Data = {
     3E08010000000100010080800000010020002808010016000000280000008000

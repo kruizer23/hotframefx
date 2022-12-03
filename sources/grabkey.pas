@@ -434,7 +434,7 @@ end;
 
 //***************************************************************************************
 // NAME:           Create
-// PARAMETER:      TheOwner Owenr of the form.
+// PARAMETER:      TheOwner Owner of the form.
 // DESCRIPTION:    Form constructor. Calls TForm's constructor and dynamically creates
 //                 the form.
 //

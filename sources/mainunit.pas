@@ -123,7 +123,8 @@ begin
   KeyBindingForm.KeyBinding := 'alt+ctrl+tab';
   if KeyBindingForm.ShowModal = mrOK then
   begin
-    ShowMessage('Keybinding: ' + KeyBindingForm.KeyBinding);
+    ShowMessage('Key: ' + KeyBindingForm.KeyBinding +
+                ' App: ' + ExtractFileName(KeyBindingForm.AppName));
   end;
   KeyBindingForm.Free;
 end;
