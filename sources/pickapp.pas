@@ -88,7 +88,7 @@ end;
 
 //***************************************************************************************
 // NAME:           SetFileName
-// PARAMETER:      Filename with full path.
+// PARAMETER:      AValue Filename with full path.
 // DESCRIPTION:    Setter for the filename.
 //
 //***************************************************************************************
@@ -103,7 +103,7 @@ end;
 
 //***************************************************************************************
 // NAME:           SetInitialDir
-// PARAMETER:      Initial directory.
+// PARAMETER:      AValue Initial directory.
 // DESCRIPTION:    Setter for the initial directory used by the file open dialog.
 //
 //***************************************************************************************
@@ -118,6 +118,7 @@ end;
 
 //***************************************************************************************
 // NAME:           Create
+// PARAMETER:      TheOwner Frame owner.
 // DESCRIPTION:    Frame constructor.
 //
 //***************************************************************************************

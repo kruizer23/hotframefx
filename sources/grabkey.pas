@@ -290,7 +290,7 @@ end;
 
 //***************************************************************************************
 // NAME:           SetKeyBinding
-// PARAMETER:      Key binding string.
+// PARAMETER:      AValue Key binding string.
 // DESCRIPTION:    Getter for the key binding from its string representation.
 //
 //***************************************************************************************
@@ -352,6 +352,7 @@ end;
 
 //***************************************************************************************
 // NAME:           Create
+// PARAMETER:      TheOwner Frame owner.
 // DESCRIPTION:    Frame constructor.
 //
 //***************************************************************************************

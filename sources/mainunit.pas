@@ -36,9 +36,8 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, CornerEdge,
-  MouseAndKeyInput, LCLType, ExtCtrls, Menus, ActnList, Buttons, KeyBindingUnit,
-  AboutUnit;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, CornerEdge,
+  Menus, ActnList, Buttons, KeyBindingUnit, AboutUnit, HotAction;
 
 //***************************************************************************************
 // Type Definitions
@@ -211,13 +210,13 @@ end;
 //
 //***************************************************************************************
 procedure TMainForm.ShowTaskView;
+var
+  HotAction: THotAction;
 begin
-  // Press the left Super key, followed by the TAB key.
-  KeyInput.Down(VK_LWIN);
-  KeyInput.Down(VK_TAB);
-  // Let go of the keys in reverse order.
-  KeyInput.Up(VK_TAB);
-  KeyInput.Up(VK_LWIN);
+  HotAction := THotAction.Create;
+  HotAction.Text := 'Super+Tab';
+  HotAction.Execute;
+  FreeAndNil(HotAction);
 end;
 
 //***************************************************************************************
@@ -227,15 +226,13 @@ end;
 //
 //***************************************************************************************
 procedure TMainForm.ShowAppsView;
+var
+  HotAction: THotAction;
 begin
-  // Press the ALT and CTRL keys, followed by the TAB key.
-  KeyInput.Down(VK_MENU);
-  KeyInput.Down(VK_CONTROL);
-  KeyInput.Down(VK_TAB);
-  // Let go of the keys in reverse order.
-  KeyInput.Up(VK_TAB);
-  KeyInput.Up(VK_CONTROL);
-  KeyInput.Up(VK_MENU);
+  HotAction := THotAction.Create;
+  HotAction.Text := 'Alt+Ctrl+Tab';
+  HotAction.Execute;
+  FreeAndNil(HotAction);
 end;
 
 end.

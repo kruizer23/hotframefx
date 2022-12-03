@@ -40,7 +40,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, lazmouseandkeyinput, MainUnit, CornerEdge, KeyBindingUnit, AboutUnit,
-  AppVersion, GrabKey, pickapp, KeyBinding
+  AppVersion, GrabKey, pickapp, KeyBinding, HotAction
   { you can add units after this };
 
 {$R *.res}
