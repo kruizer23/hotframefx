@@ -2308,7 +2308,6 @@ object MainForm: TMainForm
       Hint = 'Quit the application'
       ImageIndex = 0
       OnExecute = ActQuitExecute
-      ShortCut = 16465
     end
     object ActAbout: TAction
       Caption = '&About...'
