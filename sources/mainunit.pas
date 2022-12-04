@@ -48,6 +48,7 @@ type
 
   TMainForm = class(TForm)
     ActAbout: TAction;
+    ActOpenFromTray: TAction;
     ActManual: TAction;
     ActPreferences: TAction;
     ActQuit: TAction;
@@ -56,6 +57,9 @@ type
     ImageList: TImageList;
     ImgScreen: TImage;
     MainMenu: TMainMenu;
+    MnuTrayQuit: TMenuItem;
+    MnuTrayOpen: TMenuItem;
+    MnuTraySep: TMenuItem;
     MnuAbout: TMenuItem;
     MnuSep2: TMenuItem;
     MnuManual: TMenuItem;
@@ -66,15 +70,22 @@ type
     MnuFile: TMenuItem;
     PnlScreen: TPanel;
     BtnTopLeft: TSpeedButton;
+    TrayPopup: TPopupMenu;
+    TrayIcon: TTrayIcon;
     procedure ActAboutExecute(Sender: TObject);
+    procedure ActOpenFromTrayExecute(Sender: TObject);
     procedure ActQuitExecute(Sender: TObject);
     procedure BtnKeyBindingClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormWindowStateChange(Sender: TObject);
   private
     FAppSettings : TAppSetings;
     FCornerEdge: TCornerEdge;
+    FQuitRequest: Boolean;
+    FFirstTimeShow: Boolean;
     procedure OnHotCorner(Sender: TObject; Corner: TCorner);
     procedure OnHotEdge(Sender: TObject; Edge: TEdge);
     procedure DoAction(ActionStr: string);
@@ -97,11 +108,14 @@ implementation
 //***************************************************************************************
 // NAME:           FormCreate
 // PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the form is created
+// DESCRIPTION:    Called when the form is created.
 //
 //***************************************************************************************
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  // Initialize fields.
+  FQuitRequest := False;
+  FFirstTimeShow := True;
   // Construct and load the application settings.
   FAppSettings := TAppSetings.Create;
   FAppSettings.Load;
@@ -133,17 +147,39 @@ begin
 end;
 
 //***************************************************************************************
-// NAME:           FormClose
+// NAME:           FormCloseQuery
 // PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the form is closed.
+//                 CanClose Set to true if it's okay to actually close the form, set it
+//                 to false otherwise.
+// DESCRIPTION:    Called when the form is about to be closed.
 //
 //***************************************************************************************
-procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  // No need to modify the close action.
-  CloseAction := CloseAction;
-  // Make sure to save the application settings.
-  FAppSettings.Save;
+  // Only actually close the window if the user specifically requested this.
+  if FQuitRequest then
+  begin
+    // Okay to close the window, because the user wants to quit.
+    CanClose := True
+  end
+  else
+  begin
+    // If they didn't explicitly request to quit, then they probably just clicked the 'X'
+    // on the window. Ask them if they want to minimize to tray instead of closing the
+    // window.
+    if MessageDlg('Question', 'Minimize to the system tray?', mtConfirmation,
+                  [mbYes, mbNo], 0) = mrYes then
+    begin
+      // Minimize to the system tray, instead of closing the window.
+      CanClose := False;
+      Application.Minimize;
+    end
+    // Okay to close the window.
+    else
+    begin
+      CanClose := True;
+    end;
+  end;
 end;
 
 //***************************************************************************************
@@ -154,6 +190,10 @@ end;
 //***************************************************************************************
 procedure TMainForm.ActQuitExecute(Sender: TObject);
 begin
+  // Make sure to save the application settings.
+  FAppSettings.Save;
+  // Set flag to inidicate the request to quit the application.
+  FQuitRequest := True;
   // Quit the application.
   Close;
 end;
@@ -161,10 +201,9 @@ end;
 //***************************************************************************************
 // NAME:           ActAboutExecute
 // PARAMETER:      Sender Signal source.
-// RETURN VALUE:   None.
 // DESCRIPTION:    Display program's about dialog.
 //
-//***************************************************************************************
+//**************************************************************************************
 procedure TMainForm.ActAboutExecute(Sender: TObject);
 var
   AboutDialog: TAboutDialog;
@@ -180,9 +219,21 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           ActOpenFromTrayExecute
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Opens the window from the system tray.
+//
+//**************************************************************************************
+procedure TMainForm.ActOpenFromTrayExecute(Sender: TObject);
+begin
+  WindowState := wsNormal;
+  Show;
+end;
+
+//***************************************************************************************
 // NAME:           FormDestroy
 // PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the form is destroyed
+// DESCRIPTION:    Called when the form is destroyed.
 //
 //***************************************************************************************
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -191,6 +242,40 @@ begin
   FCornerEdge.Free;
   // Release the application settings object.
   FAppSettings.Free;
+end;
+
+//***************************************************************************************
+// NAME:           FormShow
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the form is shown.
+//
+//***************************************************************************************
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  // First time that the form gets shown after its creation?
+  if FFirstTimeShow then
+  begin
+    // Reset flag to make sure the follow part only runs once after startup.
+    FFirstTimeShow := False;
+    // If this is not the first time ever that this application gets strarted, then
+    // automatically minimize to send it to the system tray.
+    if not FAppSettings.FirstRun then
+      Application.Minimize;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           FormWindowStateChange
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the window state changes.
+//
+//***************************************************************************************
+procedure TMainForm.FormWindowStateChange(Sender: TObject);
+begin
+  // Did the window just get minimized?
+  if WindowState = wsMinimized then
+    // Also hide the window to truly minimize to the system tray.
+    Hide;
 end;
 
 //***************************************************************************************
