@@ -37,7 +37,7 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, CornerEdge,
-  Menus, ActnList, Buttons, KeyBindingUnit, AboutUnit, HotAction;
+  Menus, ActnList, Buttons, KeyBindingUnit, AboutUnit, HotAction, AppSettings;
 
 //***************************************************************************************
 // Type Definitions
@@ -69,14 +69,15 @@ type
     procedure ActAboutExecute(Sender: TObject);
     procedure ActQuitExecute(Sender: TObject);
     procedure BtnKeyBindingClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
+    FAppSettings : TAppSetings;
     FCornerEdge: TCornerEdge;
     procedure OnHotCorner(Sender: TObject; Corner: TCorner);
     procedure OnHotEdge(Sender: TObject; Edge: TEdge);
-    procedure ShowTaskView;
-    procedure ShowAppsView;
+    procedure DoAction(ActionStr: string);
   public
 
   end;
@@ -101,11 +102,14 @@ implementation
 //***************************************************************************************
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  // Construct and load the application settings.
+  FAppSettings := TAppSetings.Create;
+  FAppSettings.Load;
   // Construct and configure the hot corner and edge detection object.
   FCornerEdge := TCornerEdge.Create;
   FCornerEdge.OnHotCorner := @OnHotCorner;
   FCornerEdge.OnHotEdge := @OnHotEdge;
-  FCornerEdge.Sensitivity := seMedium;
+  FCornerEdge.Sensitivity := FAppSettings.Sensitivity;
 end;
 
 //***************************************************************************************
@@ -126,6 +130,20 @@ begin
                 ' App: ' + ExtractFileName(KeyBindingForm.AppName));
   end;
   KeyBindingForm.Free;
+end;
+
+//***************************************************************************************
+// NAME:           FormClose
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the form is closed.
+//
+//***************************************************************************************
+procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  // No need to modify the close action.
+  CloseAction := CloseAction;
+  // Make sure to save the application settings.
+  FAppSettings.Save;
 end;
 
 //***************************************************************************************
@@ -171,6 +189,8 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   // Release the hot corner and edge detection object.
   FCornerEdge.Free;
+  // Release the application settings object.
+  FAppSettings.Free;
 end;
 
 //***************************************************************************************
@@ -182,9 +202,12 @@ end;
 //***************************************************************************************
 procedure TMainForm.OnHotCorner(Sender: TObject; Corner: TCorner);
 begin
-  if Corner = coTopLeft then
-  begin
-    ShowTaskView;
+  // Process based on the specific corner.
+  case Corner of
+    coTopLeft:     DoAction(FAppSettings.ActionTopLeft);
+    coTopRight:    DoAction(FAppSettings.ActionTopRight);
+    coBottomLeft:  DoAction(FAppSettings.ActionBottomLeft);
+    coBottomRight: DoAction(FAppSettings.ActionBottomRight);
   end;
 end;
 
@@ -197,40 +220,27 @@ end;
 //***************************************************************************************
 procedure TMainForm.OnHotEdge(Sender: TObject; Edge: TEdge);
 begin
-  if Edge = edBottom then
-  begin
-    ShowAppsView;
+  // Process based on the specific edge.
+  case Edge of
+    edTop:    DoAction(FAppSettings.ActionTop);
+    edBottom: DoAction(FAppSettings.ActionBottom);
+    edLeft:   DoAction(FAppSettings.ActionLeft);
+    edRight:  DoAction(FAppSettings.ActionRight);
   end;
 end;
 
 //***************************************************************************************
-// NAME:           ShowTaskView
-// DESCRIPTION:    Simulates pressing the LWIN + TAB key, which is the keyboard shortcut
-//                 in Windows for showing the task view.
+// NAME:           DoAction
+// PARAMETERS:     ActionStr String representation of the action to perform.
+// DESCRIPTION:    Executes the specified action.
 //
 //***************************************************************************************
-procedure TMainForm.ShowTaskView;
+procedure TMainForm.DoAction(ActionStr: string);
 var
   HotAction: THotAction;
 begin
   HotAction := THotAction.Create;
-  HotAction.Text := 'Super+Tab';
-  HotAction.Execute;
-  FreeAndNil(HotAction);
-end;
-
-//***************************************************************************************
-// NAME:           ShowAppsView
-// DESCRIPTION:    Simulates pressing the ALT + CTRL + TAB key, which is the keyboard
-//                 shortcut in Windows for showing the open applications.
-//
-//***************************************************************************************
-procedure TMainForm.ShowAppsView;
-var
-  HotAction: THotAction;
-begin
-  HotAction := THotAction.Create;
-  HotAction.Text := 'Alt+Ctrl+Tab';
+  HotAction.Text := ActionStr;
   HotAction.Execute;
   FreeAndNil(HotAction);
 end;

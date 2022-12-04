@@ -2126,6 +2126,7 @@ object MainForm: TMainForm
     FFFF
   }
   Menu = MainMenu
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
