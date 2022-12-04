@@ -180,6 +180,12 @@ begin
       CanClose := True;
     end;
   end;
+  // Actually closing the window?
+  if CanClose then
+  begin
+    // Make sure to save the application settings.
+    FAppSettings.Save;
+  end;
 end;
 
 //***************************************************************************************
@@ -190,8 +196,6 @@ end;
 //***************************************************************************************
 procedure TMainForm.ActQuitExecute(Sender: TObject);
 begin
-  // Make sure to save the application settings.
-  FAppSettings.Save;
   // Set flag to inidicate the request to quit the application.
   FQuitRequest := True;
   // Quit the application.
