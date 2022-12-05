@@ -37,7 +37,8 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, CornerEdge,
-  Menus, ActnList, Buttons, KeyBindingUnit, AboutUnit, HotAction, AppSettings;
+  Menus, ActnList, Buttons, AboutUnit, HotAction, AppSettings,
+  ConfigActionUnit;
 
 //***************************************************************************************
 // Type Definitions
@@ -53,7 +54,6 @@ type
     ActPreferences: TAction;
     ActQuit: TAction;
     ActionList: TActionList;
-    BtnKeyBinding: TButton;
     ImageList: TImageList;
     ImgScreen: TImage;
     MainMenu: TMainMenu;
@@ -75,7 +75,7 @@ type
     procedure ActAboutExecute(Sender: TObject);
     procedure ActOpenFromTrayExecute(Sender: TObject);
     procedure ActQuitExecute(Sender: TObject);
-    procedure BtnKeyBindingClick(Sender: TObject);
+    procedure BtnTopLeftClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -127,23 +127,23 @@ begin
 end;
 
 //***************************************************************************************
-// NAME:           BtnKeyBindingClick
+// NAME:           BtnTopLeftClick
 // PARAMETER:      Sender Signal source.
 // DESCRIPTION:    Called when the button is clicked.
 //
 //***************************************************************************************
-procedure TMainForm.BtnKeyBindingClick(Sender: TObject);
+procedure TMainForm.BtnTopLeftClick(Sender: TObject);
 var
-  KeyBindingForm: TKeyBindingForm;
+  ConfigActionForm: TConfigActionForm;
 begin
-  KeyBindingForm := TKeyBindingForm.Create(Self);
-  KeyBindingForm.KeyBinding := 'alt+ctrl+tab';
-  if KeyBindingForm.ShowModal = mrOK then
+  ConfigActionForm := TConfigActionForm.Create(Self);
+  // TODO Set currently configured action.
+  if ConfigActionForm.ShowModal = mrOK then
   begin
-    ShowMessage('Key: ' + KeyBindingForm.KeyBinding +
-                ' App: ' + ExtractFileName(KeyBindingForm.AppName));
+    // TODO Process configured action.
+    ShowMessage('Action: ' + ConfigActionForm.ActionText);
   end;
-  KeyBindingForm.Free;
+  FreeAndNil(ConfigActionForm);
 end;
 
 //***************************************************************************************

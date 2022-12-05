@@ -60,56 +60,56 @@
         <UnitName Value="CornerEdge"/>
       </Unit2>
       <Unit3>
-        <Filename Value="keybindingunit.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="KeyBindingForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="KeyBindingUnit"/>
-      </Unit3>
-      <Unit4>
         <Filename Value="appversion.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="AppVersion"/>
-      </Unit4>
-      <Unit5>
+      </Unit3>
+      <Unit4>
         <Filename Value="aboutunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="AboutDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="AboutUnit"/>
-      </Unit5>
-      <Unit6>
+      </Unit4>
+      <Unit5>
         <Filename Value="grabkey.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="GrabKeyFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="GrabKey"/>
-      </Unit6>
-      <Unit7>
+      </Unit5>
+      <Unit6>
         <Filename Value="pickapp.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PickAppFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="PickApp"/>
-      </Unit7>
-      <Unit8>
+      </Unit6>
+      <Unit7>
         <Filename Value="keybinding.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="KeyBinding"/>
-      </Unit8>
-      <Unit9>
+      </Unit7>
+      <Unit8>
         <Filename Value="hotaction.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="HotAction"/>
-      </Unit9>
-      <Unit10>
+      </Unit8>
+      <Unit9>
         <Filename Value="appsettings.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="AppSettings"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="configactionunit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ConfigActionForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ConfigActionUnit"/>
       </Unit10>
     </Units>
   </ProjectOptions>

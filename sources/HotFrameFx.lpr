@@ -39,8 +39,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, lazmouseandkeyinput, MainUnit, CornerEdge, KeyBindingUnit, AboutUnit,
-  AppVersion, GrabKey, pickapp, KeyBinding, HotAction, AppSettings
+  Forms, lazmouseandkeyinput, MainUnit, CornerEdge, AboutUnit,
+  AppVersion, GrabKey, PickApp, KeyBinding, HotAction, AppSettings, ConfigActionUnit
   { you can add units after this };
 
 {$R *.res}
