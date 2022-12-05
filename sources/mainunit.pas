@@ -138,6 +138,7 @@ var
 begin
   ConfigActionForm := TConfigActionForm.Create(Self);
   // TODO Set currently configured action.
+  ConfigActionForm.ActionText := 'Ctrl+P';
   if ConfigActionForm.ShowModal = mrOK then
   begin
     // TODO Process configured action.

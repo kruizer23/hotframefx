@@ -37,7 +37,7 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  GrabKey, PickApp;
+  GrabKey, PickApp, HotAction;
 
 //***************************************************************************************
 // Type Definitions
@@ -62,6 +62,7 @@ type
     procedure RdbLaunchAppChange(Sender: TObject);
     procedure RdbSendKeysChange(Sender: TObject);
   private
+    procedure UpdateUI(ActionType: TActionType);
     function GetActionText: string;
     procedure SetActionText(AValue: string);
 
@@ -76,19 +77,30 @@ implementation
 { TConfigActionForm }
 
 //***************************************************************************************
-// NAME:           RdbSendKeysChange
-// PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the state of the radio button changes.
+// NAME:           UpdateUI
+// PARAMETER:      ActionType Action type to configure.
+// DESCRIPTION:    Updates the user interface for configuring the specified action type.
 //
 //***************************************************************************************
-procedure TConfigActionForm.RdbSendKeysChange(Sender: TObject);
+procedure TConfigActionForm.UpdateUI(ActionType: TActionType);
 begin
-  // Is the radio button now checked?
-  if RdbSendKeys.Checked then
+  // Action type for sending key strokes?
+  if ActionType = atSendKeys then
   begin
     // Make sure the right frame is shown.
     FrmGrabKey.Visible := True;
     FrmPickApp.Visible := False;
+    if not RdbSendKeys.Checked then
+      RdbSendKeys.Checked := True;
+  end
+  // Action type for launching an application.
+  else
+  begin
+    // Make sure the right frame is shown.
+    FrmPickApp.Visible := True;
+    FrmGrabKey.Visible := False;
+    if not RdbLaunchApp.Checked then
+      RdbLaunchApp.Checked := True;
   end;
 end;
 
@@ -123,10 +135,11 @@ begin
   // Empty action text?
   if AValue = '' then
   begin
+    // Initialize frame specified properties.
     FrmPickApp.FileName := '';
     FrmGrabKey.KeyBinding := '';
-    RdbSendKeys.Checked := True;
-    RdbLaunchApp.Checked := False;
+    // Default to configuring key strokes at the action.
+    UpdateUI(atSendKeys);
   end
   // Not an empty action text.
   else
@@ -138,17 +151,33 @@ begin
       FrmPickApp.FileName := AValue;
       FrmPickApp.InitialDir := ExtractFileDir(AValue);
       FrmGrabKey.KeyBinding := '';
-      RdbLaunchApp.Checked := True;
-      RdbSendKeys.Checked := False;
+      // Make sure the right frame is shown.
+      UpdateUI(atLaunchApp);
     end
     // Not an existing filename. It is probably a key binding.
     else
     begin
       FrmGrabKey.KeyBinding := AValue;
       FrmPickApp.FileName := '';
-      RdbSendKeys.Checked := True;
-      RdbLaunchApp.Checked := False;
+      // Make sure the right frame is shown.
+      UpdateUI(atSendKeys);
     end;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           RdbSendKeysChange
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the state of the radio button changes.
+//
+//***************************************************************************************
+procedure TConfigActionForm.RdbSendKeysChange(Sender: TObject);
+begin
+  // Is the radio button now checked?
+  if RdbSendKeys.Checked then
+  begin
+    // Make sure the right frame is shown.
+    UpdateUI(atSendKeys);
   end;
 end;
 
@@ -164,8 +193,7 @@ begin
   if RdbLaunchApp.Checked then
   begin
     // Make sure the right frame is shown.
-    FrmPickApp.Visible := True;
-    FrmGrabKey.Visible := False;
+    UpdateUI(atLaunchApp);
   end;
 end;
 
@@ -177,6 +205,8 @@ end;
 //***************************************************************************************
 procedure TConfigActionForm.FormCreate(Sender: TObject);
 begin
+  // Default to configuring keystrokes as the action.
+  UpdateUI(atSendKeys);
   // Modify the alignment of the frames. In design mode both frames are showns for
   // convenience.
   FrmGrabKey.Align := alClient;
