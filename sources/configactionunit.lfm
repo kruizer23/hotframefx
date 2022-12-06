@@ -3,6 +3,7 @@ object ConfigActionForm: TConfigActionForm
   Height = 226
   Top = 503
   Width = 426
+  ActiveControl = BtnOk
   BorderStyle = bsDialog
   Caption = 'Configure Action'
   ClientHeight = 226

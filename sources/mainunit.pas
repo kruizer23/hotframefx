@@ -37,13 +37,17 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, CornerEdge,
-  Menus, ActnList, Buttons, AboutUnit, HotAction, AppSettings,
+  Menus, ActnList, Buttons, ComCtrls, AboutUnit, HotAction, AppSettings,
   ConfigActionUnit;
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
+  // Lists all action button tags. Note that these values must match the tags assigned
+  // to the action speed buttons on the user interface.
+  TActionButtonTag = (abtTopLeft = 1, abtTop, abtTopRight, abtRight,
+                      abtBottomRight, abtBottom, abtBottomLeft, abtLeft);
 
   { TMainForm }
 
@@ -56,6 +60,7 @@ type
     ActionList: TActionList;
     ImageList: TImageList;
     ImgScreen: TImage;
+    LblActionInfo: TLabel;
     MainMenu: TMainMenu;
     MnuTrayQuit: TMenuItem;
     MnuTrayOpen: TMenuItem;
@@ -70,22 +75,33 @@ type
     MnuFile: TMenuItem;
     PnlScreen: TPanel;
     BtnTopLeft: TSpeedButton;
+    BtnTop: TSpeedButton;
+    BtnTopRight: TSpeedButton;
+    BtnLeft: TSpeedButton;
+    BtnRight: TSpeedButton;
+    BtnBottom: TSpeedButton;
+    BtnBottomLeft: TSpeedButton;
+    BtnBottomRight: TSpeedButton;
+    StatusBar: TStatusBar;
     TrayPopup: TPopupMenu;
     TrayIcon: TTrayIcon;
     procedure ActAboutExecute(Sender: TObject);
     procedure ActOpenFromTrayExecute(Sender: TObject);
     procedure ActQuitExecute(Sender: TObject);
-    procedure BtnTopLeftClick(Sender: TObject);
+    procedure ActionButtonClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormWindowStateChange(Sender: TObject);
+    procedure ActionButtonMouseEnter(Sender: TObject);
+    procedure ActionButtonMouseLeave(Sender: TObject);
   private
     FAppSettings : TAppSetings;
     FCornerEdge: TCornerEdge;
     FQuitRequest: Boolean;
     FFirstTimeShow: Boolean;
+    procedure DisplayHint(Sender: TObject);
     procedure OnHotCorner(Sender: TObject; Corner: TCorner);
     procedure OnHotEdge(Sender: TObject; Edge: TEdge);
     procedure DoAction(ActionStr: string);
@@ -113,6 +129,8 @@ implementation
 //***************************************************************************************
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  // Re-route hint handler.
+  Application.OnHint := @DisplayHint;
   // Initialize fields.
   FQuitRequest := False;
   FFirstTimeShow := True;
@@ -124,27 +142,139 @@ begin
   FCornerEdge.OnHotCorner := @OnHotCorner;
   FCornerEdge.OnHotEdge := @OnHotEdge;
   FCornerEdge.Sensitivity := FAppSettings.Sensitivity;
+  // Reset action info string.
+  LblActionInfo.Caption := '';
 end;
 
 //***************************************************************************************
-// NAME:           BtnTopLeftClick
+// NAME:           ActionButtonMouseEnter
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the mouse entered the rect of the
+//                 component.
+//
+//***************************************************************************************
+procedure TMainForm.ActionButtonMouseEnter(Sender: TObject);
+var
+  HotAction: THotAction;
+begin
+  // Source a speed button as expected?
+  if Sender is TSpeedButton then
+  begin
+    // Switch mouse cursor to hand to emphasize that it is clickable.
+    (Sender as TSpeedButton).Cursor := crHandPoint;
+    // Create hot action object
+    HotAction := THotAction.Create;
+    // Configure hot action base on the action button that the mouse cursor hovers over.
+    case (Sender as TSpeedButton).Tag of
+    Ord(abtTopLeft):     HotAction.Text := FAppSettings.ActionTopLeft;
+    Ord(abtTop):         HotAction.Text := FAppSettings.ActionTop;
+    Ord(abtTopRight):    HotAction.Text := FAppSettings.ActionTopRight;
+    Ord(abtRight):       HotAction.Text := FAppSettings.ActionRight;
+    Ord(abtBottomRight): HotAction.Text := FAppSettings.ActionBottomRight;
+    Ord(abtBottom):      HotAction.Text := FAppSettings.ActionBottom;
+    Ord(abtBottomLeft):  HotAction.Text := FAppSettings.ActionBottomLeft;
+    Ord(abtLeft):        HotAction.Text := FAppSettings.ActionLeft;
+    end;
+    // Set info string of the currently configured action.
+    LblActionInfo.Caption := HotAction.Info;
+    if LblActionInfo.Caption = '' then
+      LblActionInfo.Caption := 'Do nothing';
+    // Release hot action object.
+    FreeAndNil(HotAction);
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           ActionButtonMouseLeave
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the mouse left the rect of the
+//                 component.
+//
+//***************************************************************************************
+procedure TMainForm.ActionButtonMouseLeave(Sender: TObject);
+begin
+  // Source a speed button as expected?
+  if Sender is TSpeedButton then
+  begin
+    // Reset action info string.
+    LblActionInfo.Caption := '';
+    // Switch back to the default mouse cursor.
+    (Sender as TSpeedButton).Cursor := crDefault;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           DisplayHint
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Application OnHint event handler.
+//
+//***************************************************************************************
+procedure TMainForm.DisplayHint(Sender: TObject);
+begin
+  StatusBar.SimpleText := GetLongHint(Application.Hint);
+end;
+
+//***************************************************************************************
+// NAME:           ActionButtonClick
 // PARAMETER:      Sender Signal source.
 // DESCRIPTION:    Called when the button is clicked.
 //
 //***************************************************************************************
-procedure TMainForm.BtnTopLeftClick(Sender: TObject);
+procedure TMainForm.ActionButtonClick(Sender: TObject);
+const
+  CaptionAppend: array[Ord(abtTopLeft)..Ord(abtLeft)] of string =
+  (
+    ' - Top-Left Corner',
+    ' - Top Edge',
+    ' - Top-Right Corner',
+    ' - Right Edge',
+    ' - Bottom-Right Corner',
+    ' - Bottom Edge',
+    ' - Bottom-Left Corner',
+    ' - Left Edge'
+  );
 var
   ConfigActionForm: TConfigActionForm;
 begin
-  ConfigActionForm := TConfigActionForm.Create(Self);
-  // TODO Set currently configured action.
-  ConfigActionForm.ActionText := 'Ctrl+P';
-  if ConfigActionForm.ShowModal = mrOK then
+  // Source a speed button as expected?
+  if Sender is TSpeedButton then
   begin
-    // TODO Process configured action.
-    ShowMessage('Action: ' + ConfigActionForm.ActionText);
+    // Construct the action configuration form.
+    ConfigActionForm := TConfigActionForm.Create(Self);
+    ConfigActionForm.ActionText := '';
+    ConfigActionForm.Caption := ConfigActionForm.Caption +
+                                CaptionAppend[(Sender as TSpeedButton).Tag];
+    // Initialize the currently configured action and the form's caption.
+    case (Sender as TSpeedButton).Tag of
+    Ord(abtTopLeft):     ConfigActionForm.ActionText := FAppSettings.ActionTopLeft;
+    Ord(abtTop):         ConfigActionForm.ActionText := FAppSettings.ActionTop;
+    Ord(abtTopRight):    ConfigActionForm.ActionText := FAppSettings.ActionTopRight;
+    Ord(abtRight):       ConfigActionForm.ActionText := FAppSettings.ActionRight;
+    Ord(abtBottomRight): ConfigActionForm.ActionText := FAppSettings.ActionBottomRight;
+    Ord(abtBottom):      ConfigActionForm.ActionText := FAppSettings.ActionBottom;
+    Ord(abtBottomLeft):  ConfigActionForm.ActionText := FAppSettings.ActionBottomLeft;
+    Ord(abtLeft):        ConfigActionForm.ActionText := FAppSettings.ActionLeft;
+    end;
+    // Get input from the user by showing the form.
+    if ConfigActionForm.ShowModal = mrOK then
+    begin
+      // Store the user selection action.
+      case (Sender as TSpeedButton).Tag of
+        Ord(abtTopLeft):     FAppSettings.ActionTopLeft := ConfigActionForm.ActionText;
+        Ord(abtTop):         FAppSettings.ActionTop := ConfigActionForm.ActionText;
+        Ord(abtTopRight):    FAppSettings.ActionTopRight := ConfigActionForm.ActionText;
+        Ord(abtRight):       FAppSettings.ActionRight := ConfigActionForm.ActionText;
+        Ord(abtBottomRight): FAppSettings.ActionBottomRight := ConfigActionForm.ActionText;
+        Ord(abtBottom):      FAppSettings.ActionBottom := ConfigActionForm.ActionText;
+        Ord(abtBottomLeft):  FAppSettings.ActionBottomLeft := ConfigActionForm.ActionText;
+        Ord(abtLeft):        FAppSettings.ActionLeft := ConfigActionForm.ActionText;
+      end;
+    end;
+    // Release the action configuration form.
+    FreeAndNil(ConfigActionForm);
   end;
-  FreeAndNil(ConfigActionForm);
 end;
 
 //***************************************************************************************
