@@ -75,8 +75,9 @@ const
   NUM_SPECIAL_KEYS = 4;
 
 const
-  KeyMap: array[0..(59+NUM_SPECIAL_KEYS)] of TKeyMap =
+  KeyMap: array[0..(60+NUM_SPECIAL_KEYS)] of TKeyMap =
   (
+    (KeyStr: '[Not used]'; KeyCode: VK_UNKNOWN),
     (KeyStr: 'Tab'; KeyCode: VK_TAB),
     (KeyStr: 'Delete'; KeyCode: VK_DELETE),
     (KeyStr: 'Insert'; KeyCode: VK_INSERT),
