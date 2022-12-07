@@ -1,10 +1,101 @@
 object SettingsForm: TSettingsForm
-  Left = 614
-  Height = 200
-  Top = 369
-  Width = 415
+  Left = 1311
+  Height = 159
+  Top = 326
+  Width = 336
   BorderStyle = bsDialog
   Caption = 'Preferences'
+  ClientHeight = 159
+  ClientWidth = 336
+  OnCreate = FormCreate
   Position = poOwnerFormCenter
   LCLVersion = '2.0.12.0'
+  object PnlBottom: TPanel
+    Left = 0
+    Height = 40
+    Top = 119
+    Width = 336
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 40
+    ClientWidth = 336
+    TabOrder = 0
+    object BtnCancel: TButton
+      Left = 249
+      Height = 28
+      Top = 6
+      Width = 75
+      Align = alRight
+      BorderSpacing.Left = 3
+      BorderSpacing.Right = 6
+      BorderSpacing.Around = 6
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object BtnOk: TButton
+      Left = 165
+      Height = 28
+      Top = 6
+      Width = 75
+      Align = alRight
+      BorderSpacing.Right = 3
+      BorderSpacing.Around = 6
+      Caption = 'OK'
+      ModalResult = 1
+      TabOrder = 0
+    end
+  end
+  object LblSensitivity: TLabel
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 330
+    Align = alTop
+    AutoSize = False
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Corner/Edge Sensitivity'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object CmbSensitivity: TComboBox
+    Left = 18
+    Height = 23
+    Top = 29
+    Width = 150
+    Align = alTop
+    BorderSpacing.Left = 18
+    BorderSpacing.Top = 6
+    Constraints.MaxWidth = 150
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object LblAutostart: TLabel
+    Left = 6
+    Height = 17
+    Top = 60
+    Width = 330
+    Align = alTop
+    AutoSize = False
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 8
+    Caption = 'Autostart'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object ChbAutostart: TCheckBox
+    Left = 18
+    Height = 19
+    Top = 83
+    Width = 318
+    Align = alTop
+    BorderSpacing.Left = 18
+    BorderSpacing.Top = 6
+    Caption = 'Load HotFrameFx with system start-up'
+    TabOrder = 2
+  end
 end

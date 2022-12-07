@@ -36,7 +36,8 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, CornerEdge;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
+  CornerEdge;
 
 //***************************************************************************************
 // Type Definitions
@@ -46,6 +47,14 @@ type
   { TSettingsForm }
 
   TSettingsForm = class(TForm)
+    BtnCancel: TButton;
+    BtnOk: TButton;
+    ChbAutostart: TCheckBox;
+    CmbSensitivity: TComboBox;
+    LblSensitivity: TLabel;
+    LblAutostart: TLabel;
+    PnlBottom: TPanel;
+    procedure FormCreate(Sender: TObject);
   private
     function GetAutoStart: Boolean;
     function GetSensitivity: TSensitivity;
@@ -61,7 +70,48 @@ implementation
 
 {$R *.lfm}
 
+//***************************************************************************************
+// Type Definitions
+//***************************************************************************************
+type
+  TSensitivityMap = record
+    Text: string;
+    Code: TSensitivity;
+  end;
+
+
+//***************************************************************************************
+// Constant data declarations
+//***************************************************************************************
+const
+  SensitivityMap: array[0..4] of TSensitivityMap =
+  (
+    (Text: 'Lowest'; Code: seLowest),
+    (Text: 'Lower'; Code: seLower),
+    (Text: 'Medium'; Code: seMedium),
+    (Text: 'Higher'; Code: seHigher),
+    (Text: 'Highest'; Code: seHighest)
+  );
+
 { TSettingsForm }
+
+//***************************************************************************************
+// NAME:           FormCreate
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the form is created.
+//
+//***************************************************************************************
+procedure TSettingsForm.FormCreate(Sender: TObject);
+var
+  Idx: integer;
+begin
+  // Populate the items in the sensitivity combox box.
+  for Idx := Low(SensitivityMap) to High(SensitivityMap) do
+  begin
+    CmbSensitivity.Items.Add(SensitivityMap[Idx].Text);
+  end;
+  CmbSensitivity.ItemIndex := 0;
+end;
 
 //***************************************************************************************
 // NAME:           GetAutoStart
@@ -72,8 +122,7 @@ implementation
 //***************************************************************************************
 function TSettingsForm.GetAutoStart: Boolean;
 begin
-  // TODO Update.
-  Result := False;
+  Result := ChbAutostart.Checked;
 end;
 
 //***************************************************************************************
@@ -84,8 +133,7 @@ end;
 //***************************************************************************************
 function TSettingsForm.GetSensitivity: TSensitivity;
 begin
-  // TODO Update.
-  Result := seMedium;
+  Result := SensitivityMap[CmbSensitivity.ItemIndex].Code;
 end;
 
 //***************************************************************************************
@@ -97,8 +145,7 @@ end;
 //***************************************************************************************
 procedure TSettingsForm.SetAutoStart(AValue: Boolean);
 begin
-  // TODO Update.
-  AValue := AValue;
+  ChbAutostart.Checked := AValue;
 end;
 
 //***************************************************************************************
@@ -108,9 +155,20 @@ end;
 //
 //***************************************************************************************
 procedure TSettingsForm.SetSensitivity(AValue: TSensitivity);
+var
+  Idx: integer;
 begin
-  // TODO Update.
-  AValue := AValue;
+  // Loop through sensitivity map to find the combobox item that belong to this one.
+  for Idx := Low(SensitivityMap) to High(SensitivityMap) do
+  begin
+    // Is this sensitivity a match?
+    if SensitivityMap[Idx].Code = AValue then
+    begin
+      // Select this one in the combo box and stop the loop.
+      CmbSensitivity.ItemIndex := Idx;
+      Break;
+    end;
+  end;
 end;
 
 end.

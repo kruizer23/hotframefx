@@ -1,7 +1,7 @@
 object ConfigActionForm: TConfigActionForm
-  Left = 1140
+  Left = 1336
   Height = 226
-  Top = 556
+  Top = 541
   Width = 426
   ActiveControl = BtnOk
   BorderStyle = bsDialog

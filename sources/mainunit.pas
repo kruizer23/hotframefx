@@ -361,12 +361,18 @@ procedure TMainForm.ActPreferencesExecute(Sender: TObject);
 var
   SettingsForm: TSettingsForm;
 begin
-  // Construct the settings form.
+  // Construct and initialize the settings form.
   SettingsForm := TSettingsForm.Create(Self);
+  SettingsForm.AutoStart := FAppSettings.AutoStart;
+  SettingsForm.Sensitivity := FAppSettings.Sensitivity;
   // Get input from the user by showing the form.
  if SettingsForm.ShowModal = mrOK then
  begin
-   // TODO Process the results.
+   // Update the new sensitivity setting.
+   FAppSettings.Sensitivity := SettingsForm.Sensitivity;
+   FCornerEdge.Sensitivity := FAppSettings.Sensitivity;
+   // Update the new autostart setting.
+   FAppSettings.AutoStart := SettingsForm.AutoStart;
  end;
  // Release the settings form.
  FreeAndNil(SettingsForm);

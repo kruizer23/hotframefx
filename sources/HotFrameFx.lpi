@@ -115,6 +115,7 @@
         <Filename Value="settingsunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SettingsForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="SettingsUnit"/>
       </Unit11>
