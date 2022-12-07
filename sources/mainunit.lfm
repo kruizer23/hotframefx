@@ -2735,6 +2735,7 @@ object MainForm: TMainForm
       Caption = '&Preferences...'
       Hint = 'Edit application preferences'
       ImageIndex = 4
+      OnExecute = ActPreferencesExecute
     end
     object ActOpenFromTray: TAction
       Caption = 'Open'

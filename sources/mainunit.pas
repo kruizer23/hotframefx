@@ -37,7 +37,7 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, CornerEdge,
-  Menus, ActnList, Buttons, ComCtrls, AboutUnit, HotAction, AppSettings,
+  Menus, ActnList, Buttons, ComCtrls, AboutUnit, HotAction, AppSettings, SettingsUnit,
   ConfigActionUnit;
 
 //***************************************************************************************
@@ -86,6 +86,7 @@ type
     TrayIcon: TTrayIcon;
     procedure ActAboutExecute(Sender: TObject);
     procedure ActOpenFromTrayExecute(Sender: TObject);
+    procedure ActPreferencesExecute(Sender: TObject);
     procedure ActQuitExecute(Sender: TObject);
     procedure ActionButtonClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -348,6 +349,27 @@ procedure TMainForm.ActOpenFromTrayExecute(Sender: TObject);
 begin
   WindowState := wsNormal;
   Show;
+end;
+
+//***************************************************************************************
+// NAME:           ActPreferencesExecute
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Opens the settings form for configuring application preferences.
+//
+//**************************************************************************************
+procedure TMainForm.ActPreferencesExecute(Sender: TObject);
+var
+  SettingsForm: TSettingsForm;
+begin
+  // Construct the settings form.
+  SettingsForm := TSettingsForm.Create(Self);
+  // Get input from the user by showing the form.
+ if SettingsForm.ShowModal = mrOK then
+ begin
+   // TODO Process the results.
+ end;
+ // Release the settings form.
+ FreeAndNil(SettingsForm);
 end;
 
 //***************************************************************************************

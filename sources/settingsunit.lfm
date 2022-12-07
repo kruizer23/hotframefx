@@ -1,0 +1,10 @@
+object SettingsForm: TSettingsForm
+  Left = 614
+  Height = 200
+  Top = 369
+  Width = 415
+  BorderStyle = bsDialog
+  Caption = 'Preferences'
+  Position = poOwnerFormCenter
+  LCLVersion = '2.0.12.0'
+end
