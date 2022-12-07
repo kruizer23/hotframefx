@@ -36,7 +36,7 @@ interface
 // Global includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, LazFileUtils, XMLConf, CornerEdge;
+  Classes, SysUtils, LazFileUtils, Forms, XMLConf, Registry, CornerEdge;
 
 //***************************************************************************************
 // Type Definitions
@@ -61,13 +61,16 @@ type
     FActionRight: string;
     procedure Defaults;
     procedure InitSettingsFile;
+    function ReadAutoStartFromRegistry: Boolean;
+    procedure SetAutoStart(AValue: Boolean);
+    procedure WriteAutoStartToRegistry(AValue: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Load;
     procedure Save;
     property FirstRun: Boolean read FFirstRun write FFirstRun;
-    property AutoStart: Boolean read FAutoStart write FAutoStart;
+    property AutoStart: Boolean read FAutoStart write SetAutoStart;
     property Sensitivity: TSensitivity read FSensitivity write FSensitivity;
     property ActionTopLeft: string read FActionTopLeft write FActionTopLeft;
     property ActionTopRight: string read FActionTopRight write FActionTopRight;
@@ -134,6 +137,103 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           ReadAutoStartFromRegistry
+// RETURN VALUE:   True if autostart is enabled, False otherwise.
+// DESCRIPTION:    Helper to read the autostart setting from the registry.
+//
+//***************************************************************************************
+function TAppSetings.ReadAutoStartFromRegistry: Boolean;
+var
+ Registry: TRegistry;
+ AppString: string;
+begin
+  // Initialize the result.
+  Result := False;
+  {$IFDEF WINDOWS}
+  // Create registry object.
+  Registry := TRegistry.Create(KEY_READ);
+  try
+    // Initialize the root.
+    Registry.RootKey := HKEY_CURRENT_USER;
+    // Attempt to open the key that stores all autostart applications.
+    if Registry.OpenKeyReadOnly('\SOFTWARE\Microsoft\Windows\CurrentVersion\Run') then
+    begin
+      // Read the string with the application executable.
+      AppString := Registry.ReadString('HotFrameFx');
+      // When autostart it enabled, it matches the name of the application's executable.
+      if AppString = Application.ExeName then
+      begin
+        // Update the result.
+        Result := True;
+      end;
+    end;
+  finally
+    // Release the registry object.
+    Registry.Free;
+  end;
+  {$ENDIF}
+end;
+
+//***************************************************************************************
+// NAME:           WriteAutoStartToRegistry
+// PARAMETER:      AValue True to enable autostart, False to disable.
+// DESCRIPTION:    Helper to write the autostart setting to the registry.
+//
+//***************************************************************************************
+procedure TAppSetings.WriteAutoStartToRegistry(AValue: Boolean);
+var
+ Registry: TRegistry;
+begin
+  {$IFDEF WINDOWS}
+  // Create registry object.
+  Registry := TRegistry.Create(KEY_SET_VALUE);
+  try
+    // Initialize the root.
+    Registry.RootKey := HKEY_CURRENT_USER;
+    // Attempt to open the key that stores all autostart applications.
+    if Registry.OpenKey('\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', True) then
+    begin
+      // Enable autostart?
+      if AValue then
+      begin
+        // Write the string with the application executable.
+        Registry.WriteString('HotFrameFx', Application.ExeName);
+      end
+      // Disable autostart.
+      else
+      begin
+        // Delete the value.
+        Registry.DeleteValue('HotFrameFx');
+      end;
+    end;
+  finally
+    // Release the registry object.
+    Registry.Free;
+  end;
+  {$ENDIF}
+end;
+
+//***************************************************************************************
+// NAME:           SetAutoStart
+// PARAMETER:      AValue True to enable autostart, False to disable.
+// DESCRIPTION:    Setter for writing the autostart setting. Note that this one is not
+//                 stored in the Save procedure, because it is not located in the XML
+//                 settings file.
+//
+//***************************************************************************************
+procedure TAppSetings.SetAutoStart(AValue: Boolean);
+begin
+  // Only continue if the value actually changed.
+  if FAutoStart <> AValue then
+  begin
+    // Update the field.
+    FAutoStart := AValue;
+    // Write it to the registry.
+    WriteAutoStartToRegistry(FAutoStart);
+  end;
+end;
+
+//***************************************************************************************
 // NAME:           Create
 // DESCRIPTION:    Object constructor.
 //
@@ -146,6 +246,8 @@ begin
   Defaults;
   // Initialize the settings file.
   InitSettingsFile;
+  // Read the autostart setting from the registry because it is not in the XML file.
+  FAutoStart := ReadAutoStartFromRegistry;
 end;
 
 //***************************************************************************************
@@ -183,7 +285,6 @@ begin
   // --------------- Generic configuration settings -------------------------------------
   XmlConfig.OpenKey('Generic');
   FFirstRun := XmlConfig.GetValue('FirstRun', True);
-  FAutoStart := XmlConfig.GetValue('AutoStart', False);
   SensitivityVal := XmlConfig.GetValue('Sensitivity', Ord(seMedium));
   if (SensitivityVal < Ord(Low(TSensitivity))) or
      (SensitivityVal > Ord(High(TSensitivity))) then
@@ -225,7 +326,6 @@ begin
   // --------------- Generic configuration settings -------------------------------------
   XmlConfig.OpenKey('Generic');
   XmlConfig.SetValue('FirstRun', False); // If we're saving, then that was the first run.
-  XmlConfig.SetValue('AutoStart', FAutoStart);
   XmlConfig.SetValue('Sensitivity', Ord(FSensitivity));
   XmlConfig.CloseKey;
   // --------------- Action configuration settings --------------------------------------

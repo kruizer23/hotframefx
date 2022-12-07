@@ -1,7 +1,7 @@
 object SettingsForm: TSettingsForm
-  Left = 1311
+  Left = 1246
   Height = 159
-  Top = 326
+  Top = 371
   Width = 336
   BorderStyle = bsDialog
   Caption = 'Preferences'
