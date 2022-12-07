@@ -82,7 +82,6 @@ type
     BtnBottom: TSpeedButton;
     BtnBottomLeft: TSpeedButton;
     BtnBottomRight: TSpeedButton;
-    StatusBar: TStatusBar;
     TrayPopup: TPopupMenu;
     TrayIcon: TTrayIcon;
     procedure ActAboutExecute(Sender: TObject);
@@ -101,7 +100,6 @@ type
     FCornerEdge: TCornerEdge;
     FQuitRequest: Boolean;
     FFirstTimeShow: Boolean;
-    procedure DisplayHint(Sender: TObject);
     procedure OnHotCorner(Sender: TObject; Corner: TCorner);
     procedure OnHotEdge(Sender: TObject; Edge: TEdge);
     procedure DoAction(ActionStr: string);
@@ -129,8 +127,6 @@ implementation
 //***************************************************************************************
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  // Re-route hint handler.
-  Application.OnHint := @DisplayHint;
   // Initialize fields.
   FQuitRequest := False;
   FFirstTimeShow := True;
@@ -179,7 +175,7 @@ begin
     // Set info string of the currently configured action.
     LblActionInfo.Caption := HotAction.Info;
     if LblActionInfo.Caption = '' then
-      LblActionInfo.Caption := 'Do nothing';
+      LblActionInfo.Caption := 'Click to configure';
     // Release hot action object.
     FreeAndNil(HotAction);
   end;
@@ -203,17 +199,6 @@ begin
     // Switch back to the default mouse cursor.
     (Sender as TSpeedButton).Cursor := crDefault;
   end;
-end;
-
-//***************************************************************************************
-// NAME:           DisplayHint
-// PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Application OnHint event handler.
-//
-//***************************************************************************************
-procedure TMainForm.DisplayHint(Sender: TObject);
-begin
-  StatusBar.SimpleText := GetLongHint(Application.Hint);
 end;
 
 //***************************************************************************************

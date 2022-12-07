@@ -1,12 +1,13 @@
 object MainForm: TMainForm
   Left = 833
-  Height = 323
+  Height = 394
   Top = 351
   Width = 490
+  AutoSize = True
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'HotFrameFx'
-  ClientHeight = 303
+  ClientHeight = 374
   ClientWidth = 490
   Icon.Data = {
     3E08010000000100010080800000010020002808010016000000280000008000
@@ -2139,6 +2140,7 @@ object MainForm: TMainForm
     Top = 4
     Width = 484
     AutoSize = True
+    BorderSpacing.Around = 3
     BevelOuter = bvLowered
     ClientHeight = 274
     ClientWidth = 484
@@ -2328,7 +2330,6 @@ object MainForm: TMainForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       Images = ImageList
-      ImageIndex = 6
       OnClick = ActionButtonClick
       OnMouseEnter = ActionButtonMouseEnter
       OnMouseLeave = ActionButtonMouseLeave
@@ -2380,7 +2381,6 @@ object MainForm: TMainForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       Images = ImageList
-      ImageIndex = 6
       OnClick = ActionButtonClick
       OnMouseEnter = ActionButtonMouseEnter
       OnMouseLeave = ActionButtonMouseLeave
@@ -2389,7 +2389,7 @@ object MainForm: TMainForm
     end
     object BtnTopRight: TSpeedButton
       Tag = 3
-      Left = 449
+      Left = 448
       Height = 31
       Hint = 'Configure top-right corner action'
       Top = 2
@@ -2432,7 +2432,6 @@ object MainForm: TMainForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       Images = ImageList
-      ImageIndex = 6
       OnClick = ActionButtonClick
       OnMouseEnter = ActionButtonMouseEnter
       OnMouseLeave = ActionButtonMouseLeave
@@ -2484,7 +2483,6 @@ object MainForm: TMainForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       Images = ImageList
-      ImageIndex = 6
       OnClick = ActionButtonClick
       OnMouseEnter = ActionButtonMouseEnter
       OnMouseLeave = ActionButtonMouseLeave
@@ -2536,7 +2534,6 @@ object MainForm: TMainForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       Images = ImageList
-      ImageIndex = 6
       OnClick = ActionButtonClick
       OnMouseEnter = ActionButtonMouseEnter
       OnMouseLeave = ActionButtonMouseLeave
@@ -2588,7 +2585,6 @@ object MainForm: TMainForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       Images = ImageList
-      ImageIndex = 6
       OnClick = ActionButtonClick
       OnMouseEnter = ActionButtonMouseEnter
       OnMouseLeave = ActionButtonMouseLeave
@@ -2640,7 +2636,6 @@ object MainForm: TMainForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       Images = ImageList
-      ImageIndex = 6
       OnClick = ActionButtonClick
       OnMouseEnter = ActionButtonMouseEnter
       OnMouseLeave = ActionButtonMouseLeave
@@ -2692,7 +2687,6 @@ object MainForm: TMainForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       Images = ImageList
-      ImageIndex = 6
       OnClick = ActionButtonClick
       OnMouseEnter = ActionButtonMouseEnter
       OnMouseLeave = ActionButtonMouseLeave
@@ -2715,17 +2709,10 @@ object MainForm: TMainForm
       ParentFont = False
     end
   end
-  object StatusBar: TStatusBar
-    Left = 0
-    Height = 23
-    Top = 280
-    Width = 490
-    Panels = <>
-  end
   object ActionList: TActionList
     Images = ImageList
-    Left = 80
-    Top = 192
+    Left = 88
+    Top = 304
     object ActQuit: TAction
       Caption = '&Quit'
       Hint = 'Quit the application'
@@ -2756,8 +2743,8 @@ object MainForm: TMainForm
     end
   end
   object ImageList: TImageList
-    Left = 152
-    Top = 192
+    Left = 160
+    Top = 304
     Bitmap = {
       4C69070000001000000010000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
@@ -2988,8 +2975,8 @@ object MainForm: TMainForm
   end
   object MainMenu: TMainMenu
     Images = ImageList
-    Left = 224
-    Top = 192
+    Left = 232
+    Top = 304
     object MnuFile: TMenuItem
       Caption = '&File'
       object MnuPreferences: TMenuItem
@@ -5137,13 +5124,13 @@ object MainForm: TMainForm
     Hint = 'HotFrameFx'
     Visible = True
     OnClick = ActOpenFromTrayExecute
-    Left = 368
-    Top = 192
+    Left = 372
+    Top = 304
   end
   object TrayPopup: TPopupMenu
     Images = ImageList
-    Left = 296
-    Top = 192
+    Left = 304
+    Top = 304
     object MnuTrayOpen: TMenuItem
       Action = ActOpenFromTray
     end
