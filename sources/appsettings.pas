@@ -97,6 +97,16 @@ begin
   FFirstRun := True;
   FAutoStart := False;
   FSensitivity := seMedium;
+  {$IFDEF WINDOWS}
+  FActionTopLeft := 'Super+Tab';    // Show task view.
+  FActionTopRight := '';
+  FActionBottomLeft := '';
+  FActionBottomRight := '';
+  FActionTop := '';
+  FActionBottom  := 'Alt+Ctrl+Tab'; // Show open applications
+  FActionLeft := '';
+  FActionRight := '';
+  {$ELSE}
   FActionTopLeft := '';
   FActionTopRight := '';
   FActionBottomLeft := '';
@@ -105,6 +115,7 @@ begin
   FActionBottom := '';
   FActionLeft := '';
   FActionRight := '';
+  {$ENDIF}
 end;
 
 //***************************************************************************************
@@ -276,7 +287,9 @@ begin
     Exit;
   // Only load if the settings file actually exists.
   if not FileExists(FSettingsFile) then
+  begin
     Exit;
+  end;
 
   // Create and prepare the XML config object.
   XmlConfig := TXMLConfig.Create(nil);
