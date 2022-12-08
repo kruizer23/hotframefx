@@ -97,7 +97,7 @@ begin
   // Set the version label
   LblVersion.Caption := 'HotFrameFx' + ' ' + AppVersionStr;
   // Set the copyright info
-  LblCopyright.Caption := 'Copyright ' + '©' + ' 2022 by Frank Voorburg';
+  LblCopyright.Caption := 'Copyright ' + #$c2#$a9  + ' 2022 by Frank Voorburg';
   // Set the website
   LblWebsite.Caption := 'View on GitHub';
 end;

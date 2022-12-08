@@ -97,7 +97,6 @@ begin
   FFirstRun := True;
   FAutoStart := False;
   FSensitivity := seMedium;
-  {$IFDEF WINDOWS}
   FActionTopLeft := 'Super+Tab';    // Show task view.
   FActionTopRight := '';
   FActionBottomLeft := '';
@@ -106,16 +105,6 @@ begin
   FActionBottom  := 'Alt+Ctrl+Tab'; // Show open applications
   FActionLeft := '';
   FActionRight := '';
-  {$ELSE}
-  FActionTopLeft := '';
-  FActionTopRight := '';
-  FActionBottomLeft := '';
-  FActionBottomRight := '';
-  FActionTop := '';
-  FActionBottom := '';
-  FActionLeft := '';
-  FActionRight := '';
-  {$ENDIF}
 end;
 
 //***************************************************************************************
@@ -129,7 +118,7 @@ var
  AppSettingsDir: string;
 begin
   // Obtain the filename for the settings file.
-  FSettingsFile := GetAppConfigFile(False, True);
+  FSettingsFile := GetAppConfigFile(False, False);
   // Extract its directory.
   AppSettingsDir := ExtractFilePath(FSettingsFile);
   // Double check that the directory is actually there.
@@ -160,7 +149,6 @@ var
 begin
   // Initialize the result.
   Result := False;
-  {$IFDEF WINDOWS}
   // Create registry object.
   Registry := TRegistry.Create(KEY_READ);
   try
@@ -182,7 +170,6 @@ begin
     // Release the registry object.
     Registry.Free;
   end;
-  {$ENDIF}
 end;
 
 //***************************************************************************************
@@ -195,7 +182,6 @@ procedure TAppSetings.WriteAutoStartToRegistry(AValue: Boolean);
 var
  Registry: TRegistry;
 begin
-  {$IFDEF WINDOWS}
   // Create registry object.
   Registry := TRegistry.Create(KEY_SET_VALUE);
   try
@@ -221,7 +207,6 @@ begin
     // Release the registry object.
     Registry.Free;
   end;
-  {$ENDIF}
 end;
 
 //***************************************************************************************

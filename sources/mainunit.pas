@@ -45,7 +45,7 @@ uses
 //***************************************************************************************
 type
   // Lists all action button tags. Note that these values must match the tags assigned
-  // to the action buttons on the user interface.
+  // to the action speed buttons on the user interface.
   TActionButtonTag = (abtTopLeft = 1, abtTop, abtTopRight, abtRight,
                       abtBottomRight, abtBottom, abtBottomLeft, abtLeft);
 
@@ -73,15 +73,15 @@ type
     MnuSep1: TMenuItem;
     MnuPreferences: TMenuItem;
     MnuFile: TMenuItem;
-    BtnTopLeft: TPaintBox;
-    BtnTop: TPaintBox;
-    BtnTopRight: TPaintBox;
-    BtnRight: TPaintBox;
-    BtnBottomRight: TPaintBox;
-    BtnBottom: TPaintBox;
-    BtnBottomLeft: TPaintBox;
-    BtnLeft: TPaintBox;
     PnlScreen: TPanel;
+    BtnTopLeft: TSpeedButton;
+    BtnTop: TSpeedButton;
+    BtnTopRight: TSpeedButton;
+    BtnLeft: TSpeedButton;
+    BtnRight: TSpeedButton;
+    BtnBottom: TSpeedButton;
+    BtnBottomLeft: TSpeedButton;
+    BtnBottomRight: TSpeedButton;
     TrayPopup: TPopupMenu;
     TrayIcon: TTrayIcon;
     procedure ActAboutExecute(Sender: TObject);
@@ -89,7 +89,6 @@ type
     procedure ActPreferencesExecute(Sender: TObject);
     procedure ActQuitExecute(Sender: TObject);
     procedure ActionButtonClick(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -142,9 +141,6 @@ begin
   FCornerEdge.Sensitivity := FAppSettings.Sensitivity;
   // Reset action info string.
   LblActionInfo.Caption := '';
-  {$IFDEF LINUX}
-  Height := Height + 4;
-  {$ENDIF}
 end;
 
 //***************************************************************************************
@@ -159,15 +155,15 @@ procedure TMainForm.ActionButtonMouseEnter(Sender: TObject);
 var
   HotAction: THotAction;
 begin
-  // Source a paint box as expected?
-  if Sender is TPaintBox then
+  // Source a speed button as expected?
+  if Sender is TSpeedButton then
   begin
     // Switch mouse cursor to hand to emphasize that it is clickable.
-    (Sender as TPaintBox).Cursor := crHandPoint;
+    (Sender as TSpeedButton).Cursor := crHandPoint;
     // Create hot action object
     HotAction := THotAction.Create;
     // Configure hot action base on the action button that the mouse cursor hovers over.
-    case (Sender as TPaintBox).Tag of
+    case (Sender as TSpeedButton).Tag of
     Ord(abtTopLeft):     HotAction.Text := FAppSettings.ActionTopLeft;
     Ord(abtTop):         HotAction.Text := FAppSettings.ActionTop;
     Ord(abtTopRight):    HotAction.Text := FAppSettings.ActionTopRight;
@@ -196,13 +192,13 @@ end;
 //***************************************************************************************
 procedure TMainForm.ActionButtonMouseLeave(Sender: TObject);
 begin
-  // Source a paint box as expected?
-  if Sender is TPaintBox then
+  // Source a speed button as expected?
+  if Sender is TSpeedButton then
   begin
     // Reset action info string.
     LblActionInfo.Caption := '';
     // Switch back to the default mouse cursor.
-    (Sender as TPaintBox).Cursor := crDefault;
+    (Sender as TSpeedButton).Cursor := crDefault;
   end;
 end;
 
@@ -228,16 +224,16 @@ const
 var
   ConfigActionForm: TConfigActionForm;
 begin
-  // Source a paint box as expected?
-  if Sender is TPaintBox then
+  // Source a speed button as expected?
+  if Sender is TSpeedButton then
   begin
     // Construct the action configuration form.
     ConfigActionForm := TConfigActionForm.Create(Self);
     ConfigActionForm.ActionText := '';
     ConfigActionForm.Caption := ConfigActionForm.Caption +
-                                CaptionAppend[(Sender as TPaintBox).Tag];
+                                CaptionAppend[(Sender as TSpeedButton).Tag];
     // Initialize the currently configured action and the form's caption.
-    case (Sender as TPaintBox).Tag of
+    case (Sender as TSpeedButton).Tag of
     Ord(abtTopLeft):     ConfigActionForm.ActionText := FAppSettings.ActionTopLeft;
     Ord(abtTop):         ConfigActionForm.ActionText := FAppSettings.ActionTop;
     Ord(abtTopRight):    ConfigActionForm.ActionText := FAppSettings.ActionTopRight;
@@ -251,7 +247,7 @@ begin
     if ConfigActionForm.ShowModal = mrOK then
     begin
       // Store the user selection action.
-      case (Sender as TPaintBox).Tag of
+      case (Sender as TSpeedButton).Tag of
         Ord(abtTopLeft):     FAppSettings.ActionTopLeft := ConfigActionForm.ActionText;
         Ord(abtTop):         FAppSettings.ActionTop := ConfigActionForm.ActionText;
         Ord(abtTopRight):    FAppSettings.ActionTopRight := ConfigActionForm.ActionText;
@@ -404,10 +400,6 @@ end;
 //***************************************************************************************
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  // Note that minimizing the application in the OnShow event does not work reliably on
-  // Linux. It does if you use the OnActivate event. On non-Linux, the onActivate is not
-  // optimal because it might still briefly show the window.
-  {$IFNDEF LINUX}
   // First time that the form gets shown after its creation?
   if FFirstTimeShow then
   begin
@@ -418,32 +410,6 @@ begin
     if not FAppSettings.FirstRun then
       Application.Minimize;
   end;
-  {$ENDIF}
-end;
-
-//***************************************************************************************
-// NAME:           FormActivate
-// PARAMETER:      Sender Signal source.
-// DESCRIPTION:    Called when the form is activated.
-//
-//***************************************************************************************
-procedure TMainForm.FormActivate(Sender: TObject);
-begin
- // Note that minimizing the application in the OnShow event does not work reliably on
- // Linux. It does if you use the OnActivate event. On non-Linux, the onActivate is not
- // optimal because it might still briefly show the window.
-  {$IFDEF LINUX}
-  // First time that the form gets shown after its creation?
-  if FFirstTimeShow then
-  begin
-    // Reset flag to make sure the follow part only runs once after startup.
-    FFirstTimeShow := False;
-    // If this is not the first time ever that this application gets strarted, then
-    // automatically minimize to send it to the system tray.
-    if not FAppSettings.FirstRun then
-      Application.Minimize;
-  end;
-  {$ENDIF}
 end;
 
 //***************************************************************************************
