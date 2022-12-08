@@ -141,6 +141,9 @@ begin
   FCornerEdge.Sensitivity := FAppSettings.Sensitivity;
   // Reset action info string.
   LblActionInfo.Caption := '';
+  {$IFDEF LINUX}
+  Height := Height + 4;
+  {$ENDIF}
 end;
 
 //***************************************************************************************
