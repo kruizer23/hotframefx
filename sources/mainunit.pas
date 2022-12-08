@@ -89,6 +89,7 @@ type
     procedure ActPreferencesExecute(Sender: TObject);
     procedure ActQuitExecute(Sender: TObject);
     procedure ActionButtonClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -403,6 +404,10 @@ end;
 //***************************************************************************************
 procedure TMainForm.FormShow(Sender: TObject);
 begin
+  // Note that minimizing the application in the OnShow event does not work reliably on
+  // Linux. It does if you use the OnActivate event. On non-Linux, the onActivate is not
+  // optimal because it might still briefly show the window.
+  {$IFNDEF LINUX}
   // First time that the form gets shown after its creation?
   if FFirstTimeShow then
   begin
@@ -413,6 +418,32 @@ begin
     if not FAppSettings.FirstRun then
       Application.Minimize;
   end;
+  {$ENDIF}
+end;
+
+//***************************************************************************************
+// NAME:           FormActivate
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Called when the form is activated.
+//
+//***************************************************************************************
+procedure TMainForm.FormActivate(Sender: TObject);
+begin
+ // Note that minimizing the application in the OnShow event does not work reliably on
+ // Linux. It does if you use the OnActivate event. On non-Linux, the onActivate is not
+ // optimal because it might still briefly show the window.
+  {$IFDEF LINUX}
+  // First time that the form gets shown after its creation?
+  if FFirstTimeShow then
+  begin
+    // Reset flag to make sure the follow part only runs once after startup.
+    FFirstTimeShow := False;
+    // If this is not the first time ever that this application gets strarted, then
+    // automatically minimize to send it to the system tray.
+    if not FAppSettings.FirstRun then
+      Application.Minimize;
+  end;
+  {$ENDIF}
 end;
 
 //***************************************************************************************
