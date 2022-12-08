@@ -59,6 +59,7 @@ type
     RdbLaunchApp: TRadioButton;
     RdbSendKeys: TRadioButton;
     procedure FormCreate(Sender: TObject);
+    procedure GrbFramesClick(Sender: TObject);
     procedure RdbLaunchAppChange(Sender: TObject);
     procedure RdbSendKeysChange(Sender: TObject);
   private
@@ -213,6 +214,11 @@ begin
   FrmPickApp.Align := alClient;
   // Resize the form to the best fit.
   AutoSize := True;
+end;
+
+procedure TConfigActionForm.GrbFramesClick(Sender: TObject);
+begin
+
 end;
 
 end.

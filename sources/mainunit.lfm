@@ -1,13 +1,12 @@
 object MainForm: TMainForm
   Left = 833
-  Height = 394
+  Height = 301
   Top = 351
   Width = 490
-  AutoSize = True
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'HotFrameFx'
-  ClientHeight = 374
+  ClientHeight = 281
   ClientWidth = 490
   Icon.Data = {
     3E08010000000100010080800000010020002808010016000000280000008000
@@ -2384,7 +2383,7 @@ object MainForm: TMainForm
   object ActionList: TActionList
     Images = ImageList
     Left = 88
-    Top = 304
+    Top = 184
     object ActQuit: TAction
       Caption = '&Quit'
       Hint = 'Quit the application'
@@ -2417,7 +2416,7 @@ object MainForm: TMainForm
   end
   object ImageList: TImageList
     Left = 160
-    Top = 304
+    Top = 184
     Bitmap = {
       4C69070000001000000010000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
@@ -2649,7 +2648,7 @@ object MainForm: TMainForm
   object MainMenu: TMainMenu
     Images = ImageList
     Left = 232
-    Top = 304
+    Top = 184
     object MnuFile: TMenuItem
       Caption = '&File'
       object MnuPreferences: TMenuItem
@@ -4798,12 +4797,12 @@ object MainForm: TMainForm
     Visible = True
     OnClick = ActOpenFromTrayExecute
     Left = 372
-    Top = 304
+    Top = 184
   end
   object TrayPopup: TPopupMenu
     Images = ImageList
     Left = 304
-    Top = 304
+    Top = 184
     object MnuTrayOpen: TMenuItem
       Action = ActOpenFromTray
     end

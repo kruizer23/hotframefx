@@ -2,12 +2,12 @@ object ConfigActionForm: TConfigActionForm
   Left = 1336
   Height = 226
   Top = 541
-  Width = 426
+  Width = 435
   ActiveControl = BtnOk
   BorderStyle = bsDialog
   Caption = 'Configure Action'
   ClientHeight = 226
-  ClientWidth = 426
+  ClientWidth = 435
   OnCreate = FormCreate
   Position = poOwnerFormCenter
   LCLVersion = '2.0.12.0'
@@ -15,17 +15,17 @@ object ConfigActionForm: TConfigActionForm
     Left = 0
     Height = 56
     Top = 0
-    Width = 426
+    Width = 435
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 56
-    ClientWidth = 426
+    ClientWidth = 435
     TabOrder = 0
     object LblActionType: TLabel
       Left = 6
       Height = 17
       Top = 6
-      Width = 420
+      Width = 429
       Align = alTop
       AutoSize = False
       BorderSpacing.Left = 6
@@ -39,11 +39,11 @@ object ConfigActionForm: TConfigActionForm
       Left = 0
       Height = 33
       Top = 23
-      Width = 426
+      Width = 435
       Align = alClient
       BevelOuter = bvNone
       ClientHeight = 33
-      ClientWidth = 426
+      ClientWidth = 435
       TabOrder = 0
       object RdbSendKeys: TRadioButton
         Left = 9
@@ -75,21 +75,22 @@ object ConfigActionForm: TConfigActionForm
     Left = 6
     Height = 130
     Top = 56
-    Width = 414
+    Width = 423
     Align = alClient
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     ClientHeight = 110
-    ClientWidth = 410
+    ClientWidth = 419
     TabOrder = 1
+    OnClick = GrbFramesClick
     inline FrmGrabKey: TGrabKeyFrame
       Height = 42
-      Width = 400
+      Width = 420
       BorderSpacing.Bottom = 9
       ClientHeight = 42
-      ClientWidth = 400
+      ClientWidth = 420
       Constraints.MinHeight = 42
-      Constraints.MinWidth = 400
+      Constraints.MinWidth = 420
       inherited ChbShift: TCheckBox
         Height = 30
       end
@@ -103,23 +104,23 @@ object ConfigActionForm: TConfigActionForm
         Height = 30
       end
       inherited CmbKey: TComboBox
-        Width = 115
+        Width = 135
       end
       inherited BtnGrab: TButton
-        Left = 319
+        Left = 339
         Height = 26
       end
     end
     inline FrmPickApp: TPickAppFrame
       Top = 48
-      Width = 400
+      Width = 420
       BorderSpacing.Bottom = 9
-      ClientWidth = 400
+      ClientWidth = 420
       Constraints.MinHeight = 42
-      Constraints.MinWidth = 400
+      Constraints.MinWidth = 420
       TabOrder = 1
       inherited FileNameEdit1: TFileNameEdit
-        Width = 388
+        Width = 408
       end
     end
   end
@@ -127,14 +128,14 @@ object ConfigActionForm: TConfigActionForm
     Left = 0
     Height = 40
     Top = 186
-    Width = 426
+    Width = 435
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 40
-    ClientWidth = 426
+    ClientWidth = 435
     TabOrder = 2
     object BtnCancel: TButton
-      Left = 339
+      Left = 348
       Height = 28
       Top = 6
       Width = 75
@@ -147,7 +148,7 @@ object ConfigActionForm: TConfigActionForm
       TabOrder = 1
     end
     object BtnOk: TButton
-      Left = 255
+      Left = 264
       Height = 28
       Top = 6
       Width = 75
