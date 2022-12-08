@@ -45,7 +45,7 @@ uses
 //***************************************************************************************
 type
   // Lists all action button tags. Note that these values must match the tags assigned
-  // to the action speed buttons on the user interface.
+  // to the action buttons on the user interface.
   TActionButtonTag = (abtTopLeft = 1, abtTop, abtTopRight, abtRight,
                       abtBottomRight, abtBottom, abtBottomLeft, abtLeft);
 
@@ -73,15 +73,15 @@ type
     MnuSep1: TMenuItem;
     MnuPreferences: TMenuItem;
     MnuFile: TMenuItem;
+    BtnTopLeft: TPaintBox;
+    BtnTop: TPaintBox;
+    BtnTopRight: TPaintBox;
+    BtnRight: TPaintBox;
+    BtnBottomRight: TPaintBox;
+    BtnBottom: TPaintBox;
+    BtnBottomLeft: TPaintBox;
+    BtnLeft: TPaintBox;
     PnlScreen: TPanel;
-    BtnTopLeft: TSpeedButton;
-    BtnTop: TSpeedButton;
-    BtnTopRight: TSpeedButton;
-    BtnLeft: TSpeedButton;
-    BtnRight: TSpeedButton;
-    BtnBottom: TSpeedButton;
-    BtnBottomLeft: TSpeedButton;
-    BtnBottomRight: TSpeedButton;
     TrayPopup: TPopupMenu;
     TrayIcon: TTrayIcon;
     procedure ActAboutExecute(Sender: TObject);
@@ -155,15 +155,15 @@ procedure TMainForm.ActionButtonMouseEnter(Sender: TObject);
 var
   HotAction: THotAction;
 begin
-  // Source a speed button as expected?
-  if Sender is TSpeedButton then
+  // Source a paint box as expected?
+  if Sender is TPaintBox then
   begin
     // Switch mouse cursor to hand to emphasize that it is clickable.
-    (Sender as TSpeedButton).Cursor := crHandPoint;
+    (Sender as TPaintBox).Cursor := crHandPoint;
     // Create hot action object
     HotAction := THotAction.Create;
     // Configure hot action base on the action button that the mouse cursor hovers over.
-    case (Sender as TSpeedButton).Tag of
+    case (Sender as TPaintBox).Tag of
     Ord(abtTopLeft):     HotAction.Text := FAppSettings.ActionTopLeft;
     Ord(abtTop):         HotAction.Text := FAppSettings.ActionTop;
     Ord(abtTopRight):    HotAction.Text := FAppSettings.ActionTopRight;
@@ -192,13 +192,13 @@ end;
 //***************************************************************************************
 procedure TMainForm.ActionButtonMouseLeave(Sender: TObject);
 begin
-  // Source a speed button as expected?
-  if Sender is TSpeedButton then
+  // Source a paint box as expected?
+  if Sender is TPaintBox then
   begin
     // Reset action info string.
     LblActionInfo.Caption := '';
     // Switch back to the default mouse cursor.
-    (Sender as TSpeedButton).Cursor := crDefault;
+    (Sender as TPaintBox).Cursor := crDefault;
   end;
 end;
 
@@ -224,16 +224,16 @@ const
 var
   ConfigActionForm: TConfigActionForm;
 begin
-  // Source a speed button as expected?
-  if Sender is TSpeedButton then
+  // Source a paint box as expected?
+  if Sender is TPaintBox then
   begin
     // Construct the action configuration form.
     ConfigActionForm := TConfigActionForm.Create(Self);
     ConfigActionForm.ActionText := '';
     ConfigActionForm.Caption := ConfigActionForm.Caption +
-                                CaptionAppend[(Sender as TSpeedButton).Tag];
+                                CaptionAppend[(Sender as TPaintBox).Tag];
     // Initialize the currently configured action and the form's caption.
-    case (Sender as TSpeedButton).Tag of
+    case (Sender as TPaintBox).Tag of
     Ord(abtTopLeft):     ConfigActionForm.ActionText := FAppSettings.ActionTopLeft;
     Ord(abtTop):         ConfigActionForm.ActionText := FAppSettings.ActionTop;
     Ord(abtTopRight):    ConfigActionForm.ActionText := FAppSettings.ActionTopRight;
@@ -247,7 +247,7 @@ begin
     if ConfigActionForm.ShowModal = mrOK then
     begin
       // Store the user selection action.
-      case (Sender as TSpeedButton).Tag of
+      case (Sender as TPaintBox).Tag of
         Ord(abtTopLeft):     FAppSettings.ActionTopLeft := ConfigActionForm.ActionText;
         Ord(abtTop):         FAppSettings.ActionTop := ConfigActionForm.ActionText;
         Ord(abtTopRight):    FAppSettings.ActionTopRight := ConfigActionForm.ActionText;
