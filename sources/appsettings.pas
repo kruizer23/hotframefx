@@ -129,7 +129,7 @@ var
  AppSettingsDir: string;
 begin
   // Obtain the filename for the settings file.
-  FSettingsFile := GetAppConfigFile(False, False);
+  FSettingsFile := GetAppConfigFile(False, True);
   // Extract its directory.
   AppSettingsDir := ExtractFilePath(FSettingsFile);
   // Double check that the directory is actually there.
