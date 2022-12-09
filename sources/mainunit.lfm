@@ -2425,6 +2425,7 @@ object MainForm: TMainForm
       Caption = '&User Manual...'
       Hint = 'Display the user manual'
       ImageIndex = 1
+      OnExecute = ActManualExecute
       ShortCut = 112
     end
     object ActPreferences: TAction

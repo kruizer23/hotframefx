@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, CornerEdge,
   Menus, ActnList, Buttons, ComCtrls, AboutUnit, HotAction, AppSettings, SettingsUnit,
-  ConfigActionUnit;
+  ConfigActionUnit, LCLIntf;
 
 //***************************************************************************************
 // Type Definitions
@@ -85,6 +85,7 @@ type
     TrayPopup: TPopupMenu;
     TrayIcon: TTrayIcon;
     procedure ActAboutExecute(Sender: TObject);
+    procedure ActManualExecute(Sender: TObject);
     procedure ActOpenFromTrayExecute(Sender: TObject);
     procedure ActPreferencesExecute(Sender: TObject);
     procedure ActQuitExecute(Sender: TObject);
@@ -337,6 +338,18 @@ begin
   AboutDialog.ShowModal;
   // release the dialog
   AboutDialog.Free;
+end;
+
+//***************************************************************************************
+// NAME:           ActManualExecute
+// PARAMETER:      Sender Signal source.
+// DESCRIPTION:    Opens the online user manual.
+//
+//**************************************************************************************
+procedure TMainForm.ActManualExecute(Sender: TObject);
+begin
+  // Open the browser and visit the HotFrameFx online user manual.
+  OpenURL('https://kruizer23.github.io/hotframefx/');
 end;
 
 //***************************************************************************************
