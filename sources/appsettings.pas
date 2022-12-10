@@ -62,30 +62,71 @@ type
     procedure Defaults;
     procedure InitSettingsFile;
     function ReadAutoStartFromRegistry: Boolean;
-    procedure SetAutoStart(AValue: Boolean);
     procedure WriteAutoStartToRegistry(AValue: Boolean);
+    procedure Load;
+    procedure Save;
+    procedure SetActionBottom(AValue: string);
+    procedure SetActionBottomLeft(AValue: string);
+    procedure SetActionBottomRight(AValue: string);
+    procedure SetActionLeft(AValue: string);
+    procedure SetActionRight(AValue: string);
+    procedure SetActionTop(AValue: string);
+    procedure SetActionTopLeft(AValue: string);
+    procedure SetActionTopRight(AValue: string);
+    procedure SetAutoStart(AValue: Boolean);
+    procedure SetSensitivity(AValue: TSensitivity);
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Load;
-    procedure Save;
-    property FirstRun: Boolean read FFirstRun write FFirstRun;
+    property FirstRun: Boolean read FFirstRun;
     property AutoStart: Boolean read FAutoStart write SetAutoStart;
-    property Sensitivity: TSensitivity read FSensitivity write FSensitivity;
-    property ActionTopLeft: string read FActionTopLeft write FActionTopLeft;
-    property ActionTopRight: string read FActionTopRight write FActionTopRight;
-    property ActionBottomLeft: string read FActionBottomLeft write FActionBottomLeft;
-    property ActionBottomRight: string read FActionBottomRight write FActionBottomRight;
-    property ActionTop: string read FActionTop write FActionTop;
-    property ActionBottom: string read FActionBottom write FActionBottom;
-    property ActionLeft: string read FActionLeft write FActionLeft;
-    property ActionRight: string read FActionRight write FActionRight;
+    property Sensitivity: TSensitivity read FSensitivity write SetSensitivity;
+    property ActionTopLeft: string read FActionTopLeft write SetActionTopLeft;
+    property ActionTopRight: string read FActionTopRight write SetActionTopRight;
+    property ActionBottomLeft: string read FActionBottomLeft write SetActionBottomLeft;
+    property ActionBottomRight: string read FActionBottomRight write SetActionBottomRight;
+    property ActionTop: string read FActionTop write SetActionTop;
+    property ActionBottom: string read FActionBottom write SetActionBottom;
+    property ActionLeft: string read FActionLeft write SetActionLeft;
+    property ActionRight: string read FActionRight write SetActionRight;
   end;
 
 
 implementation
 
 { TAppSetings }
+
+//***************************************************************************************
+// NAME:           Create
+// DESCRIPTION:    Object constructor.
+//
+//***************************************************************************************
+constructor TAppSetings.Create;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Initialize settings to their defaults.
+  Defaults;
+  // Initialize the settings file.
+  InitSettingsFile;
+  // Read the autostart setting from the registry because it is not in the XML file.
+  FAutoStart := ReadAutoStartFromRegistry;
+  // Load the settings from the XML file.
+  Load;
+  // Do one early save to make sure the first run flag is reset.
+  Save;
+end;
+
+//***************************************************************************************
+// NAME:           Destroy
+// DESCRIPTION:    Object destructor.
+//
+//***************************************************************************************
+destructor TAppSetings.Destroy;
+begin
+  // Call inherited destructor.
+  inherited Destroy;
+end;
 
 //***************************************************************************************
 // NAME:           Defaults
@@ -210,6 +251,159 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           SetActionBottom
+// PARAMETER:      AValue String representation of the action.
+// DESCRIPTION:    Setter for the application setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetActionBottom(AValue: string);
+begin
+  // Only continue if the value actually changed.
+  if FActionBottom <> AValue then
+  begin
+    // Update the value and save the settings.
+    FActionBottom := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           SetActionBottomLeft
+// PARAMETER:      AValue String representation of the action.
+// DESCRIPTION:    Setter for the application setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetActionBottomLeft(AValue: string);
+begin
+  // Only continue if the value actually changed.
+  if FActionBottomLeft <> AValue then
+  begin
+    // Update the value and save the settings.
+    FActionBottomLeft := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           SetActionBottomRight
+// PARAMETER:      AValue String representation of the action.
+// DESCRIPTION:    Setter for the application setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetActionBottomRight(AValue: string);
+begin
+  // Only continue if the value actually changed.
+  if FActionBottomRight <> AValue then
+  begin
+    // Update the value and save the settings.
+    FActionBottomRight := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           SetActionLeft
+// PARAMETER:      AValue String representation of the action.
+// DESCRIPTION:    Setter for the application setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetActionLeft(AValue: string);
+begin
+  // Only continue if the value actually changed.
+  if FActionLeft <> AValue then
+  begin
+    // Update the value and save the settings.
+    FActionLeft := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           SetActionRight
+// PARAMETER:      AValue String representation of the action.
+// DESCRIPTION:    Setter for the application setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetActionRight(AValue: string);
+begin
+  // Only continue if the value actually changed.
+  if FActionRight <> AValue then
+  begin
+    // Update the value and save the settings.
+    FActionRight := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           SetActionTop
+// PARAMETER:      AValue String representation of the action.
+// DESCRIPTION:    Setter for the application setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetActionTop(AValue: string);
+begin
+  // Only continue if the value actually changed.
+  if FActionTop <> AValue then
+  begin
+    // Update the value and save the settings.
+    FActionTop := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           SetActionTopLeft
+// PARAMETER:      AValue String representation of the action.
+// DESCRIPTION:    Setter for the application setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetActionTopLeft(AValue: string);
+begin
+  // Only continue if the value actually changed.
+  if FActionTopLeft <> AValue then
+  begin
+    // Update the value and save the settings.
+    FActionTopLeft := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           SetActionTopRight
+// PARAMETER:      AValue String representation of the action.
+// DESCRIPTION:    Setter for the application setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetActionTopRight(AValue: string);
+begin
+  // Only continue if the value actually changed.
+  if FActionTopRight <> AValue then
+  begin
+    // Update the value and save the settings.
+    FActionTopRight := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           SetSensitivity
+// PARAMETER:      AValue Hot corner/edge sensitivity.
+// DESCRIPTION:    Setter for the application setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetSensitivity(AValue: TSensitivity);
+begin
+  // Only continue if the value actually changed.
+  if FSensitivity <> AValue then
+  begin
+    // Update the value and save the settings.
+    FSensitivity := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
 // NAME:           SetAutoStart
 // PARAMETER:      AValue True to enable autostart, False to disable.
 // DESCRIPTION:    Setter for writing the autostart setting. Note that this one is not
@@ -227,34 +421,6 @@ begin
     // Write it to the registry.
     WriteAutoStartToRegistry(FAutoStart);
   end;
-end;
-
-//***************************************************************************************
-// NAME:           Create
-// DESCRIPTION:    Object constructor.
-//
-//***************************************************************************************
-constructor TAppSetings.Create;
-begin
-  // Call inherited constructor.
-  inherited Create;
-  // Initialize settings to their defaults.
-  Defaults;
-  // Initialize the settings file.
-  InitSettingsFile;
-  // Read the autostart setting from the registry because it is not in the XML file.
-  FAutoStart := ReadAutoStartFromRegistry;
-end;
-
-//***************************************************************************************
-// NAME:           Destroy
-// DESCRIPTION:    Object destructor.
-//
-//***************************************************************************************
-destructor TAppSetings.Destroy;
-begin
-  // Call inherited destructor.
-  inherited Destroy;
 end;
 
 //***************************************************************************************

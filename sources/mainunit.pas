@@ -134,7 +134,6 @@ begin
   FFirstTimeShow := True;
   // Construct and load the application settings.
   FAppSettings := TAppSetings.Create;
-  FAppSettings.Load;
   // Construct and configure the hot corner and edge detection object.
   FCornerEdge := TCornerEdge.Create;
   FCornerEdge.OnHotCorner := @OnHotCorner;
@@ -297,12 +296,6 @@ begin
     begin
       CanClose := True;
     end;
-  end;
-  // Actually closing the window?
-  if CanClose then
-  begin
-    // Make sure to save the application settings.
-    FAppSettings.Save;
   end;
 end;
 
