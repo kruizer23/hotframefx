@@ -19,7 +19,7 @@
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <MinorVersionNr Value="9"/>
+      <MajorVersionNr Value="1"/>
       <StringTable FileDescription="Hot corner and edge system tray utility" InternalName="hotframefx" LegalCopyright="Frank Voorburg" OriginalFilename="HotFrameFx.exe" ProductName="HotFrameFx"/>
     </VersionInfo>
     <BuildModes Count="1">
