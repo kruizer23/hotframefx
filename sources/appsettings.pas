@@ -201,7 +201,7 @@ begin
       // Read the string with the application executable.
       AppString := Registry.ReadString('HotFrameFx');
       // When autostart it enabled, it matches the name of the application's executable.
-      if AppString = Application.ExeName then
+      if AppString = Application.ExeName.QuotedString('"') then
       begin
         // Update the result.
         Result := True;
@@ -235,7 +235,7 @@ begin
       if AValue then
       begin
         // Write the string with the application executable.
-        Registry.WriteString('HotFrameFx', Application.ExeName);
+        Registry.WriteString('HotFrameFx', Application.ExeName.QuotedString('"'));
       end
       // Disable autostart.
       else
