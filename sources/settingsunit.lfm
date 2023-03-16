@@ -1,11 +1,11 @@
 object SettingsForm: TSettingsForm
   Left = 1246
-  Height = 159
+  Height = 213
   Top = 371
   Width = 336
   BorderStyle = bsDialog
   Caption = 'Preferences'
-  ClientHeight = 159
+  ClientHeight = 213
   ClientWidth = 336
   OnCreate = FormCreate
   Position = poOwnerFormCenter
@@ -13,7 +13,7 @@ object SettingsForm: TSettingsForm
   object PnlBottom: TPanel
     Left = 0
     Height = 40
-    Top = 119
+    Top = 173
     Width = 336
     Align = alBottom
     BevelOuter = bvNone
@@ -97,5 +97,30 @@ object SettingsForm: TSettingsForm
     BorderSpacing.Top = 6
     Caption = 'Load HotFrameFx with system start-up'
     TabOrder = 2
+  end
+  object LblFullscreen: TLabel
+    Left = 6
+    Height = 17
+    Top = 110
+    Width = 330
+    Align = alTop
+    AutoSize = False
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 8
+    Caption = 'Fullscreen'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object ChbDisableFullscreen: TCheckBox
+    Left = 18
+    Height = 19
+    Top = 133
+    Width = 318
+    Align = alTop
+    BorderSpacing.Left = 18
+    BorderSpacing.Top = 6
+    Caption = 'Disable when another application is fullscreen'
+    TabOrder = 3
   end
 end

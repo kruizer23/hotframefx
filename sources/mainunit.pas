@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, CornerEdge,
   Menus, ActnList, Buttons, ComCtrls, AboutUnit, HotAction, AppSettings, SettingsUnit,
-  ConfigActionUnit, LCLIntf;
+  ConfigActionUnit, AppUtils, LCLIntf;
 
 //***************************************************************************************
 // Type Definitions
@@ -371,17 +371,20 @@ begin
   SettingsForm := TSettingsForm.Create(Self);
   SettingsForm.AutoStart := FAppSettings.AutoStart;
   SettingsForm.Sensitivity := FAppSettings.Sensitivity;
+  SettingsForm.DisableInFullscreen := FAppSettings.DisableInFullscreen;
   // Get input from the user by showing the form.
- if SettingsForm.ShowModal = mrOK then
- begin
-   // Update the new sensitivity setting.
-   FAppSettings.Sensitivity := SettingsForm.Sensitivity;
-   FCornerEdge.Sensitivity := FAppSettings.Sensitivity;
-   // Update the new autostart setting.
-   FAppSettings.AutoStart := SettingsForm.AutoStart;
- end;
- // Release the settings form.
- FreeAndNil(SettingsForm);
+  if SettingsForm.ShowModal = mrOK then
+  begin
+    // Update the new sensitivity setting.
+    FAppSettings.Sensitivity := SettingsForm.Sensitivity;
+    FCornerEdge.Sensitivity := FAppSettings.Sensitivity;
+    // Update the new autostart setting.
+    FAppSettings.AutoStart := SettingsForm.AutoStart;
+    // Update the new disable-in-fullscreen setting.
+    FAppSettings.DisableInFullscreen := SettingsForm.DisableInFullscreen;
+  end;
+  // Release the settings form.
+  FreeAndNil(SettingsForm);
 end;
 
 //***************************************************************************************
@@ -477,11 +480,29 @@ end;
 procedure TMainForm.DoAction(ActionStr: string);
 var
   HotAction: THotAction;
+  OkayToPerformAction: Boolean;
 begin
-  HotAction := THotAction.Create;
-  HotAction.Text := ActionStr;
-  HotAction.Execute;
-  FreeAndNil(HotAction);
+  // Initialize to okay.
+  OkayToPerformAction := True;
+  // Should actions not execute if another application is in fullscreen mode?
+  if FAppSettings.DisableInFullscreen then
+  begin
+    // Is another application in fullscreen mode?
+    if TAppUtils.IsOtherAppFullscreen then
+    begin
+      // Set flag to suppress action execution.
+      OkayToPerformAction := False;
+    end;
+  end;
+
+  // Only perform the action if it was previouslt okay-ed.
+  if OkayToPerformAction then
+  begin
+    HotAction := THotAction.Create;
+    HotAction.Text := ActionStr;
+    HotAction.Execute;
+    FreeAndNil(HotAction);
+  end;
 end;
 
 end.

@@ -72,6 +72,8 @@ Through the *Corner/Edge Sensitivity* selection box you can change the sensitivi
 
 With the *Autostart* checkbox, you can select if you want to automatically start **HotFrameFx** each time you log into Windows. If you plan on using **HotFrameFx** on a regular basis, I recommend enabling this option.
 
+With the *Fullscreen* checkbox, you can select if you want to disable hot corner and edge actions, if another application is running in fullscreen mode. For example while gaming.
+
 ## User settings
 
 When you start and exit **HotFrameFx**, it automatically loads and saves your configuration in a user settings file called `HotFrameFx.cfg`, located in directory:

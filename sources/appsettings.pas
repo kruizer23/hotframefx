@@ -50,6 +50,7 @@ type
     FSettingsFile: string;
     FFirstRun: Boolean;
     FAutoStart: Boolean;
+    FDisableInFullscreen: Boolean;
     FSensitivity: TSensitivity;
     FActionTopLeft: string;
     FActionTopRight: string;
@@ -74,12 +75,14 @@ type
     procedure SetActionTopLeft(AValue: string);
     procedure SetActionTopRight(AValue: string);
     procedure SetAutoStart(AValue: Boolean);
+    procedure SetDisableInFullscreen(AValue: Boolean);
     procedure SetSensitivity(AValue: TSensitivity);
   public
     constructor Create;
     destructor Destroy; override;
     property FirstRun: Boolean read FFirstRun;
     property AutoStart: Boolean read FAutoStart write SetAutoStart;
+    property DisableInFullscreen: Boolean read FDisableInFullscreen write SetDisableInFullscreen;
     property Sensitivity: TSensitivity read FSensitivity write SetSensitivity;
     property ActionTopLeft: string read FActionTopLeft write SetActionTopLeft;
     property ActionTopRight: string read FActionTopRight write SetActionTopRight;
@@ -137,6 +140,7 @@ procedure TAppSetings.Defaults;
 begin
   FFirstRun := True;
   FAutoStart := False;
+  FDisableInFullscreen := False;
   FSensitivity := seMedium;
   FActionTopLeft := 'Super+Tab';    // Show task view.
   FActionTopRight := '';
@@ -424,6 +428,24 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           SetDisableInFullscreen
+// PARAMETER:      AValue True to disable hot corner and frame actions when another app
+//                 is running in fullscreen mode, false otherwise.
+// DESCRIPTION:    Setter for writing the disable-in-fullscreen setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetDisableInFullscreen(AValue: Boolean);
+begin
+  // Only continue if the value actually changed.
+  if FDisableInFullscreen <> AValue then
+  begin
+    // Update the value and save the settings.
+    FDisableInFullscreen := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
 // NAME:           Load
 // DESCRIPTION:    Loads the application settings to an XML file.
 //
@@ -449,6 +471,7 @@ begin
   // --------------- Generic configuration settings -------------------------------------
   XmlConfig.OpenKey('Generic');
   FFirstRun := XmlConfig.GetValue('FirstRun', True);
+  FDisableInFullscreen := XmlConfig.GetValue('DisableInFullscreen', False);
   SensitivityVal := XmlConfig.GetValue('Sensitivity', Ord(seMedium));
   if (SensitivityVal < Ord(Low(TSensitivity))) or
      (SensitivityVal > Ord(High(TSensitivity))) then
@@ -490,6 +513,7 @@ begin
   // --------------- Generic configuration settings -------------------------------------
   XmlConfig.OpenKey('Generic');
   XmlConfig.SetValue('FirstRun', False); // If we're saving, then that was the first run.
+  XmlConfig.SetValue('DisableInFullscreen', FDisableInFullscreen);
   XmlConfig.SetValue('Sensitivity', Ord(FSensitivity));
   XmlConfig.CloseKey;
   // --------------- Action configuration settings --------------------------------------

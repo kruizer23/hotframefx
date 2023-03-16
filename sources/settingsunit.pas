@@ -50,20 +50,25 @@ type
     BtnCancel: TButton;
     BtnOk: TButton;
     ChbAutostart: TCheckBox;
+    ChbDisableFullscreen: TCheckBox;
     CmbSensitivity: TComboBox;
+    LblFullscreen: TLabel;
     LblSensitivity: TLabel;
     LblAutostart: TLabel;
     PnlBottom: TPanel;
     procedure FormCreate(Sender: TObject);
   private
     function GetAutoStart: Boolean;
+    function GetDisableInFullscreen: Boolean;
     function GetSensitivity: TSensitivity;
     procedure SetAutoStart(AValue: Boolean);
+    procedure SetDisableInFullscreen(AValue: Boolean);
     procedure SetSensitivity(AValue: TSensitivity);
 
   public
     property Sensitivity: TSensitivity read GetSensitivity write SetSensitivity;
     property AutoStart: Boolean read GetAutoStart write SetAutoStart;
+    property DisableInFullscreen: Boolean read GetDisableInFullscreen write SetDisableInFullscreen;
   end;
 
 implementation
@@ -126,6 +131,18 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           GetDisableInFullscreen
+// RETURN VALUE    True if corner and frame actions should be disabled when another
+//                 application runs in fullscreen mode, false otherwise.
+// DESCRIPTION:    Getter for the disable-in-fullscreen setting.
+//
+//***************************************************************************************
+function TSettingsForm.GetDisableInFullscreen: Boolean;
+begin
+  Result := ChbDisableFullscreen.Checked;
+end;
+
+//***************************************************************************************
 // NAME:           GetSensitivity
 // RETURN VALUE    Sensitivity setting for the hot corners / edges.
 // DESCRIPTION:    Getter for the hot corners / edges sensitivity setting.
@@ -146,6 +163,18 @@ end;
 procedure TSettingsForm.SetAutoStart(AValue: Boolean);
 begin
   ChbAutostart.Checked := AValue;
+end;
+
+//***************************************************************************************
+// NAME:           SetDisableInFullscreen
+// PARAMETER:      AValue True if corner and frame actions should be disabled when
+//                 another application runs in fullscreen mode, false otherwise.
+// DESCRIPTION:    Setter for the disable-in-fullscreen setting.
+//
+//***************************************************************************************
+procedure TSettingsForm.SetDisableInFullscreen(AValue: Boolean);
+begin
+  ChbDisableFullscreen.Checked := AValue;
 end;
 
 //***************************************************************************************
