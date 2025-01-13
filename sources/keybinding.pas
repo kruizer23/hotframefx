@@ -75,7 +75,7 @@ const
   NUM_SPECIAL_KEYS = 4;
 
 const
-  KeyMap: array[0..(60+NUM_SPECIAL_KEYS)] of TKeyMap =
+  KeyMap: array[0..(61+NUM_SPECIAL_KEYS)] of TKeyMap =
   (
     (KeyStr: '[Not used]'; KeyCode: VK_UNKNOWN),
     (KeyStr: 'Spacebar'; KeyCode: VK_SPACE),
