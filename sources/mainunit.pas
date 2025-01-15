@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, CornerEdge,
   Menus, ActnList, Buttons, ComCtrls, AboutUnit, HotAction, AppSettings, SettingsUnit,
-  ConfigActionUnit, AppUtils, LCLIntf;
+  ConfigActionUnit, AppUtils, MouseButtons, LCLIntf;
 
 //***************************************************************************************
 // Type Definitions
@@ -372,6 +372,7 @@ begin
   SettingsForm.AutoStart := FAppSettings.AutoStart;
   SettingsForm.Sensitivity := FAppSettings.Sensitivity;
   SettingsForm.DisableInFullscreen := FAppSettings.DisableInFullscreen;
+  SettingsForm.IgnoreWithMousePressed := FAppSettings.IgnoreWithMousePressed;
   // Get input from the user by showing the form.
   if SettingsForm.ShowModal = mrOK then
   begin
@@ -382,6 +383,8 @@ begin
     FAppSettings.AutoStart := SettingsForm.AutoStart;
     // Update the new disable-in-fullscreen setting.
     FAppSettings.DisableInFullscreen := SettingsForm.DisableInFullscreen;
+    // Update the new ignore-with-mouse-button-pressed setting.
+    FAppSettings.IgnoreWithMousePressed := SettingsForm.IgnoreWithMousePressed;
   end;
   // Release the settings form.
   FreeAndNil(SettingsForm);
@@ -494,7 +497,16 @@ begin
       OkayToPerformAction := False;
     end;
   end;
-
+  // Should actions not execute if a mouse button is pressed?
+  if FAppSettings.IgnoreWithMousePressed then
+  begin
+    // Is one of the mouse button currently pressed?
+    if MouseButtonInfo.IsAnyButtonDown then
+    begin
+      // Set flag to suppress action execution.
+      OkayToPerformAction := False;
+    end;
+  end;
   // Only perform the action if it was previouslt okay-ed.
   if OkayToPerformAction then
   begin

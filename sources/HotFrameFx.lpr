@@ -41,7 +41,7 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, lazmouseandkeyinput, MainUnit, CornerEdge, AboutUnit, AppVersion,
   GrabKey, PickApp, KeyBinding, HotAction, AppSettings, ConfigActionUnit,
-  SettingsUnit, AppUtils
+  SettingsUnit, AppUtils, MouseButtons
   { you can add units after this };
 
 {$R *.res}

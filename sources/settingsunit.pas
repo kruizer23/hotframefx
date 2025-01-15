@@ -51,8 +51,10 @@ type
     BtnOk: TButton;
     ChbAutostart: TCheckBox;
     ChbDisableFullscreen: TCheckBox;
+    ChbIgnoreWithMousePressed: TCheckBox;
     CmbSensitivity: TComboBox;
     LblFullscreen: TLabel;
+    LblMouseButtons: TLabel;
     LblSensitivity: TLabel;
     LblAutostart: TLabel;
     PnlBottom: TPanel;
@@ -61,14 +63,16 @@ type
     function GetAutoStart: Boolean;
     function GetDisableInFullscreen: Boolean;
     function GetSensitivity: TSensitivity;
+    function GetIgnoreWithMousePressed: Boolean;
     procedure SetAutoStart(AValue: Boolean);
     procedure SetDisableInFullscreen(AValue: Boolean);
     procedure SetSensitivity(AValue: TSensitivity);
-
+    procedure SetIgnoreWithMousePressed(AValue: Boolean);
   public
     property Sensitivity: TSensitivity read GetSensitivity write SetSensitivity;
     property AutoStart: Boolean read GetAutoStart write SetAutoStart;
     property DisableInFullscreen: Boolean read GetDisableInFullscreen write SetDisableInFullscreen;
+    property IgnoreWithMousePressed: Boolean read GetIgnoreWithMousePressed write SetIgnoreWithMousePressed;
   end;
 
 implementation
@@ -154,6 +158,18 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           GetIgnoreWithMousePressed
+// RETURN VALUE    True if corner and frame event should be ignored when a mouse button
+//                 is pressed, false otherwise.
+// DESCRIPTION:    Getter for the ignore-with-mouse-button-pressed setting.
+//
+//***************************************************************************************
+function TSettingsForm.GetIgnoreWithMousePressed: Boolean;
+begin
+  Result := ChbIgnoreWithMousePressed.Checked;
+end;
+
+//***************************************************************************************
 // NAME:           SetAutoStart
 // PARAMETER:      AValue True if the application should autostart with the operating
 //                 system, False otherwise.
@@ -198,6 +214,18 @@ begin
       Break;
     end;
   end;
+end;
+
+//***************************************************************************************
+// NAME:           SetIgnoreWithMousePressed
+// PARAMETER:      AValue True if corner and frame events should be ignored when a mouse
+//                 button is pressed, False otherwise.
+// DESCRIPTION:    Setter for the ignore-with-mouse-button-pressed setting.
+//
+//***************************************************************************************
+procedure TSettingsForm.SetIgnoreWithMousePressed(AValue: Boolean);
+begin
+  ChbIgnoreWithMousePressed.Checked := AValue;
 end;
 
 end.

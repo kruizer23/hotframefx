@@ -1,27 +1,27 @@
 object SettingsForm: TSettingsForm
-  Left = 1246
-  Height = 213
-  Top = 371
-  Width = 336
+  Left = 1338
+  Height = 257
+  Top = 379
+  Width = 402
   BorderStyle = bsDialog
   Caption = 'Preferences'
-  ClientHeight = 213
-  ClientWidth = 336
+  ClientHeight = 257
+  ClientWidth = 402
   OnCreate = FormCreate
   Position = poOwnerFormCenter
-  LCLVersion = '2.0.12.0'
+  LCLVersion = '2.2.6.0'
   object PnlBottom: TPanel
     Left = 0
     Height = 40
-    Top = 173
-    Width = 336
+    Top = 217
+    Width = 402
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 40
-    ClientWidth = 336
+    ClientWidth = 402
     TabOrder = 0
     object BtnCancel: TButton
-      Left = 249
+      Left = 315
       Height = 28
       Top = 6
       Width = 75
@@ -34,7 +34,7 @@ object SettingsForm: TSettingsForm
       TabOrder = 1
     end
     object BtnOk: TButton
-      Left = 165
+      Left = 231
       Height = 28
       Top = 6
       Width = 75
@@ -50,7 +50,7 @@ object SettingsForm: TSettingsForm
     Left = 6
     Height = 17
     Top = 6
-    Width = 330
+    Width = 396
     Align = alTop
     AutoSize = False
     BorderSpacing.Left = 6
@@ -77,7 +77,7 @@ object SettingsForm: TSettingsForm
     Left = 6
     Height = 17
     Top = 60
-    Width = 330
+    Width = 396
     Align = alTop
     AutoSize = False
     BorderSpacing.Left = 6
@@ -91,7 +91,7 @@ object SettingsForm: TSettingsForm
     Left = 18
     Height = 19
     Top = 83
-    Width = 318
+    Width = 384
     Align = alTop
     BorderSpacing.Left = 18
     BorderSpacing.Top = 6
@@ -102,7 +102,7 @@ object SettingsForm: TSettingsForm
     Left = 6
     Height = 17
     Top = 110
-    Width = 330
+    Width = 396
     Align = alTop
     AutoSize = False
     BorderSpacing.Left = 6
@@ -116,11 +116,36 @@ object SettingsForm: TSettingsForm
     Left = 18
     Height = 19
     Top = 133
-    Width = 318
+    Width = 384
     Align = alTop
     BorderSpacing.Left = 18
     BorderSpacing.Top = 6
     Caption = 'Disable when another application is fullscreen'
     TabOrder = 3
+  end
+  object LblMouseButtons: TLabel
+    Left = 6
+    Height = 17
+    Top = 160
+    Width = 396
+    Align = alTop
+    AutoSize = False
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 8
+    Caption = 'Mouse buttons'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object ChbIgnoreWithMousePressed: TCheckBox
+    Left = 18
+    Height = 19
+    Top = 183
+    Width = 384
+    Align = alTop
+    BorderSpacing.Left = 18
+    BorderSpacing.Top = 6
+    Caption = 'Ignore corner/edge event when mouse button is pressed'
+    TabOrder = 4
   end
 end

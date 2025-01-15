@@ -51,6 +51,7 @@ type
     FFirstRun: Boolean;
     FAutoStart: Boolean;
     FDisableInFullscreen: Boolean;
+    FIgnoreWithMousePressed: Boolean;
     FSensitivity: TSensitivity;
     FActionTopLeft: string;
     FActionTopRight: string;
@@ -77,12 +78,14 @@ type
     procedure SetAutoStart(AValue: Boolean);
     procedure SetDisableInFullscreen(AValue: Boolean);
     procedure SetSensitivity(AValue: TSensitivity);
+    procedure SetIgnoreWithMousePressed(AValue: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
     property FirstRun: Boolean read FFirstRun;
     property AutoStart: Boolean read FAutoStart write SetAutoStart;
     property DisableInFullscreen: Boolean read FDisableInFullscreen write SetDisableInFullscreen;
+    property IgnoreWithMousePressed: Boolean read FIgnoreWithMousePressed write SetIgnoreWithMousePressed;
     property Sensitivity: TSensitivity read FSensitivity write SetSensitivity;
     property ActionTopLeft: string read FActionTopLeft write SetActionTopLeft;
     property ActionTopRight: string read FActionTopRight write SetActionTopRight;
@@ -141,6 +144,7 @@ begin
   FFirstRun := True;
   FAutoStart := False;
   FDisableInFullscreen := False;
+  FIgnoreWithMousePressed := False;
   FSensitivity := seMedium;
   FActionTopLeft := 'Super+Tab';    // Show task view.
   FActionTopRight := '';
@@ -446,6 +450,24 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           SetIgnoreWithMousePressed
+// PARAMETER:      AValue True to ignore hot corner and frame events when a mouse button
+//                 is pressed, false otherwise.
+// DESCRIPTION:    Setter for writing the disable-in-fullscreen setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetIgnoreWithMousePressed(AValue: Boolean);
+begin
+  // Only continue if the value actually changed.
+  if FIgnoreWithMousePressed <> AValue then
+  begin
+    // Update the value and save the settings.
+    FIgnoreWithMousePressed := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
 // NAME:           Load
 // DESCRIPTION:    Loads the application settings to an XML file.
 //
@@ -472,6 +494,7 @@ begin
   XmlConfig.OpenKey('Generic');
   FFirstRun := XmlConfig.GetValue('FirstRun', True);
   FDisableInFullscreen := XmlConfig.GetValue('DisableInFullscreen', False);
+  FIgnoreWithMousePressed := XmlConfig.GetValue('IgoreWithMousePressed', False);
   SensitivityVal := XmlConfig.GetValue('Sensitivity', Ord(seMedium));
   if (SensitivityVal < Ord(Low(TSensitivity))) or
      (SensitivityVal > Ord(High(TSensitivity))) then
@@ -514,6 +537,7 @@ begin
   XmlConfig.OpenKey('Generic');
   XmlConfig.SetValue('FirstRun', False); // If we're saving, then that was the first run.
   XmlConfig.SetValue('DisableInFullscreen', FDisableInFullscreen);
+  XmlConfig.SetValue('IgoreWithMousePressed', FIgnoreWithMousePressed);
   XmlConfig.SetValue('Sensitivity', Ord(FSensitivity));
   XmlConfig.CloseKey;
   // --------------- Action configuration settings --------------------------------------
