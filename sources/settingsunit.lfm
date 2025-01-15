@@ -132,7 +132,7 @@ object SettingsForm: TSettingsForm
     AutoSize = False
     BorderSpacing.Left = 6
     BorderSpacing.Top = 8
-    Caption = 'Mouse buttons'
+    Caption = 'Mouse Buttons'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
