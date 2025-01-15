@@ -151,7 +151,7 @@ begin
   FActionBottomLeft := '';
   FActionBottomRight := '';
   FActionTop := '';
-  FActionBottom  := 'Alt+Ctrl+Tab'; // Show open applications
+  FActionBottom  := '';
   FActionLeft := '';
   FActionRight := '';
 end;
