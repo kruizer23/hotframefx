@@ -20,5 +20,9 @@ You can find all source code in the `sources/` subdirectory, including the Lazar
 
 * `sources/HotFrameFx.lpi`
 
-Open the `sources/HotFrameFx.lpi` project file in the Lazarus IDE and start your software development work.
+Before opening this project file in the Lazarus IDE, first install the `UniqueInstance` package. Select *Package* &rarr; *Online Package Manager* from the Lazarus program menu. In the dialog that appears, locate the `UniqueInstance` package and install it:
+
+![](images/lazarus_install_packages.png)
+
+Afterwards, you can open the `sources/HotFrameFx.lpi` project file in the Lazarus IDE and start your software development work.
 

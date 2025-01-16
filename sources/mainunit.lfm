@@ -606,7 +606,7 @@ object MainForm: TMainForm
   end
   object ActionList: TActionList
     Images = ImageList
-    Left = 88
+    Left = 48
     Top = 304
     object ActQuit: TAction
       Caption = '&Quit'
@@ -640,7 +640,7 @@ object MainForm: TMainForm
     end
   end
   object ImageList: TImageList
-    Left = 160
+    Left = 120
     Top = 304
     Bitmap = {
       4C7A0700000010000000100000006C0E00000000000078DAD5987950D3699AC7
@@ -764,7 +764,7 @@ object MainForm: TMainForm
   end
   object MainMenu: TMainMenu
     Images = ImageList
-    Left = 232
+    Left = 192
     Top = 304
     object MnuFile: TMenuItem
       Caption = '&File'
@@ -835,12 +835,12 @@ object MainForm: TMainForm
     Hint = 'HotFrameFx'
     Visible = True
     OnClick = ActOpenFromTrayExecute
-    Left = 372
+    Left = 332
     Top = 304
   end
   object TrayPopup: TPopupMenu
     Images = ImageList
-    Left = 304
+    Left = 264
     Top = 304
     object MnuTrayOpen: TMenuItem
       Action = ActOpenFromTray
@@ -851,5 +851,12 @@ object MainForm: TMainForm
     object MnuTrayQuit: TMenuItem
       Action = ActQuit
     end
+  end
+  object UniqueInstance: TUniqueInstance
+    Enabled = True
+    UpdateInterval = 100
+    OnOtherInstance = UniqueInstanceOtherInstance
+    Left = 408
+    Top = 304
   end
 end

@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, CornerEdge,
   Menus, ActnList, Buttons, ComCtrls, AboutUnit, HotAction, AppSettings, SettingsUnit,
-  ConfigActionUnit, AppUtils, MouseButtons, LCLIntf;
+  ConfigActionUnit, AppUtils, MouseButtons, LCLIntf, UniqueInstance;
 
 //***************************************************************************************
 // Type Definitions
@@ -84,6 +84,7 @@ type
     PnlScreen: TPanel;
     TrayPopup: TPopupMenu;
     TrayIcon: TTrayIcon;
+    UniqueInstance: TUniqueInstance;
     procedure ActAboutExecute(Sender: TObject);
     procedure ActManualExecute(Sender: TObject);
     procedure ActOpenFromTrayExecute(Sender: TObject);
@@ -97,6 +98,8 @@ type
     procedure FormWindowStateChange(Sender: TObject);
     procedure ActionButtonMouseEnter(Sender: TObject);
     procedure ActionButtonMouseLeave(Sender: TObject);
+    procedure UniqueInstanceOtherInstance(Sender: TObject; ParamCount: Integer;
+      const Parameters: array of String);
   private
     FAppSettings : TAppSetings;
     FCornerEdge: TCornerEdge;
@@ -201,6 +204,29 @@ begin
     (Sender as TPaintBox).Cursor := crDefault;
   end;
 end;
+
+//***************************************************************************************
+// NAME:           UniqueInstanceOtherInstance
+// PARAMETER:      Sender Signal source.
+//                 ParamCount number of command line parameters
+//                 Parameters string array with the command line parameters
+// RETURN VALUE:   None.
+// DESCRIPTION:    Called if another instance is tried to be started. This is ignored and
+//                 instead its command line parameters are passed back to us.
+//
+//***************************************************************************************
+procedure TMainForm.UniqueInstanceOtherInstance(Sender: TObject;
+                                                ParamCount: Integer;
+                                                const Parameters: array of String);
+{$push}{$warn 5024 off} // Disable unused parameters hint.
+begin
+  // Show window if currently in the system tray, instead of opening a new instance.
+  if WindowState = wsMinimized then
+  begin
+    ActOpenFromTrayExecute(Self);
+  end;
+end;
+{$pop} // Enable unused parameters hint again.
 
 //***************************************************************************************
 // NAME:           ActionButtonClick
