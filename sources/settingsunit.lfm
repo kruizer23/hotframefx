@@ -1,11 +1,11 @@
 object SettingsForm: TSettingsForm
   Left = 1338
-  Height = 257
+  Height = 303
   Top = 379
   Width = 402
   BorderStyle = bsDialog
   Caption = 'Preferences'
-  ClientHeight = 257
+  ClientHeight = 303
   ClientWidth = 402
   OnCreate = FormCreate
   Position = poOwnerFormCenter
@@ -13,7 +13,7 @@ object SettingsForm: TSettingsForm
   object PnlBottom: TPanel
     Left = 0
     Height = 40
-    Top = 217
+    Top = 263
     Width = 402
     Align = alBottom
     BevelOuter = bvNone
@@ -147,5 +147,30 @@ object SettingsForm: TSettingsForm
     BorderSpacing.Top = 6
     Caption = 'Ignore corner/edge event when mouse button is pressed'
     TabOrder = 4
+  end
+  object LblSystemTray: TLabel
+    Left = 6
+    Height = 17
+    Top = 210
+    Width = 396
+    Align = alTop
+    AutoSize = False
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 8
+    Caption = 'System Tray'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object ChbHideFromSystemTray: TCheckBox
+    Left = 18
+    Height = 19
+    Top = 233
+    Width = 384
+    Align = alTop
+    BorderSpacing.Left = 18
+    BorderSpacing.Top = 6
+    Caption = 'Hide application icon from the system tray'
+    TabOrder = 5
   end
 end

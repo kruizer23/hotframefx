@@ -76,6 +76,8 @@ With the *Fullscreen* checkbox, you can select if you want to disable hot corner
 
 With the *Mouse Buttons* checkbox, you can enable a feature that prevents the corner and edge actions to trigger, in case one of the mouse buttons is currently pressed.
 
+With the *System Tray* checkbox, you can set a preference to always hide the application icon from the system tray. In essence, this runs the application completely in the background. When the application icon is hidden from the system tray, you can reopen the application by selecting the **HotFrameFx** shortcut from your start menu.
+
 ## User settings
 
 When you start and exit **HotFrameFx**, it automatically loads and saves your configuration in a user settings file called `HotFrameFx.cfg`, located in directory:

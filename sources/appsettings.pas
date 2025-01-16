@@ -52,6 +52,7 @@ type
     FAutoStart: Boolean;
     FDisableInFullscreen: Boolean;
     FIgnoreWithMousePressed: Boolean;
+    FHideFromSystemTray: Boolean;
     FSensitivity: TSensitivity;
     FActionTopLeft: string;
     FActionTopRight: string;
@@ -79,6 +80,7 @@ type
     procedure SetDisableInFullscreen(AValue: Boolean);
     procedure SetSensitivity(AValue: TSensitivity);
     procedure SetIgnoreWithMousePressed(AValue: Boolean);
+    procedure SetHideFromSystemTray(AValue: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -86,6 +88,7 @@ type
     property AutoStart: Boolean read FAutoStart write SetAutoStart;
     property DisableInFullscreen: Boolean read FDisableInFullscreen write SetDisableInFullscreen;
     property IgnoreWithMousePressed: Boolean read FIgnoreWithMousePressed write SetIgnoreWithMousePressed;
+    property HideFromSystemTray: Boolean read FHideFromSystemTray write SetHideFromSystemTray;
     property Sensitivity: TSensitivity read FSensitivity write SetSensitivity;
     property ActionTopLeft: string read FActionTopLeft write SetActionTopLeft;
     property ActionTopRight: string read FActionTopRight write SetActionTopRight;
@@ -145,6 +148,7 @@ begin
   FAutoStart := False;
   FDisableInFullscreen := False;
   FIgnoreWithMousePressed := False;
+  FHideFromSystemTray := False;
   FSensitivity := seMedium;
   FActionTopLeft := 'Super+Tab';    // Show task view.
   FActionTopRight := '';
@@ -468,6 +472,23 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           SetHideFromSystemTray
+// PARAMETER:      AValue True to hide the icon from the system tray, false otherwise.
+// DESCRIPTION:    Setter for writing the hide-from-system-tray setting.
+//
+//***************************************************************************************
+procedure TAppSetings.SetHideFromSystemTray(AValue: Boolean);
+begin
+  // Only continue if the value actually changed.
+  if FHideFromSystemTray <> AValue then
+  begin
+    // Update the value and save the settings.
+    FHideFromSystemTray := AValue;
+    Save;
+  end;
+end;
+
+//***************************************************************************************
 // NAME:           Load
 // DESCRIPTION:    Loads the application settings to an XML file.
 //
@@ -495,6 +516,7 @@ begin
   FFirstRun := XmlConfig.GetValue('FirstRun', True);
   FDisableInFullscreen := XmlConfig.GetValue('DisableInFullscreen', False);
   FIgnoreWithMousePressed := XmlConfig.GetValue('IgoreWithMousePressed', False);
+  FHideFromSystemTray := XmlConfig.GetValue('HideFromSystemTray', False);
   SensitivityVal := XmlConfig.GetValue('Sensitivity', Ord(seMedium));
   if (SensitivityVal < Ord(Low(TSensitivity))) or
      (SensitivityVal > Ord(High(TSensitivity))) then
@@ -538,6 +560,7 @@ begin
   XmlConfig.SetValue('FirstRun', False); // If we're saving, then that was the first run.
   XmlConfig.SetValue('DisableInFullscreen', FDisableInFullscreen);
   XmlConfig.SetValue('IgoreWithMousePressed', FIgnoreWithMousePressed);
+  XmlConfig.SetValue('HideFromSystemTray', FHideFromSystemTray);
   XmlConfig.SetValue('Sensitivity', Ord(FSensitivity));
   XmlConfig.CloseKey;
   // --------------- Action configuration settings --------------------------------------

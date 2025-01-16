@@ -144,6 +144,8 @@ begin
   FCornerEdge.Sensitivity := FAppSettings.Sensitivity;
   // Reset action info string.
   LblActionInfo.Caption := '';
+  // Configure the hide from system tray setting.
+  TrayIcon.Visible := not FAppSettings.HideFromSystemTray;
 end;
 
 //***************************************************************************************
@@ -399,6 +401,7 @@ begin
   SettingsForm.Sensitivity := FAppSettings.Sensitivity;
   SettingsForm.DisableInFullscreen := FAppSettings.DisableInFullscreen;
   SettingsForm.IgnoreWithMousePressed := FAppSettings.IgnoreWithMousePressed;
+  SettingsForm.HideFromSystemTray := FAppSettings.HideFromSystemTray;
   // Get input from the user by showing the form.
   if SettingsForm.ShowModal = mrOK then
   begin
@@ -411,6 +414,10 @@ begin
     FAppSettings.DisableInFullscreen := SettingsForm.DisableInFullscreen;
     // Update the new ignore-with-mouse-button-pressed setting.
     FAppSettings.IgnoreWithMousePressed := SettingsForm.IgnoreWithMousePressed;
+    // Update the hide-from-system-tray setting.
+    FAppSettings.HideFromSystemTray := SettingsForm.HideFromSystemTray;
+    // Reconfigure the hide from system tray setting.
+    TrayIcon.Visible := not FAppSettings.HideFromSystemTray;
   end;
   // Release the settings form.
   FreeAndNil(SettingsForm);

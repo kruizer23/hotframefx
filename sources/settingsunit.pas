@@ -52,9 +52,11 @@ type
     ChbAutostart: TCheckBox;
     ChbDisableFullscreen: TCheckBox;
     ChbIgnoreWithMousePressed: TCheckBox;
+    ChbHideFromSystemTray: TCheckBox;
     CmbSensitivity: TComboBox;
     LblFullscreen: TLabel;
     LblMouseButtons: TLabel;
+    LblSystemTray: TLabel;
     LblSensitivity: TLabel;
     LblAutostart: TLabel;
     PnlBottom: TPanel;
@@ -64,15 +66,18 @@ type
     function GetDisableInFullscreen: Boolean;
     function GetSensitivity: TSensitivity;
     function GetIgnoreWithMousePressed: Boolean;
+    function GetHideFromSystemTray: Boolean;
     procedure SetAutoStart(AValue: Boolean);
     procedure SetDisableInFullscreen(AValue: Boolean);
     procedure SetSensitivity(AValue: TSensitivity);
     procedure SetIgnoreWithMousePressed(AValue: Boolean);
+    procedure SetHideFromSystemTray(AValue: Boolean);
   public
     property Sensitivity: TSensitivity read GetSensitivity write SetSensitivity;
     property AutoStart: Boolean read GetAutoStart write SetAutoStart;
     property DisableInFullscreen: Boolean read GetDisableInFullscreen write SetDisableInFullscreen;
     property IgnoreWithMousePressed: Boolean read GetIgnoreWithMousePressed write SetIgnoreWithMousePressed;
+    property HideFromSystemTray: Boolean read GetHideFromSystemTray write SetHideFromSystemTray;
   end;
 
 implementation
@@ -170,6 +175,18 @@ begin
 end;
 
 //***************************************************************************************
+// NAME:           GetHideFromSystemTray
+// RETURN VALUE    True if the application icon should be hidden from the system tray,
+//                 false otherwise.
+// DESCRIPTION:    Getter for the hide-from-system-tray setting.
+//
+//***************************************************************************************
+function TSettingsForm.GetHideFromSystemTray: Boolean;
+begin
+  Result := ChbHideFromSystemTray.Checked;
+end;
+
+//***************************************************************************************
 // NAME:           SetAutoStart
 // PARAMETER:      AValue True if the application should autostart with the operating
 //                 system, False otherwise.
@@ -226,6 +243,18 @@ end;
 procedure TSettingsForm.SetIgnoreWithMousePressed(AValue: Boolean);
 begin
   ChbIgnoreWithMousePressed.Checked := AValue;
+end;
+
+//***************************************************************************************
+// NAME:           SetHideFromSystemTray
+// PARAMETER:      AValue True if the application icon should be hidden from the system
+//                 tray, False otherwise.
+// DESCRIPTION:    Setter for the hide-from-system-tray setting.
+//
+//***************************************************************************************
+procedure TSettingsForm.SetHideFromSystemTray(AValue: Boolean);
+begin
+  ChbHideFromSystemTray.Checked := AValue;
 end;
 
 end.
