@@ -1,7 +1,7 @@
 object ConfigActionForm: TConfigActionForm
-  Left = 1336
+  Left = 712
   Height = 226
-  Top = 541
+  Top = 463
   Width = 426
   ActiveControl = BtnOk
   BorderStyle = bsDialog
@@ -10,7 +10,7 @@ object ConfigActionForm: TConfigActionForm
   ClientWidth = 426
   OnCreate = FormCreate
   Position = poOwnerFormCenter
-  LCLVersion = '2.0.12.0'
+  LCLVersion = '2.2.6.0'
   object PnlTop: TPanel
     Left = 0
     Height = 56
@@ -120,6 +120,11 @@ object ConfigActionForm: TConfigActionForm
       TabOrder = 1
       inherited FileNameEdit1: TFileNameEdit
         Width = 388
+        Glyph.Data = {
+          00000000
+        }
+        Images = MainForm.ImageList
+        ImageIndex = 5
       end
     end
   end
