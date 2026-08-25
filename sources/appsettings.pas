@@ -64,6 +64,7 @@ type
     FActionRight: string;
     procedure Defaults;
     procedure InitSettingsFile;
+    function IsFileEmpty(const AFileName: string): Boolean;
     function ReadAutoStartFromRegistry: Boolean;
     procedure WriteAutoStartToRegistry(AValue: Boolean);
     procedure Load;
@@ -169,23 +170,59 @@ end;
 procedure TAppSetings.InitSettingsFile;
 var
  AppSettingsDir: string;
+ PortableSettingsFile: string;
 begin
-  // Obtain the filename for the settings file.
-  FSettingsFile := GetAppConfigFile(False, False);
-  // Extract its directory.
-  AppSettingsDir := ExtractFilePath(FSettingsFile);
-  // Double check that the directory is actually there.
-  if not DirectoryExists(AppSettingsDir) then
+  // Construct the name of a possible portable settings file: same base name as the
+  // executable, with a .cfg extension, located in the same directory as the executable.
+  PortableSettingsFile := ExtractFilePath(Application.ExeName) +
+                          ChangeFileExt(ExtractFileName(Application.ExeName), '.cfg');
+  // Does a .cfg file exist next to the executable? If so, run in portable mode and use
+  // that file for reading/writing settings instead of the regular per-user AppData
+  // location.
+  if FileExists(PortableSettingsFile) then
   begin
-    // Force the directory creation.
-    ForceDirectories(AppSettingsDir);
+    // Select the portable settings file.
+    FSettingsFile := PortableSettingsFile;
+  end
+  else
+  begin
+    // Obtain the filename for the settings file.
+    FSettingsFile := GetAppConfigFile(False, False);
+    // Extract its directory.
+    AppSettingsDir := ExtractFilePath(FSettingsFile);
+    // Double check that the directory is actually there.
+    if not DirectoryExists(AppSettingsDir) then
+    begin
+      // Force the directory creation.
+      ForceDirectories(AppSettingsDir);
+    end;
+    // Now double-check that the directory is there and is writable
+    if (not DirectoryExists(AppSettingsDir)) or
+       (not DirectoryIsWritable(AppSettingsDir)) then
+    begin
+      // Set the filename to an invalid value to indicate that we cannot use it.
+      FSettingsFile := '';
+    end;
   end;
-  // Now double-check that the directory is there and is writable
-  if (not DirectoryExists(AppSettingsDir)) or
-     (not DirectoryIsWritable(AppSettingsDir)) then
+end;
+
+//***************************************************************************************
+// NAME:           IsFileEmpty
+// PARAMETER:      AFileName Name of the file to check.
+// RETURN VALUE:   True if the file exists and is 0 bytes, False otherwise.
+// DESCRIPTION:    Helper to detect an empty settings file, e.g. a placeholder .cfg
+//                 shipped for portable mode that still needs to be populated.
+//
+//***************************************************************************************
+function TAppSetings.IsFileEmpty(const AFileName: string): Boolean;
+var
+  SearchRec: TSearchRec;
+begin
+  Result := False;
+  if FindFirst(AFileName, faAnyFile, SearchRec) = 0 then
   begin
-    // Set the filename to an invalid value to indicate that we cannot use it.
-    FSettingsFile := '';
+    Result := SearchRec.Size = 0;
+    FindClose(SearchRec);
   end;
 end;
 
@@ -503,6 +540,14 @@ begin
     Exit;
   // Only load if the settings file actually exists.
   if not FileExists(FSettingsFile) then
+  begin
+    Exit;
+  end;
+  // If the file exists but is empty -- e.g. a placeholder .cfg dropped next to the
+  // executable for portable mode -- leave the in-memory settings at their Defaults().
+  // The unconditional Save call at the end of Create will then populate the file with
+  // the program defaults, exactly like a fresh AppData install would.
+  if IsFileEmpty(FSettingsFile) then
   begin
     Exit;
   end;
