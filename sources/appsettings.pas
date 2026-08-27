@@ -69,6 +69,7 @@ type
     procedure WriteAutoStartToRegistry(AValue: Boolean);
     procedure Load;
     procedure Save;
+    function FileEmpty(AFile: string): Boolean;
     procedure SetActionBottom(AValue: string);
     procedure SetActionBottomLeft(AValue: string);
     procedure SetActionBottomRight(AValue: string);
@@ -172,9 +173,7 @@ end;
 procedure TAppSetings.InitSettingsFile;
 var
  AppSettingsDir: string;
- PortableSettingsFileStr: string;
- PortableSettingsFile: file of Byte;
- PortableSettingsFileEmpty: Boolean;
+ PortableSettingsFile: string;
 begin
   // Obtain the filename for the settings file.
   FSettingsFile := GetAppConfigFile(False, False);
@@ -193,34 +192,18 @@ begin
     // Set the filename to an invalid value to indicate that we cannot use it.
     FSettingsFile := '';
   end;
-  // The presence of a non-empty settings file in the same directory as the application's
+  // The presence of a settings file in the same directory as the application's
   // executable, indicates that the user would like to use portable mode.
   // Portable mode mean that the settings file in the application's executable directory
   // should be used and the autostart feature should be disabled, as this feature
   // requires storing information in the Windows registry, which is normally removed by
   // the uninstaller. However, in portable mode no uninstaller is used.
-  PortableSettingsFileStr := ChangeFileExt(Application.ExeName, '.cfg');
+  PortableSettingsFile := ChangeFileExt(Application.ExeName, '.cfg');
   // Does the file exist?
-  if FileExists(PortableSettingsFileStr) then
+  if FileExists(PortableSettingsFile) then
   begin
-    // Determine if the file is empty or not.
-    PortableSettingsFileEmpty := True;
-    try
-      Assign(PortableSettingsFile, PortableSettingsFileStr);
-      Reset(PortableSettingsFile);
-      if FileSize(PortableSettingsFile) > 0 then
-      begin
-        PortableSettingsFileEmpty := False;
-      end;
-    finally
-      Close(PortableSettingsFile);
-    end;
-    // Switch to portable mode in case this settings file is not empty.
-    if not PortableSettingsFileEmpty then
-    begin
-      FSettingsFile := PortableSettingsFileStr;
-      FPortableMode := True;
-    end;
+    FSettingsFile := PortableSettingsFile;
+    FPortableMode := True;
   end;
 end;
 
@@ -535,42 +518,54 @@ var
 begin
   // Only load if the settings file was properly configured.
   if FSettingsFile = '' then
+  begin
     Exit;
+  end;
+
   // Only load if the settings file actually exists.
   if not FileExists(FSettingsFile) then
   begin
     Exit;
   end;
 
+  // Don't bother trying to load the settings if the file is empty.
+  if FileEmpty(FSettingsFile) then
+  begin
+    Exit;
+  end;
+
   // Create and prepare the XML config object.
   XmlConfig := TXMLConfig.Create(nil);
-  XmlConfig.StartEmpty := False;
-  XmlConfig.Filename := FSettingsFile;
-  // --------------- Generic configuration settings -------------------------------------
-  XmlConfig.OpenKey('Generic');
-  FFirstRun := XmlConfig.GetValue('FirstRun', True);
-  FDisableInFullscreen := XmlConfig.GetValue('DisableInFullscreen', False);
-  FIgnoreWithMousePressed := XmlConfig.GetValue('IgoreWithMousePressed', False);
-  FHideFromSystemTray := XmlConfig.GetValue('HideFromSystemTray', False);
-  SensitivityVal := XmlConfig.GetValue('Sensitivity', Ord(seMedium));
-  if (SensitivityVal < Ord(Low(TSensitivity))) or
-     (SensitivityVal > Ord(High(TSensitivity))) then
-    SensitivityVal := Ord(seMedium);
-  FSensitivity := TSensitivity(SensitivityVal);
-  XmlConfig.CloseKey;
-  // --------------- Action configuration settings --------------------------------------
-  XmlConfig.OpenKey('Actions');
-  FActionTopLeft := String(XmlConfig.GetValue('ActionTopLeft', ''));
-  FActionTopRight := String(XmlConfig.GetValue('ActionTopRight', ''));
-  FActionBottomLeft := String(XmlConfig.GetValue('ActionBottomLeft', ''));
-  FActionBottomRight := String(XmlConfig.GetValue('ActionBottomRight', ''));
-  FActionTop := String(XmlConfig.GetValue('ActionTop', ''));
-  FActionBottom := String(XmlConfig.GetValue('ActionBottom', ''));
-  FActionLeft := String(XmlConfig.GetValue('ActionLeft', ''));
-  FActionRight := String(XmlConfig.GetValue('ActionRight', ''));
-  XmlConfig.CloseKey;
-  // Release the XML config object.
-  XmlConfig.Free;
+  try
+    XmlConfig.StartEmpty := False;
+    XmlConfig.Filename := FSettingsFile;
+    // --------------- Generic configuration settings -------------------------------------
+    XmlConfig.OpenKey('Generic');
+    FFirstRun := XmlConfig.GetValue('FirstRun', True);
+    FDisableInFullscreen := XmlConfig.GetValue('DisableInFullscreen', False);
+    FIgnoreWithMousePressed := XmlConfig.GetValue('IgoreWithMousePressed', False);
+    FHideFromSystemTray := XmlConfig.GetValue('HideFromSystemTray', False);
+    SensitivityVal := XmlConfig.GetValue('Sensitivity', Ord(seMedium));
+    if (SensitivityVal < Ord(Low(TSensitivity))) or
+       (SensitivityVal > Ord(High(TSensitivity))) then
+      SensitivityVal := Ord(seMedium);
+    FSensitivity := TSensitivity(SensitivityVal);
+    XmlConfig.CloseKey;
+    // --------------- Action configuration settings --------------------------------------
+    XmlConfig.OpenKey('Actions');
+    FActionTopLeft := String(XmlConfig.GetValue('ActionTopLeft', ''));
+    FActionTopRight := String(XmlConfig.GetValue('ActionTopRight', ''));
+    FActionBottomLeft := String(XmlConfig.GetValue('ActionBottomLeft', ''));
+    FActionBottomRight := String(XmlConfig.GetValue('ActionBottomRight', ''));
+    FActionTop := String(XmlConfig.GetValue('ActionTop', ''));
+    FActionBottom := String(XmlConfig.GetValue('ActionBottom', ''));
+    FActionLeft := String(XmlConfig.GetValue('ActionLeft', ''));
+    FActionRight := String(XmlConfig.GetValue('ActionRight', ''));
+    XmlConfig.CloseKey;
+  finally
+    // Release the XML config object.
+    XmlConfig.Free;
+  end;
 end;
 
 //***************************************************************************************
@@ -588,30 +583,63 @@ begin
 
   // Create and prepare the XML config object.
   XmlConfig := TXMLConfig.Create(nil);
-  XmlConfig.StartEmpty := True;
-  XmlConfig.Filename := FSettingsFile;
-  // --------------- Generic configuration settings -------------------------------------
-  XmlConfig.OpenKey('Generic');
-  XmlConfig.SetValue('FirstRun', False); // If we're saving, then that was the first run.
-  XmlConfig.SetValue('DisableInFullscreen', FDisableInFullscreen);
-  XmlConfig.SetValue('IgoreWithMousePressed', FIgnoreWithMousePressed);
-  XmlConfig.SetValue('HideFromSystemTray', FHideFromSystemTray);
-  XmlConfig.SetValue('Sensitivity', Ord(FSensitivity));
-  XmlConfig.CloseKey;
-  // --------------- Action configuration settings --------------------------------------
-  XmlConfig.OpenKey('Actions');
-  XmlConfig.SetValue('ActionTopLeft', WideString(FActionTopLeft));
-  XmlConfig.SetValue('ActionTopRight', WideString(FActionTopRight));
-  XmlConfig.SetValue('ActionBottomLeft', WideString(FActionBottomLeft));
-  XmlConfig.SetValue('ActionBottomRight', WideString(FActionBottomRight));
-  XmlConfig.SetValue('ActionTop', WideString(FActionTop));
-  XmlConfig.SetValue('ActionBottom', WideString(FActionBottom));
-  XmlConfig.SetValue('ActionLeft', WideString(FActionLeft));
-  XmlConfig.SetValue('ActionRight', WideString(FActionRight));
-  XmlConfig.CloseKey;
-  // Write the contents and release the XML config object.
-  XmlConfig.Flush;
-  XmlConfig.Free;
+  try
+    XmlConfig.StartEmpty := True;
+    XmlConfig.Filename := FSettingsFile;
+    // --------------- Generic configuration settings -------------------------------------
+    XmlConfig.OpenKey('Generic');
+    XmlConfig.SetValue('FirstRun', False); // If we're saving, then that was the first run.
+    XmlConfig.SetValue('DisableInFullscreen', FDisableInFullscreen);
+    XmlConfig.SetValue('IgoreWithMousePressed', FIgnoreWithMousePressed);
+    XmlConfig.SetValue('HideFromSystemTray', FHideFromSystemTray);
+    XmlConfig.SetValue('Sensitivity', Ord(FSensitivity));
+    XmlConfig.CloseKey;
+    // --------------- Action configuration settings --------------------------------------
+    XmlConfig.OpenKey('Actions');
+    XmlConfig.SetValue('ActionTopLeft', WideString(FActionTopLeft));
+    XmlConfig.SetValue('ActionTopRight', WideString(FActionTopRight));
+    XmlConfig.SetValue('ActionBottomLeft', WideString(FActionBottomLeft));
+    XmlConfig.SetValue('ActionBottomRight', WideString(FActionBottomRight));
+    XmlConfig.SetValue('ActionTop', WideString(FActionTop));
+    XmlConfig.SetValue('ActionBottom', WideString(FActionBottom));
+    XmlConfig.SetValue('ActionLeft', WideString(FActionLeft));
+    XmlConfig.SetValue('ActionRight', WideString(FActionRight));
+    XmlConfig.CloseKey;
+    // Write the contents and release the XML config object.
+    XmlConfig.Flush;
+  finally
+    XmlConfig.Free;
+  end;
+end;
+
+//***************************************************************************************
+// NAME:           FileEmpty
+// PARAMETER:      AFile Name of the file to check.
+// RETURN VALUE:   True if the file is empty, False otherwise.
+// DESCRIPTION:    Helper function to determine if a file is empty by looking at its file
+//                 size.
+//
+//***************************************************************************************
+function TAppSetings.FileEmpty(AFile: string): Boolean;
+var
+  FileHandle: file of Byte;
+begin
+  // Initialize the result.
+  Result := True;
+    // Does the file exist?
+  if FileExists(AFile) then
+  begin
+    try
+      Assign(FileHandle, AFile);
+      Reset(FileHandle);
+      if FileSize(FileHandle) > 0 then
+      begin
+        Result := False;
+      end;
+    finally
+      Close(FileHandle);
+    end;
+  end;
 end;
 
 end.
