@@ -402,6 +402,7 @@ begin
   SettingsForm.DisableInFullscreen := FAppSettings.DisableInFullscreen;
   SettingsForm.IgnoreWithMousePressed := FAppSettings.IgnoreWithMousePressed;
   SettingsForm.HideFromSystemTray := FAppSettings.HideFromSystemTray;
+  SettingsForm.PortableMode := FAppSettings.PortableMode;
   // Get input from the user by showing the form.
   if SettingsForm.ShowModal = mrOK then
   begin

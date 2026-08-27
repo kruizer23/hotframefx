@@ -62,6 +62,7 @@ type
     PnlBottom: TPanel;
     procedure FormCreate(Sender: TObject);
   private
+    FPortableMode: Boolean;
     function GetAutoStart: Boolean;
     function GetDisableInFullscreen: Boolean;
     function GetSensitivity: TSensitivity;
@@ -72,12 +73,14 @@ type
     procedure SetSensitivity(AValue: TSensitivity);
     procedure SetIgnoreWithMousePressed(AValue: Boolean);
     procedure SetHideFromSystemTray(AValue: Boolean);
+    procedure SetPortableMode(AValue: Boolean);
   public
     property Sensitivity: TSensitivity read GetSensitivity write SetSensitivity;
     property AutoStart: Boolean read GetAutoStart write SetAutoStart;
     property DisableInFullscreen: Boolean read GetDisableInFullscreen write SetDisableInFullscreen;
     property IgnoreWithMousePressed: Boolean read GetIgnoreWithMousePressed write SetIgnoreWithMousePressed;
     property HideFromSystemTray: Boolean read GetHideFromSystemTray write SetHideFromSystemTray;
+    property PortableMode: Boolean write SetPortableMode;
   end;
 
 implementation
@@ -255,6 +258,31 @@ end;
 procedure TSettingsForm.SetHideFromSystemTray(AValue: Boolean);
 begin
   ChbHideFromSystemTray.Checked := AValue;
+end;
+
+//***************************************************************************************
+// NAME:           SetPortableMode
+// PARAMETER:      AValue True if the application is running in portable mode, False
+//                 otherwise.
+// DESCRIPTION:    Setter for the portable mode setting.
+//
+//***************************************************************************************
+procedure TSettingsForm.SetPortableMode(AValue: Boolean);
+begin
+  // Disable the autostart configurable and show it as read-only, because this would
+  // store information in the Windows registry to launch the application with each
+  // start of Windows. This registry entry normally gets removed by the application's
+  // uninstaller. However, no uninstaller will be used in portable mode. The checkbox's
+  // hint will in this case inform the user why it is in read-only mode.
+  ChbAutostart.Hint := '';
+  ChbAutostart.ShowHint := False;
+  if AValue then
+  begin
+    SetAutoStart(False);
+    ChbAutostart.Enabled := not AValue;
+    ChbAutostart.Hint := 'Autostart feature not available in portable mode.';
+    ChbAutostart.ShowHint := True;
+  end;
 end;
 
 end.

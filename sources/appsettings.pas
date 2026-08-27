@@ -48,6 +48,7 @@ type
   TAppSetings = class(TObject)
   private
     FSettingsFile: string;
+    FPortableMode: Boolean;
     FFirstRun: Boolean;
     FAutoStart: Boolean;
     FDisableInFullscreen: Boolean;
@@ -85,6 +86,7 @@ type
     constructor Create;
     destructor Destroy; override;
     property FirstRun: Boolean read FFirstRun;
+    property PortableMode: Boolean read FPortableMode;
     property AutoStart: Boolean read FAutoStart write SetAutoStart;
     property DisableInFullscreen: Boolean read FDisableInFullscreen write SetDisableInFullscreen;
     property IgnoreWithMousePressed: Boolean read FIgnoreWithMousePressed write SetIgnoreWithMousePressed;
@@ -146,6 +148,7 @@ procedure TAppSetings.Defaults;
 begin
   FFirstRun := True;
   FAutoStart := False;
+  FPortableMode := False;
   FDisableInFullscreen := False;
   FIgnoreWithMousePressed := False;
   FHideFromSystemTray := False;
@@ -169,6 +172,9 @@ end;
 procedure TAppSetings.InitSettingsFile;
 var
  AppSettingsDir: string;
+ PortableSettingsFileStr: string;
+ PortableSettingsFile: file of Byte;
+ PortableSettingsFileEmpty: Boolean;
 begin
   // Obtain the filename for the settings file.
   FSettingsFile := GetAppConfigFile(False, False);
@@ -186,6 +192,35 @@ begin
   begin
     // Set the filename to an invalid value to indicate that we cannot use it.
     FSettingsFile := '';
+  end;
+  // The presence of a non-empty settings file in the same directory as the application's
+  // executable, indicates that the user would like to use portable mode.
+  // Portable mode mean that the settings file in the application's executable directory
+  // should be used and the autostart feature should be disabled, as this feature
+  // requires storing information in the Windows registry, which is normally removed by
+  // the uninstaller. However, in portable mode no uninstaller is used.
+  PortableSettingsFileStr := ChangeFileExt(Application.ExeName, '.cfg');
+  // Does the file exist?
+  if FileExists(PortableSettingsFileStr) then
+  begin
+    // Determine if the file is empty or not.
+    PortableSettingsFileEmpty := True;
+    try
+      Assign(PortableSettingsFile, PortableSettingsFileStr);
+      Reset(PortableSettingsFile);
+      if FileSize(PortableSettingsFile) > 0 then
+      begin
+        PortableSettingsFileEmpty := False;
+      end;
+    finally
+      Close(PortableSettingsFile);
+    end;
+    // Switch to portable mode in case this settings file is not empty.
+    if not PortableSettingsFileEmpty then
+    begin
+      FSettingsFile := PortableSettingsFileStr;
+      FPortableMode := True;
+    end;
   end;
 end;
 
